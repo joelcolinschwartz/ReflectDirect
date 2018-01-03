@@ -1,0 +1,7 @@
+PNG images to use as brightness maps for planets. Add your own files here.
+
+
+"bluemarble_2048" — Image by Eric Sokolowsky and Michael King, data credits to Reto Stockli and NASA's Earth Observatory. Visit the NASA/Goddard Space Flight Center Scientific Visualization Studio:
+https://svs.gsfc.nasa.gov/2915
+
+"glass_spiral" — From pixabay.com, CC0 license.
