@@ -989,17 +989,17 @@ class DirectImaging_Planet:
         print(form_cols.format('Alternate',a_low_b,a_avg_b,a_high_b,self._describe_amap(a_low_b,a_high_b)))
         print('')
         
-        form_cols = '{:^14} {:^24} {:^22} {:^20} {:^20}'
+        form_cols = '{:^14} {:^24} {:^22} {:^17} {:^17}'
         print(form_cols.format('**Motion**','Orbital Period (units)','Rot./Orb. Frequency',
-                               'Low Time (orbits)','High Time (orbits)'))
-        form_cols = '{:<14} {:^24.3f} {:^22.4f} {:^20.4f} {:^20.4f}'
+                               'Low t (orbits)','High t (orbits)'))
+        form_cols = '{:<14} {:^24.3f} {:^22.4f} {:^17.4f} {:^17.4f}'
         if isinstance(self.times,(int,float)):
             low_t,high_t = self.times,self.times
         else:
             low_t,high_t = self.times[0],self.times[-1]
         print(form_cols.format('Master',self.orbT,self.ratRO,
                                low_t/abs(self.orbT),high_t/abs(self.orbT)))
-        form_cols = '{:<14} {:^24.3f} {:^22.4f} {:^20} {:^20}'
+        form_cols = '{:<14} {:^24.3f} {:^22.4f} {:^17} {:^17}'
         low_orb_b = '(({:.4f}))'.format(low_t/abs(self.orbT_b))
         high_orb_b = '(({:.4f}))'.format(high_t/abs(self.orbT_b))
         print(form_cols.format('Alternate',self.orbT_b,self.ratRO_b,low_orb_b,high_orb_b))
@@ -2022,75 +2022,78 @@ class DirectImaging_Planet:
                 solobl_wgrid[s,o],solobl_dgrid[s,o] = self.Kernel_WidthDomColat('_c',False,phase_rat,1,1,incD,o*5,s*5,0)
         return solobl_wgrid,solobl_dgrid
     
-    def _spinax_style(self,w,h,s,m_c,kind,sols,obls,prob2d,levs,constraint,orig_sols,orig_obls,
+    def _spinax_style(self,w,h,s,m_c,kind,ax_combo,sols,obls,prob2d,levs,constraint,orig_sols,orig_obls,
                       kchar,k_mu,now_phaseD,solR,oblR,mark,_active,j,entries):
         """Styles plots for spin axis constraints."""
-        plt.subplot(h,w,s,projection='polar')
-        plt.gca().set_theta_zero_location('S')
-        plt.gca().set_rlabel_position(45)
+        if kind == 'combo':
+            axs = ax_combo
+        else:
+            axs = plt.subplot(h,w,s,projection='polar')
+        axs.set_theta_zero_location('S')
+        axs.set_rlabel_position(45)
         c_regs = ('1.0',m_c(0.25),m_c(0.5),m_c(0.75))
         
         if kind == 'info':
-            plt.text(np.radians(0),np.radians(0),'Predicted\nSpin Axis\nConstraints',color='k',
+            axs.text(np.radians(0),np.radians(0),'Predicted\nSpin Axis\nConstraints',color='k',
                      size='x-large',ha='center',va='center',weight='bold')
-            plt.text(np.radians(225),np.radians(110),'Orbital\nPhase(s)',color='0.5',
+            axs.text(np.radians(225),np.radians(110),'Orbital\nPhase(s)',color='0.5',
                      size='x-large',ha='center',va='center')
-            plt.text(np.radians(210),np.radians(60),'Radial\ndirection:\nobliquity',color='k',
+            axs.text(np.radians(210),np.radians(60),'Radial\ndirection:\nobliquity',color='k',
                      size='x-large',ha='center',va='center')
-            plt.text(np.radians(150),np.radians(60),'Compass\ndirection:\nsolstice',color='k',
+            axs.text(np.radians(150),np.radians(60),'Compass\ndirection:\nsolstice',color='k',
                      size='x-large',ha='center',va='center')
             if constraint in ['real','both']:
-                plt.text(np.radians(270),np.radians(60),'Red\nregions:\nrotational\ninfo',color=cm.Reds(0.75),
+                axs.text(np.radians(270),np.radians(60),'Red\nregions:\nrotational\ninfo',color=cm.Reds(0.75),
                          size='x-large',ha='center',va='center')
-                plt.text(np.radians(90),np.radians(60),'Blue\nregions:\norbital\ninfo',color=cm.Blues(0.75),
+                axs.text(np.radians(90),np.radians(60),'Blue\nregions:\norbital\ninfo',color=cm.Blues(0.75),
                          size='x-large',ha='center',va='center')
-                plt.text(np.radians(330),np.radians(60),'Dashed\ncontour:\nno uncertainty',color=(0,0.3,0),
+                axs.text(np.radians(330),np.radians(60),'Dashed\ncontour:\nno uncertainty',color=(0,0.3,0),
                          size='x-large',ha='center',va='center')
             else:
-                plt.text(np.radians(270),np.radians(60),'Red\ncontours:\nrotational\ninfo',color=cm.Reds(0.75),
+                axs.text(np.radians(270),np.radians(60),'Red\ncontours:\nrotational\ninfo',color=cm.Reds(0.75),
                          size='x-large',ha='center',va='center')
-                plt.text(np.radians(90),np.radians(60),'Blue\ncontours:\norbital\ninfo',color=cm.Blues(0.75),
+                axs.text(np.radians(90),np.radians(60),'Blue\ncontours:\norbital\ninfo',color=cm.Blues(0.75),
                          size='x-large',ha='center',va='center')
-                plt.text(np.radians(330),np.radians(60),'Each\ncontour:\nno uncertainty',color=(0,0.3,0),
+                axs.text(np.radians(330),np.radians(60),'Each\ncontour:\nno uncertainty',color=(0,0.3,0),
                          size='x-large',ha='center',va='center')
-            plt.text(np.radians(30),np.radians(60),'Green\nmarker:\ntrue axis',color=(0,0.75,0),
+            axs.text(np.radians(30),np.radians(60),'Green\nmarker:\ntrue axis',color=(0,0.75,0),
                      size='x-large',ha='center',va='center')
-            plt.text(np.radians(180),np.radians(100),'{}'.format(self.name),color='k',
+            axs.text(np.radians(180),np.radians(100),'{}'.format(self.name),color='k',
                      size='x-large',ha='center',va='center')
-            plt.gca().axes.spines['polar'].set_alpha(0.1)
-            plt.gca().grid(alpha=0.1)
-            plt.xticks(alpha=0.1)
-            plt.yticks(alpha=0.1)
+            axs.axes.spines['polar'].set_alpha(0.1)
+            axs.grid(alpha=0.1)
+            plt.xticks(alpha=0.1)  ## Easy and seems to work
+            plt.yticks(alpha=0.1)  ##
         else:
             if constraint in ['real','both']:
-                plt.contourf(sols,obls,prob2d,levels=levs,colors=c_regs)
-                plt.contour(sols,obls,prob2d,levels=levs,colors='0.5')
+                axs.contourf(sols,obls,prob2d,levels=levs,colors=c_regs)
+                axs.contour(sols,obls,prob2d,levels=levs,colors='0.5')
             if kind == 'single':
                 if constraint == 'perf':
                     this_color = m_c(0.33+0.67*(j/entries))
-                    plt.contour(orig_sols,orig_obls,kchar,levels=[k_mu],colors=[this_color],
+                    axs.contour(orig_sols,orig_obls,kchar,levels=[k_mu],colors=[this_color],
                                 linewidths=3,linestyles='solid')
                 elif constraint == 'both':
-                    plt.contour(orig_sols,orig_obls,kchar,levels=[k_mu],colors=[(0,0.3,0)],
+                    axs.contour(orig_sols,orig_obls,kchar,levels=[k_mu],colors=[(0,0.3,0)],
                                 linewidths=3,linestyles='dashed')
                 if m_c == cm.Reds:
-                    plt.text(np.radians(225),np.radians(110),r'$%.0f^{\circ}$' % now_phaseD,color='0.5',
+                    axs.text(np.radians(225),np.radians(110),r'$%.0f^{\circ}$' % now_phaseD,color='0.5',
                              size='x-large',ha='center',va='center')
                 else:
-                    plt.text(np.radians(225),np.radians(110),
+                    axs.text(np.radians(225),np.radians(110),
                              r'$%.0f^{\circ}$' '\n' r'$%.0f^{\circ}$' % (now_phaseD[0],now_phaseD[1]),color='0.5',
                              size='x-large',ha='center',va='center')
             else:
                 if not _active:
-                    plt.text(np.radians(225),np.radians(110),'Combined',color='0.5',
+                    axs.text(np.radians(225),np.radians(110),'Combined',color='0.5',
                              size='x-large',ha='center',va='center')
-            plt.scatter(solR,oblR,s=100,c=(0,1,0),edgecolor='k',marker=mark,zorder=2)
-        
-        plt.xlim([0,2.0*pi])
-        plt.ylim([0,pi/2.0])
+            axs.scatter(solR,oblR,s=100,c=(0,1,0),edgecolor='k',marker=mark,zorder=2)
+
+        axs.set_thetalim([0,2.0*pi])
+        axs.set_rlim([0,pi/2.0])
         ts = lambda a: 'medium' if a else 'large'
-        plt.xticks(np.linspace(0,2.0*pi,9),sol_ticks_,size=ts(_active))
-        plt.yticks(np.linspace(0,pi/2.0,4),obl_ticks_,size=ts(_active))
+        axs.set_thetagrids(np.linspace(0,360,9),sol_ticks_,size=ts(_active))
+        axs.set_rgrids(np.linspace(0,pi/2.0,4),obl_ticks_,size=ts(_active))
         return s+1
     
     
@@ -2196,6 +2199,8 @@ class DirectImaging_Planet:
                     phaseD_list element or 'Combined'.
                     
         """
+        made_combo_flag = False
+        
         entries = len(phaseD_list)
         if _active:
             w,h,sub,s = 3,2,5,5
@@ -2231,7 +2236,7 @@ class DirectImaging_Planet:
         if not _active:
             plt.figure(figsize=(5*w,5*h))
             if info and not combine_only:
-                s = self._spinax_style(w,h,s,cm.gray,'info',new_sols,new_obls,0,0,constraint,
+                s = self._spinax_style(w,h,s,cm.gray,'info','0',new_sols,new_obls,0,0,constraint,
                                        sol_2mesh_,obl_2mesh_,0,0,0,solR,oblR,0,_active,0,entries)
         
         for j in np.arange(entries):
@@ -2273,14 +2278,16 @@ class DirectImaging_Planet:
             
             if combine or combine_only:
                 combo_prob2d *= prob2d
+                if made_combo_flag == False:
+                    axC = plt.subplot(h,w,sub,projection='polar')
+                    made_combo_flag = True
                 if constraint in ['perf','both']:
-                    plt.subplot(h,w,sub,projection='polar')
                     if constraint == 'perf':
                         this_color = m_c(0.33+0.67*(j/entries))
-                        plt.contour(sol_2mesh_,obl_2mesh_,kchar,levels=[k_mu],colors=[this_color],
+                        axC.contour(sol_2mesh_,obl_2mesh_,kchar,levels=[k_mu],colors=[this_color],
                                     linewidths=3,linestyles='solid')
                     else:
-                        plt.contour(sol_2mesh_,obl_2mesh_,kchar,levels=[k_mu],colors=[(0,0.3,0)],alpha=0.2,
+                        axC.contour(sol_2mesh_,obl_2mesh_,kchar,levels=[k_mu],colors=[(0,0.3,0)],alpha=0.2,
                                     linewidths=3,linestyles='dashed')
             if constraint in ['real','both']:
                 new_prob2d = self._spinax_prob_redo(prob2d,sol_2mesh_,obl_2mesh_,new_sols,new_obls)
@@ -2293,7 +2300,7 @@ class DirectImaging_Planet:
                         user_file.append([sav_phaseD,np.copy(new_prob2d),np.copy(levels_sigma)])
                 else:
                     levels_sigma = 1
-                s = self._spinax_style(w,h,s,m_c,'single',new_sols,new_obls,new_prob2d,levels_sigma,constraint,
+                s = self._spinax_style(w,h,s,m_c,'single','0',new_sols,new_obls,new_prob2d,levels_sigma,constraint,
                                        sol_2mesh_,obl_2mesh_,kchar,k_mu,sav_phaseD,solR,oblR,mark,_active,j,entries)
         
         if combine or combine_only:
@@ -2305,8 +2312,8 @@ class DirectImaging_Planet:
             else:
                 new_combo_prob2d,levels_sigma = 1,1
             m_c_here = lambda x: cm.Reds if x == entries else (cm.Blues if x == 2*entries else cm.Purples)
-            s = self._spinax_style(w,h,s,m_c_here(p),'combo',new_sols,new_obls,new_combo_prob2d,levels_sigma,constraint,
-                                   sol_2mesh_,obl_2mesh_,kchar,k_mu,0,solR,oblR,mark,_active,0,entries)
+            s = self._spinax_style(w,h,s,m_c_here(p),'combo',axC,new_sols,new_obls,new_combo_prob2d,levels_sigma,
+                                   constraint,sol_2mesh_,obl_2mesh_,kchar,k_mu,0,solR,oblR,mark,_active,0,entries)
         
         if not _active:
             plt.tight_layout()
