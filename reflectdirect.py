@@ -239,7 +239,7 @@ def Geometry_Reference(ref_save=False,_active=False,incD=85,oblD=0,solD=0,ratRO=
         tim_tex = r'At $0^{\circ}$ phase:' '\n' '$t = nT_{\mathrm{orb}}$,' '\n' r'$n=0,\pm1,\pm2,...$'
         plt.text(0.21,0.775,tim_tex,color='k',size=lab_siz,ha='center',va='top')
         plt.text(0.6,-0.6,'Planet',color='k',size=lab_siz,ha='right',va='bottom')
-        connect = pat.Arc((0.5,0),0.5,1.3,angle=0,theta1=-55,theta2=85,lw=1,ls='--',color='0.75',zorder=-3)
+        connect = pat.Arc((0.5,0),0.5,1.3,angle=0,theta1=-70,theta2=85,lw=1,ls='--',color='0.75',zorder=-3)
         plt.gca().add_patch(connect)
         plt.text(1.3,-1.3,'Not to\nscale',color='k',size=lab_siz,ha='center',va='bottom',fontstyle='italic')
         plt.text(0,tex_y,'Geometry\nReference',color='k',size=lab_siz,ha='center',va='top',weight='bold')
