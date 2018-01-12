@@ -1845,7 +1845,9 @@ class DirectImaging_Planet:
             m_c = cm.bone
         
         ma_image = np.ma.masked_array(image,mask=orth_Viz<0)
-        plt.contourf(orth_X,orth_Y,ma_image,65,cmap=m_c,vmin=v_l,vmax=v_h)
+        cnt_plot = plt.contourf(orth_X,orth_Y,ma_image,65,cmap=m_c,vmin=v_l,vmax=v_h)
+        for c in cnt_plot.collections:
+            c.set_edgecolor('face')
         if round(poleN_viz,3) >= 0:
             plt.scatter(poleN_x,poleN_y,s=100,c=(0,1,0),edgecolor='k',marker='o')
         if round(poleN_viz,3) <= 0:
@@ -1964,7 +1966,8 @@ class DirectImaging_Planet:
                     s = self._orth_style(row,sub,s,'amap',self.albedos_b,vm_l,vm_h,
                                          -orth_Viz,-orth_X,orth_Y,-poleN_viz,-poleN_x,poleN_y,'Far Side of Alt. Map')
                 
-            plt.gcf().suptitle(r'%s at $%.2f^{\circ}$ phase' % (self.name,phaseD),y=0.02,fontsize='x-large')
+            plt.gcf().suptitle(r'%s at $%.2f^{\circ}$ phase' % (self.name,phaseD),y=0,fontsize='x-large',
+                               verticalalignment='bottom')
             plt.tight_layout()
             self.fig_orth = plt.gcf()
             plt.show()
