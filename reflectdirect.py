@@ -1855,7 +1855,7 @@ class DirectImaging_Planet:
         plt.xlim([-1.05,1.05])
         plt.ylim([-1.05,1.05])
         if name != 'NONE':
-            plt.title(name,size='large')
+            plt.title(name,size='large',x=0.1,y=1.0,va='top',ha='left')
         plt.gca().set_aspect(1.0)
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
