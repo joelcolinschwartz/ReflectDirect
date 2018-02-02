@@ -109,8 +109,9 @@ def Geometry_Reference(ref_save=False,_active=False,incD=85,oblD=0,solD=0,ratRO=
     Appendix A of Schwartz et al. (2016).
 
     Args:
-	ref_save (bool): Save the diagram as "geometry_reference.pdf" in
-	    the current working directory. Default is False.
+	ref_save (bool):
+            Save the diagram as "geometry_reference.pdf" in the current
+            working directory. Default is False.
 
     .. note::
 	
@@ -270,105 +271,123 @@ class DirectImaging_Planet:
     Schwartz et al. (2016). It has two sets of planetary parameters,
     a master and an alternate, that users control. These sets make
     calling many of the class methods simple and consistent. Several
-    methods store figures (those marked *fig*) that can be saved later.
+    methods store figures that can be saved later.
 
     Planet coordinates are colatitude and longitude. Orbital phase
     is zero when planet is opposite star from observer and
     increases CCW when system is viewed above star's North pole.
 
     Methods:
-        **Update Param Sets**
-        :func:`Adjust_Geometry`
-        :func:`Adjust_MotionTimes`
-        :func:`Build_Amap`
-        :func:`InvertFlipBlend_Amap`
-        :func:`Setup_ProRet_Degeneracy`
+        Update Param Sets:
+            - :func:`Adjust_Geometry`
+            - :func:`Adjust_MotionTimes`
+            - :func:`Build_Amap`
+            - :func:`InvertFlipBlend_Amap`
+            - :func:`Setup_ProRet_Degeneracy`
+
+        Use Param Sets:
+            - :func:`Kernel_WidthDomColat`
+            - :func:`Light_Curves`
+            - :func:`SubOS_TimeDeg`
         
-        **Use Param Sets**
-        :func:`EquiRect_Amap`  *fig*
-        :func:`Geometry_Diagram`  *fig*
-        :func:`Info_Printout`
-        :func:`KChar_Evolve_Plot`  *fig*
-        :func:`Kernel_WidthDomColat`
-        :func:`Kernels_Plot`  *fig*
-        :func:`Light_Curves`
-        :func:`LightCurve_Plot`  *fig*
-        :func:`Orthographic_Viewer`  *fig*
-        :func:`Sandbox_Reflection`  *interactive,fig*
-        :func:`SpinAxis_Constraints`  *fig*
-        :func:`SubOS_TimeDeg`
+        Visualize Param Sets:
+            - :func:`EquiRect_Amap`
+            - :func:`Geometry_Diagram`
+            - :func:`KChar_Evolve_Plot`
+            - :func:`Kernels_Plot`
+            - :func:`LightCurve_Plot`
+            - :func:`Orthographic_Viewer`
+            - :func:`Sandbox_Reflection` --- interactive
+            - :func:`SpinAxis_Constraints`
         
-        **Other**
-        :func:`Kernel2D`
-        :func:`KernelClat`
-        :func:`KernelLong`
+        Other:
+            - :func:`Info_Printout`
+            - :func:`Kernel2D`
+            - :func:`KernelClat`
+            - :func:`KernelLong`
             
     Attributes:
-        name (str): Your exoplanet's name.
-        times (1d array): Time array based on the master orbital period.
-
-        n_clat (int): Number of colatitudes for the planetary grid.
-        n_long (int): Number of longitudes for the planetary grid.
-
-        clat_vec (1d array): Colatitude vector, zero to 180 degrees.
-        long_vec (1d array): Longitude vector, zero to 360 degrees
-            and zero in center.
-        mono_long_vec (1d array): Monotonic longitude vector, -180 to
-            180 degrees.
-
-        clats (2d array): Colatitude array, based on ``clat_vec``.
-        longs (2d array): Longitude array, based on ``long_vec``.
-        mono_longs (2d array): Monotonic longitude array, based
-            on ``mono_long_vec``.
-
-        delta_clat (float): Gap between colatitudes.
-        delta_long (float): Gap between longitudes.
-        
-        cos_clats (2d array): Cosine of colatitudes.
-        cos_longs (2d array): Cosine of longitudes.
-        sin_clats (2d array): Sine of colatitudes.
-        sin_longs (2d array): Sine of longitudes.
-        
-        **Master Params**
-        albedos (2d array): The planet's albedo values with
-            shape (n_clat, n_long).
-        incD (int or float): Inclination of orbital plane to the
-            observer, in degrees. Zero is face-on, 90 is edge-on.
-        longzeroD (int or float): Longitude of the sub-observer point
-            when t=0, in degrees.
-        oblD (int or float): Obliquity relative to the orbital angular
-            frequency vector, in degrees. This is the tilt of the
-            planet's spin axis. Zero is North pole up, 90 is maximal
-            tilt, 180 is North pole down.
-        orbT (int or float): Orbital period of the planet in any
-            time unit.
-        ratRO (int or float): Ratio of the planet's rotational and
-            orbital angular frequencies. This is how many spins the
-            planet makes per orbit. Can be fractional, and negative
-            numbers are retrograde rotation.
-        solD (int or float): The orbital phase of Northern Summer
-            solstice, in degrees. If the rotational angular frequency
-            vector is projected into the orbital plane, then this
-            phase is where that projection points at the star.
+        name (str):
+            Your exoplanet's name.
+        times (1d array):
+            Time array based on the master orbital period.
             
-        **Alternate Params**
-        albedos_b (2d array)
-        incD_b (int or float)
-        longzeroD_b (int or float)
-        oblD_b (int or float)
-        orbT_b (int or float)
-        ratRO_b (int or float)
-        solD_b (int or float)
+        n_clat (int):
+            Number of colatitudes for the planetary grid.
+        n_long (int):
+            Number of longitudes for the planetary grid.
+            
+        clat_vec (1d array):
+            Colatitude vector, zero to 180 degrees.
+        long_vec (1d array):
+            Longitude vector, zero to 360 degrees and zero in center.
+        mono_long_vec (1d array):
+            Monotonic longitude vector, -180 to 180 degrees.
+            
+        clats (2d array):
+            Colatitude array, based on ``clat_vec``.
+        longs (2d array):
+            Longitude array, based on ``long_vec``.
+        mono_longs (2d array):
+            Monotonic longitude array, based on ``mono_long_vec``.
+            
+        delta_clat (float):
+            Gap between colatitudes.
+        delta_long (float):
+            Gap between longitudes.
+            
+        cos_clats (2d array):
+            Cosine of colatitudes.
+        cos_longs (2d array):
+            Cosine of longitudes.
+        sin_clats (2d array):
+            Sine of colatitudes.
+        sin_longs (2d array):
+            Sine of longitudes.
         
-        **Figures**
-        fig_equi: storage for :func:`EquiRect_Amap`.
-        fig_geom: storage for :func:`Geometry_Diagram`.
-        fig_kchar: storage for :func:`KChar_Evolve_Plot`.
-        fig_kern: storage for :func:`Kernels_Plot`.
-        fig_light: storage for :func:`LightCurve_Plot`.
-        fig_orth: storage for :func:`Orthographic_Viewer`.
-        fig_sand: storage for :func:`Sandbox_Reflection`.
-        fig_spin: storage for :func:`SpinAxis_Constraints`.
+        Master Params (append ``_b`` for Alternates):
+            albedos (2d array):
+                The planet's albedo values with shape (n_clat, n_long).
+            incD (int or float):
+                Inclination of orbital plane to the observer, in degrees.
+                Zero is face-on, 90 is edge-on.
+            longzeroD (int or float):
+                Longitude of the sub-observer point when t=0, in degrees.
+            oblD (int or float):
+                Obliquity relative to the orbital angular frequency vector,
+                in degrees. This is the tilt of the planet's spin axis.
+                Zero is North pole up, 90 is maximal tilt, 180 is
+                North pole down.
+            orbT (int or float):
+                Orbital period of the planet in any time unit.
+            ratRO (int or float):
+                Ratio of the planet's rotational and orbital angular
+                frequencies. This is how many spins the planet makes
+                per orbit. Can be fractional, and negative numbers are
+                retrograde rotation.
+            solD (int or float):
+                The orbital phase of Northern Summer solstice, in degrees.
+                If the rotational angular frequency vector is projected
+                into the orbital plane, then this phase is where that
+                projection points at the star.
+        
+        Figures:
+            fig_equi:
+                storage for :func:`EquiRect_Amap`.
+            fig_geom:
+                storage for :func:`Geometry_Diagram`.
+            fig_kchar:
+                storage for :func:`KChar_Evolve_Plot`.
+            fig_kern:
+                storage for :func:`Kernels_Plot`.
+            fig_light:
+                storage for :func:`LightCurve_Plot`.
+            fig_orth:
+                storage for :func:`Orthographic_Viewer`.
+            fig_sand:
+                storage for :func:`Sandbox_Reflection`.
+            fig_spin:
+                storage for :func:`SpinAxis_Constraints`.
         
     """
 
@@ -464,9 +483,10 @@ class DirectImaging_Planet:
         """Inverts, flips, and blends a given albedo map.
 
         Args:
-            image (str or ndarray): The source map. If string, can be
-                - 'mast' to use master map (default),
-                - 'alt' to use alternate map.
+            image (str or ndarray):
+                The source map. If string, can be
+                    - 'mast' to use master map (default),
+                    - 'alt' to use alternate map.
                 Otherwise, an ndarray of values.
             into (str): Where the new map goes. Can be
                 - 'mast' for the master map,
@@ -478,7 +498,8 @@ class DirectImaging_Planet:
                 If you try to put an ``image`` ndarray ``into`` the master
                 or alternate map, it should have shape (n_clat, n_long).
                 
-            invert (bool): Linearly change lower albedo values to higher
+            invert (bool):
+                Linearly change lower albedo values to higher
                 values and vice versa. Default is False.
             flip (str): Can be
                 - 'EW' to flip map about the prime meridian,
@@ -563,8 +584,8 @@ class DirectImaging_Planet:
             mp_data: Depends on ``kind``.
                 - For either 'png' this is the file path to your image.
                 - For 'ylm' this is an n-by-3 list of spherical harmonics
-                        with entries [degree ell, order m, coefficient]. Default
-                        list is [ [1, -1, 1.0], [2, 0, -1.0] ].
+                  with entries [degree ell, order m, coefficient]. Default
+                  list is [ [1, -1, 1.0], [2, 0, -1.0] ].
                 - For either 'ary' this is your 2D array itself.
 
             .. note::
@@ -574,18 +595,20 @@ class DirectImaging_Planet:
                 middle, prime meridian vertical in the center, and anti-prime
                 meridian on the left and right edges.
                 
-            primeD (int or float): Longitude of the prime meridian in degrees,
+            primeD (int or float):
+                Longitude of the prime meridian in degrees,
                 relative to the input data. Rounded to the nearest grid
                 longitude. Default is zero.
-            limit (bool): Set the lowest and highest albedo values. Default
-                is True.
-            alb_lims (list): The albedo limits as [lower, upper]. Default
-                is [0, 1.0].
+            limit (bool):
+                Set the lowest and highest albedo values. Default is True.
+            alb_lims (list):
+                The albedo limits as [lower, upper]. Default is [0, 1.0].
             into (str): Where the new map goes. Can be
                 - 'mast' for the master map,
                 - 'alt' for the alternate map (default),
                 - 'none' to just return the map.
-            invert (bool): Linearly change lower albedo values to higher
+            invert (bool):
+                Linearly change lower albedo values to higher
                 values and vice versa. Default is False.
             flip (str): Can be
                 - 'EW' to flip map about the prime meridian,
@@ -851,12 +874,15 @@ class DirectImaging_Planet:
                 - 'mast' to adjust master params,
                 - 'alt' to adjust alternate params,
                 - 'both'.
-            incD (int, float, or str): New inclination in degrees, or any
-                string to keep the current value. Default is 'no'. Other
-                args have same format.
-            oblD: New obliquity.
-            solD: New solstice.
-            longzeroD: New sub-observer longitude at t=0.
+            incD (int, float, or str):
+                New inclination in degrees, or any string to keep the
+                current value. Default is 'no'. Other args have same format.
+            oblD:
+                New obliquity.
+            solD:
+                New solstice.
+            longzeroD:
+                New sub-observer longitude at t=0.
             
         """
         if which in ['mast','both']:
@@ -880,16 +906,21 @@ class DirectImaging_Planet:
                 - 'mast' to adjust master ``orbT`` and ``ratRO``,
                 - 'alt' to adjust alternate values,
                 - 'both'.
-            orbT (int, float, or str): New orbital period in any unit, or any
-                string to keep the current value. Default is 'no'. Other args
+            orbT (int, float, or str):
+                New orbital period in any unit, or any string to keep
+                the current value. Default is 'no'. Other args
                 have same format.
-            ratRO: New rotational-to-orbital frequency ratio.
+            ratRO:
+                New rotational-to-orbital frequency ratio.
 
             **The args below are set relative to the master params.**
             
-            orb_min: New minimum time in orbits, can be negative.
-            orb_max: New maximum time in orbits, can be negative.
-            rot_res: New number of time steps per rotation.
+            orb_min:
+                New minimum time in orbits, can be negative.
+            orb_max:
+                New maximum time in orbits, can be negative.
+            rot_res:
+                New number of time steps per rotation.
 
         .. note::
                 
@@ -926,9 +957,9 @@ class DirectImaging_Planet:
 
         When a planet has zero obliquity and its orbit is edge-on to you
         (inclination 90 degrees), you cannot tell from a light curve whether:
-        - the planet does *N* spins per orbit (``ratRO``) with an albedo
-                map *A*, or
-        - it does *1.0-N* spins with an East-West flipped *A*.
+            - the planet does *N* spins per orbit (``ratRO``) with an albedo
+              map *A*, or
+            - it does *1.0-N* spins with an East-West flipped *A*.
         Most often *N* and *1.0-N* have opposite signs, so one version spins
         prograde and the other retrograde. This degeneracy breaks down if the
         planet is tilted or its orbit is not edge-on.
@@ -1119,11 +1150,13 @@ class DirectImaging_Planet:
         semi-real, or unrealistic).
 
         Args:
-            alt (bool): Include the alternate map. Default is True.
-            same_scale (bool): If the master and alternate maps have the same
-                color scheme, then show both on the same color scale. Default
-                is True.
-            grat (bool): Overlay a basic graticule. Default is True.
+            alt (bool):
+                Include the alternate map. Default is True.
+            same_scale (bool):
+                If the master and alternate maps have the same color scheme,
+                then show both on the same color scale. Default is True.
+            grat (bool):
+                Overlay a basic graticule. Default is True.
 
         Effect:
             Stores this matplotlib figure as ``fig_equi``, **overwriting**
@@ -1172,22 +1205,29 @@ class DirectImaging_Planet:
                 - 'mast' for master (default),
                 - 'alt' for alternate,
                 - '_c' for custom, see Optional below.
-            bypass_time (int, float, 1d array, or str): Time value(s) in
-                place of the instance ``times``. All other master or
-                alternate params are still used. Canceled if any string.
-                Default is 'no'.
+            bypass_time (int, float, 1d array, or str):
+                Time value(s) in place of the instance ``times``. All
+                other master or alternate params are still used. Canceled
+                if any string. Default is 'no'.
 
         Optional:
-            times, orbT, ratRO, incD, oblD, solD, longzeroD: Custom set of
-                params to use if ``which`` is '_c'. Standard definitions and
-                formats apply. See the class and :func:`__init__` docstrings.
+            times, orbT, ratRO, incD, oblD, solD, longzeroD:
+                Custom set of params to use if ``which`` is '_c'.
+                Standard definitions and formats apply.
+                See the class and :func:`__init__` docstrings.
 
         Returns:
             Array of trigonometric values with shape (8, # of time steps).
-            First dimension is organized as:
-            [ sin theta_obs, cos theta_obs, sin phi_obs, cos phi_obs,
-              sin theta_st,  cos theta_st,  sin phi_st,  cos phi_st  ]
-              
+            First dimension is ordered:
+                - sin theta_obs,
+                - cos theta_obs,
+                - sin phi_obs,
+                - cos phi_obs,
+                - sin theta_st,
+                - cos theta_st,
+                - sin phi_st,
+                - cos phi_st
+        
         """
         if which == 'mast':
             here_times = self.times
@@ -1213,8 +1253,9 @@ class DirectImaging_Planet:
         location on an exoplanet. See Section 2 of Schwartz et al. (2016).
 
         Args:
-            os_trigs (ndarray): Trig values describing the sub-observer
-                and sub-stellar points, with shape (8, # of time steps). Should
+            os_trigs (ndarray):
+                Trig values describing the sub-observer and sub-stellar
+                points, with shape (8, # of time steps). Should
                 be formatted like the output of :func:`SubOS_TimeDeg`.
 
         Returns:
@@ -1237,7 +1278,8 @@ class DirectImaging_Planet:
         Marginalizes the 2D kernel over colatitude.
 
         Args:
-            k2d (ndarray): 2D kernel with shape (# of time steps, n_clat,
+            k2d (ndarray):
+                2D kernel with shape (# of time steps, n_clat,
                 n_long), like output from :func:`Kernel2D`.
 
         Returns:
@@ -1253,7 +1295,8 @@ class DirectImaging_Planet:
         Marginalizes the 2D kernel over longitude.
 
         Args:
-            k2d (ndarray): 2D kernel with shape (# of time steps, n_clat,
+            k2d (ndarray):
+                2D kernel with shape (# of time steps, n_clat,
                 n_long), like output from :func:`Kernel2D`.
 
         Returns:
@@ -1276,30 +1319,35 @@ class DirectImaging_Planet:
                 - 'mast' for master (default),
                 - 'alt' for alternate,
                 - '_c' for custom, see Optional below.
-            keep_kernels (bool): Output all kernel info, not just the
-                characteristics, see Returns below. Default is False.
-            bypass_time (int, float, 1d array, or str): Time value(s) in
-                place of the instance ``times``. All other master or
-                alternate params are still used. Canceled if any string.
-                Default is 'no'.
+            keep_kernels (bool):
+                Output all kernel info, not just the characteristics,
+                see Returns below. Default is False.
+            bypass_time (int, float, 1d array, or str):
+                Time value(s) in place of the instance ``times``. All other
+                master or alternate params are still used. Canceled if
+                any string. Default is 'no'.
 
         Optional:
-            times, orbT, ratRO, incD, oblD, solD, longzeroD: Custom set of
-                params to use if ``which`` is '_c'. Standard definitions and
-                formats apply. See the class and :func:`__init__` docstrings.
+            times, orbT, ratRO, incD, oblD, solD, longzeroD:
+                Custom set of params to use if ``which`` is '_c'.
+                Standard definitions and formats apply.
+                See the class and :func:`__init__` docstrings.
 
         Returns:
-            The arrays
-
-            sig_long: Longitudinal widths, shape (# of time steps).
-            dom_clat: Dominant colatitudes, shape (# of time steps).
-
-            If ``keep_kernels`` is True, also the arrays
-
-            actual_mu: Mean longitudes, shape (# of time steps).
-            klong: Longitudinal kernel, shape (# of time steps, n_long).
-            kclat: Colatitudinal kernel, shape (# of time steps, n_clat).
-            k2d: 2D kernel, shape (# of time steps, n_clat, n_long).
+            sig_long (array):
+                Longitudinal widths, shape (# of time steps).
+            dom_clat (array):
+                Dominant colatitudes, shape (# of time steps).
+            
+            If ``keep_kernels`` is True, also:
+                actual_mu (array):
+                    Mean longitudes, shape (# of time steps).
+                klong (array):
+                    Longitudinal kernel, shape (# of time steps, n_long).
+                kclat (array):
+                    Colatitudinal kernel, shape (# of time steps, n_clat).
+                k2d (array):
+                    2D kernel, shape (# of time steps, n_clat, n_long).
             
         """
         if which == 'mast':
@@ -1353,33 +1401,40 @@ class DirectImaging_Planet:
         data instead, use :func:`Kernel_WidthDomColat`.
 
         Args:
-            phaseD (int or float): Orbital phase of the planet in degrees.
-		Standard range is [0, 360).
+            phaseD (int or float):
+                Orbital phase of the planet in degrees. Standard range
+                is [0, 360).
             which (str): The param set to use. Can be
 		- 'mast' for master (default),
 		- 'alt' for alternate,
 		- '_c' for custom, see Optional below.
-            grat (bool): Overlay basic graticules. Default is True.
-            fixed_lims (bool): Keep the plotted limits for the relative
-		long. and colat. kernels fixed at [0, 1.0]. Default is True.
-            force_bright (bool): Use the full color scale to draw the
-		2D kernel. The false brightness can make dark drawings (like
+            grat (bool):
+                Overlay basic graticules. Default is True.
+            fixed_lims (bool):
+                Keep the plotted limits for the relative long. and
+                colat. kernels fixed at [0, 1.0]. Default is True.
+            force_bright (bool):
+                Use the full color scale to draw the 2D kernel.
+                The false brightness can make dark drawings (like
 		crescent phases) easier to see. Default is True.
-            over_amap (bool): Draw a dim version of the albedo map with
-		the 2D kernel. This map is not affected by ``force_bright``.
-		Default is False.
-            bypass_time (int, float, 1d array, or str): Time value(s) in
-		place of the instance ``times``. All other master or
-                alternate params are still used. Canceled if any string.
-                Default is 'no'.
+            over_amap (bool):
+                Draw a dim version of the albedo map with the 2D kernel.
+                This map is not affected by ``force_bright``. Default is
+                False.
+            bypass_time (int, float, 1d array, or str):
+                Time value(s) in place of the instance ``times``. All
+                other master or alternate params are still used. Canceled
+                if any string. Default is 'no'.
 	
         Optional:
-            albs (2D array): Custom albedo map to use if ``which`` is '_c'.
+            albs (2D array):
+                Custom albedo map to use if ``which`` is '_c'.
                 Its shape should be, or work with, (n_clat, n_long).
                 Default is ``np.array( [ [ 1.0 ] ] )``.
-            times, orbT, ratRO, incD, oblD, solD, longzeroD: Custom set of
-                params to use if ``which`` is '_c'. Standard definitions and
-                formats apply. See the class and :func:`__init__` docstrings.
+            times, orbT, ratRO, incD, oblD, solD, longzeroD:
+                Custom set of params to use if ``which`` is '_c'.
+                Standard definitions and formats apply.
+                See the class and :func:`__init__` docstrings.
 
         Effect:
             Stores this matplotlib figure as ``fig_kern``, **overwriting**
@@ -1611,18 +1666,21 @@ class DirectImaging_Planet:
 		- 'mast' for master (default),
 		- 'alt' for alternate,
 		- '_c' for custom, see Optional below.
-            explode (str): The geometry param to vary, starting at zero.
-		This shows you many evolutions instead of one curve. Can be
-		- 'inc' for inclination,
-		- 'obl' for obliquity,
-		- 'sol' for solstice,
-		- 'none' to cancel (default).
-            gap (int or float): When you choose to ``explode``, the exploded
-		param's spacing in degrees. Default is 10.
+            explode (str):
+                The geometry param to vary, starting at zero. This shows you
+                many evolutions instead of one curve. Can be
+                    - 'inc' for inclination,
+                    - 'obl' for obliquity,
+                    - 'sol' for solstice,
+                    - 'none' to cancel (default).
+            gap (int or float):
+                When you choose to ``explode``, the exploded param's
+                spacing in degrees. Default is 10.
 
         Optional:
-            incD, oblD, solD: Custom set of params to use if ``which``
-                is '_c'. Standard definitions and formats apply.
+            incD, oblD, solD:
+                Custom set of params to use if ``which`` is '_c'.
+                Standard definitions and formats apply.
                 See the class and :func:`__init__` docstrings.
 
         .. note::
@@ -1694,16 +1752,20 @@ class DirectImaging_Planet:
                 - '_c' for custom, see Optional below.
                 
         Optional:
-            albs (2D array): Custom albedo map to use if ``which`` is '_c'.
+            albs (2D array):
+                Custom albedo map to use if ``which`` is '_c'.
                 Its shape should be, or work with, (n_clat, n_long).
                 Default is ``np.array( [ [ 1.0 ] ] )``.
-            times, orbT, ratRO, incD, oblD, solD, longzeroD: Custom set of
-                params to use if ``which`` is '_c'. Standard definitions and
-                formats apply. See the class and :func:`__init__` docstrings.
+            times, orbT, ratRO, incD, oblD, solD, longzeroD:
+                Custom set of params to use if ``which`` is '_c'.
+                Standard definitions and formats apply.
+                See the class and :func:`__init__` docstrings.
 
         Returns:
-            flux_ak: flux array with shape (# of time steps).
-            appar_a: apparent brightness array with shape (# of time steps).
+            flux_ak (array):
+                flux with shape (# of time steps).
+            appar_a (array):
+                apparent brightness with shape (# of time steps).
             
         """
         if which == 'mast':
@@ -1749,15 +1811,19 @@ class DirectImaging_Planet:
         If you want to get the actual data instead, use :func:`Light_Curves`.
 
         Args:
-            alt (bool): Include the alternate case. Default is True.
-            diff (bool): Include the difference between the master and
-                alternate light curves, if ``alt`` is True. Default is False.
-            diff_only (bool): Plot **only** the difference light curve, if
-                ``alt`` is True. Default is False.
+            alt (bool):
+                Include the alternate case. Default is True.
+            diff (bool):
+                Include the difference between the master and alternate
+                light curves, if ``alt`` is True. Default is False.
+            diff_only (bool):
+                Plot **only** the difference light curve, if ``alt`` is
+                True. Default is False.
             show (str): Which light curves to calculate. Can be
-                - 'flux', sum of [albedo map (x) kernel] (default),
+                - 'flux', the sum of [*AK*] where *A* is the albedo map
+                  and *K* is the kernel (default),
                 - 'appar' for apparent brightness, or flux divided by sum of
-                        the kernel,
+                  the kernel,
                 - 'both'.
                 
         .. note::
@@ -1873,23 +1939,27 @@ class DirectImaging_Planet:
         respectively.
 
         Args:
-            phaseD (int or float): Orbital phase of the planet in degrees.
-                Standard range is [0, 360).
+            phaseD (int or float):
+                Orbital phase of the planet in degrees. Standard range
+                is [0, 360).
             show (str): Which data to draw. Can be
                 - 'amap' for the albedo map,
                 - 'kern' for the kernel,
                 - 'both' for the map and kernel separate,
                 - 'real' to multiply the map and kernel (default),
                 - 'sphere' for the whole globe: the visible and opposite
-                        hemispheres with no kernel.
-            alt (bool): Include the alternate albedo map. Default is True.
-            same_scale (bool): If the master and alternate maps have the same
-                color scheme (and ``alt`` is True), then show both with the
-                same color scale. Default is True.
-            force_bright (bool): Use the full color scale to draw the kernel.
-                Also, rescales the kernel values into [0, 1.0] when ``show`` is
-                'real'. The false brightness can make dark drawings (like
-                crescent phases) easier to see. Default is True.
+                  hemispheres with no kernel.
+            alt (bool):
+                Include the alternate albedo map. Default is True.
+            same_scale (bool):
+                If the master and alternate maps have the same color scheme
+                (and ``alt`` is True), then show both with the same color
+                scale. Default is True.
+            force_bright (bool):
+                Use the full color scale to draw the kernel. Also rescales
+                the kernel values into [0, 1.0] when ``show`` is 'real'.
+                The false brightness can make dark drawings (like crescent
+                phases) easier to see. Default is True.
                 
         .. note::
                 
@@ -2126,25 +2196,26 @@ class DirectImaging_Planet:
         .. note::
 
             Inverting a light curve will depend on the quality of the
-            observational data. The planet's albedo map matters too:
-            East-West markings to sense daily brightness changes,
+            observational data. The planet's albedo map matters
+            too: East-West markings to sense daily brightness changes,
             North-South markings to sense longer changes.
 
         .. note::
                 
             We have pre-calculated characteristics stored in numpy binary
-            files (kernel_width_ and kernel_domcolat_values_all5deg.npy).
+            files (the obvious two with names ending "values_all5deg.npy").
             So, this method rounds inclination, obliquity, and solstice
             to the nearest 5 degrees. It also tracks the North (green
             circle) or South pole (green diamond) when obliquity is less
             than or greater than 90 degrees, respectively.
 
         Args:
-            phaseD_list (list): Orbital phases of the planet in degrees.
-                Standard range is [0, 360). Phases are integers or floats,
-                and list elements can be
-                - ``phase`` for a longitudinal width,
-                - ``[phase, phase]`` for a change in dominant colatitude.
+            phaseD_list (list):
+                Orbital phases of the planet in degrees. Standard range
+                is [0, 360). Phases are integers or floats, and list
+                elements can be
+                    - ``phase`` for a longitudinal width,
+                    - ``[phase, phase]`` for a change in dominant colatitude.
             which (str): The param set to use. Can be
                 - 'mast' for master (default),
                 - 'alt' for alternate,
@@ -2153,38 +2224,47 @@ class DirectImaging_Planet:
                 - 'perf' for perfect constraints with no data uncertainties,
                 - 'real' to use uncertainties and show [1,2,3]-sigma regions,
                 - 'both' (default).
-            info (bool): Include a legend subplot. Default is True.
-            combine (bool): Join all constraints in a separate subplot.
-                Default is True.
-            combine_only (bool): Show **only** the combo constraint.
-                Default is False.
-            keep_probdata (bool): Output all probability data, see Returns
-                below. Default is False.
+            info (bool):
+                Include a legend subplot. Default is True.
+            combine (bool):
+                Join all constraints in a separate subplot. Default is True.
+            combine_only (bool):
+                Show **only** the combo constraint. Default is False.
+            keep_probdata (bool):
+                Output all probability data, see Returns below. Default
+                is False.
 
         Optional:
-            res (int): Resolution when ``constraint`` is 'real', the number of
+            res (int):
+                Resolution when ``constraint`` is 'real', the number of
                 probability contours to test. Default is 500.
-            n_sol (int): Number of solstice grid points. Default is 361.
-            n_obl (int): Number of obliquity grid points. Default is 91.
-            incD_I, solD_I, oblD_I: Custom set of params to use if ``which``
-                is '_c'. Standard definitions and formats apply.
+            n_sol (int):
+                Number of solstice grid points. Default is 361.
+            n_obl (int):
+                Number of obliquity grid points. Default is 91.
+            incD_I, solD_I, oblD_I:
+                Custom set of params to use if ``which`` is '_c'.
+                Standard definitions and formats apply.
                 See the class and :func:`__init__` docstrings.
 
         Very Optional:
             **You should probably check out Section 4.1 of Schwartz
             et al. (2016) before you change any of these.**
-            phaseD_sig (float): Uncertainty on orbital phase in degrees.
-                Default is 10.0.
-            incD_sig (float): Uncertainty on inclination in degrees.
-                Default is 10.0.
-            kwid_sig (float): Uncertainty on longitudinal width in degrees.
-                Default is 10.0.
-            kddc_sig (float): Uncertainty on change in dominant colatitude,
-                in degrees. Default is 20.0.
+            
+            phaseD_sig (float):
+                Uncertainty on orbital phase in degrees. Default is 10.0.
+            incD_sig (float):
+                Uncertainty on inclination in degrees. Default is 10.0.
+            kwid_sig (float):
+                Uncertainty on longitudinal width in degrees. Default
+                is 10.0.
+            kddc_sig (float):
+                Uncertainty on change in dominant colatitude, in degrees.
+                Default is 20.0.
                 
         .. note::
                 
-            **You should ignore the argument ``_active``.** This is used by
+            **You should ignore the argument** ``_active``. This is used by
             the class :class:`DirectImaging_Planet` for the interactive
             function :func:`Sandbox_Reflection`.
 
@@ -2198,8 +2278,8 @@ class DirectImaging_Planet:
             is **not** 'perf'.
                 - First entry is [incD, oblD, solD].
                 - Other entries are [*identity*, 2D PDF, (1,2,3)-sigma
-                    probability levels], where *identity* is either a
-                    phaseD_list element or 'Combined'.
+                  probability levels], where *identity* is either a
+                  phaseD_list element or 'Combined'.
                     
         """
         made_combo_flag = False
@@ -2523,17 +2603,16 @@ class DirectImaging_Planet:
         .. note::
 	
             The larger your colatitude and longitude grid, the longer this
-            module takes to update. For example, in tests with ``n_clat = 37``
-            and ``n_long = 73``, an update takes about 2-3 seconds.
+            module takes to update (e.g. seconds with default values).
 
         The sandbox combines several methods from the class
         :class:`DirectImaging_Planet` into one compact display. See each
         for details:
-        - :func:`Geometry_Diagram`
-        - :func:`Orthographic_Viewer`
-        - :func:`Light_Curves`
-        - :func:`KChar_Evolve_Plot`
-        - :func:`SpinAxis_Constraints`
+            - :func:`Geometry_Diagram`
+            - :func:`Orthographic_Viewer`
+            - :func:`Light_Curves`
+            - :func:`KChar_Evolve_Plot`
+            - :func:`SpinAxis_Constraints`
 
         The planet and light curves are rendered using your master albedo
         map. You have a main orbital phase (magenta) to view and can save
@@ -2542,18 +2621,18 @@ class DirectImaging_Planet:
         characteristics plot, plus its own light curve.
 
         There are many controls (all angles in degrees):
-        - Inclination
-        - Obliquity
-        - Solstice
-        - Orbital Phase
-            - [which] Extra Phase Slot
-            - Save [extra phase]
-            - Clear [extra phase(s)]
-        - Spins per Orbit
-        - Time Steps per Spin
-        - Initial Longitude [at zero phase]
-        - [type of] Light Curve
-        - [type of] Axis Constraint
+            - Inclination
+            - Obliquity
+            - Solstice
+            - Orbital Phase
+                - [which] Extra Phase Slot
+                - Save [extra phase]
+                - Clear [extra phase(s)]
+            - Spins per Orbit
+            - Time Steps per Spin
+            - Initial Longitude [at zero phase]
+            - [type of] Light Curve
+            - [type of] Axis Constraint
 
         .. note::
                 
