@@ -17,37 +17,54 @@ def sub_observerstellar(times,worb,wrot,inc,obl,sol,longzero=0):
     coordinates are colatitude (theta) and longitude (phi). Orbital phase
     is zero when planet is opposite star from observer (superior conjunction)
     and increases CCW when system is viewed above star's North pole. See
-    Appendix A of Schwartz et al. (2016).
+    Appendix A of `Schwartz et al. (2016) <https://arxiv.org/abs/1511.05152>`_.
 
     Args:
-	times (1d array, int, or float): Discrete time values in any unit,
-	    with total number n_time. At t=0 planet is at superior
-	    conjunction.
-	worb (int or float): Orbital angular frequency in radians per unit
-	    time. Positive values are prograde orbits (CCW), negative are
-	    retrograde (CW).
-	wrot (int or float): Rotational angular frequency in radians per
-	    unit time. For prograde orbits, positive values are prograde
-	    rotation, negative are retrograde (vice versa for retrograde
-	    orbits).
-	inc (int or float): Inclination of orbital plane to the observer,
-	    in radians. Zero is face-on, pi/2 is edge-on.
-	obl (int or float): Obliquity relative to the worb vector, in radians.
+	times (1d array, int, or float):
+            Discrete time values in any unit, with total number *n_time*.
+            At t=0 planet is at superior conjunction.
+            
+	worb (int or float):
+            Orbital angular frequency in radians per unit time. Positive
+            values are prograde orbits (CCW), negative are retrograde (CW).
+            
+	wrot (int or float):
+            Rotational angular frequency in radians per unit time.
+            For prograde orbits, positive values are prograde rotation,
+            negative are retrograde (vice versa for retrograde orbits).
+            
+	inc (int or float):
+            Inclination of orbital plane to the observer, in radians.
+            Zero is face-on, pi/2 is edge-on.
+            
+	obl (int or float):
+            Obliquity relative to the ``worb`` vector, in radians.
 	    This is the tilt of the planet's spin axis. Zero is North
 	    pole up, pi/2 is maximal tilt, pi is North pole down.
-	sol (int or float): The orbital phase of Northern Summer solstice,
-	    in radians. If the wrot vector is projected into the orbital
-	    plane, then this phase is where that projection points at the
-	    star.
-        longzero (int or float): Longitude of the sub-observer point when t=0,
-            in radians. Default is zero.
+	    
+	sol (int or float):
+            The orbital phase of Northern Summer solstice, in radians.
+            If the ``wrot`` vector is projected into the orbital plane,
+            then this phase is where that projection points at the star.
+            
+        longzero (int or float):
+            Longitude of the sub-observer point when t=0, in radians.
+            Default is zero.
 
     Returns:
-        trigvals (ndarray): Array of trigonometric values with shape
-            (8, n_time). First dimension is organized as:
-            [ sin theta_obs, cos theta_obs, sin phi_obs, cos phi_obs,
-              sin theta_st,  cos theta_st,  sin phi_st,  cos phi_st  ]
-              
+        trigvals (ndarray):
+            Array of trigonometric values with shape (8, *n_time*). First
+            dimension is organized as:
+
+                - sin theta_obs
+                - cos theta_obs
+                - sin phi_obs
+                - cos phi_obs
+                - sin theta_st
+                - cos theta_st
+                - sin phi_st
+                - cos phi_st
+            
     """
     if isinstance(times,np.ndarray) and (times.size == times.shape[0]):
         timeA = times
