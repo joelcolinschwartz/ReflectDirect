@@ -1,0 +1,1382 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>The Directly Imaged Planet &#8212; ReflectDirect  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The Geometry Defined" href="geomref.html" />
+    <link rel="prev" title="ReflectDirect: Python planets in Jupyter" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ReflectDirect</a></h1>
+
+
+
+<p class="blurb">Your Jupyter stage for reflected light from directly imaged planets.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=joelcolinschwartz&repo=ReflectDirect&type=watch&count=false&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The Directly Imaged Planet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geomref.html">The Geometry Defined</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subobsstel.html">The Visible and Illuminated</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">ReflectDirect: Python planets in Jupyter</a></li>
+      <li>Next: <a href="geomref.html" title="next chapter">The Geometry Defined</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-directly-imaged-planet">
+<h1>The Directly Imaged Planet<a class="headerlink" href="#the-directly-imaged-planet" title="Permalink to this headline">¶</a></h1>
+<p>This class is the heart and soul of ReflectDirect. It’s how you build, change, draw, and play with your worlds. Use it often and use it well.</p>
+<dl class="class">
+<dt id="reflectdirect.DirectImaging_Planet">
+<em class="property">class </em><code class="descclassname">reflectdirect.</code><code class="descname">DirectImaging_Planet</code><span class="sig-paren">(</span><em>name='This Exoplanet', n_clat=37, n_long=73, kind='ylm', mp_data=[[1, -1, 1.0], [2, 0, -1.0]], primeD=0, limit=True, alb_lims=[0.0, 1.0], invert=False, flip='none', blend='none', orbT=8640.0, ratRO=10.0, incD=85, oblD=0, solD=0, longzeroD=0</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet" title="Permalink to this definition">¶</a></dt>
+<dd><p>An exoplanet that is directly imaged using reflected starlight.</p>
+<p>This class is based on the model, equations, and discussion of
+<a class="reference external" href="https://arxiv.org/abs/1511.05152">Schwartz et al. (2016)</a>,
+S16 in the methods below. It has two sets of planetary
+parameters, a master and an alternate, that users control. These
+sets make calling many of the class methods simple and consistent.
+Several methods store figures that can be saved later.</p>
+<p>Planet coordinates are colatitude and longitude. Orbital phase
+is zero when planet is opposite star from observer and
+increases CCW when system is viewed above star’s North pole.</p>
+<dl class="docutils">
+<dt>Methods:</dt>
+<dd><p class="first">Update Param Sets:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Adjust_Geometry" title="reflectdirect.DirectImaging_Planet.Adjust_Geometry"><code class="xref py py-func docutils literal"><span class="pre">Adjust_Geometry()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Adjust_MotionTimes" title="reflectdirect.DirectImaging_Planet.Adjust_MotionTimes"><code class="xref py py-func docutils literal"><span class="pre">Adjust_MotionTimes()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Build_Amap" title="reflectdirect.DirectImaging_Planet.Build_Amap"><code class="xref py py-func docutils literal"><span class="pre">Build_Amap()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.InvertFlipBlend_Amap" title="reflectdirect.DirectImaging_Planet.InvertFlipBlend_Amap"><code class="xref py py-func docutils literal"><span class="pre">InvertFlipBlend_Amap()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Setup_ProRet_Degeneracy" title="reflectdirect.DirectImaging_Planet.Setup_ProRet_Degeneracy"><code class="xref py py-func docutils literal"><span class="pre">Setup_ProRet_Degeneracy()</span></code></a></li>
+</ul>
+</div></blockquote>
+<p>Use Param Sets:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Kernel_WidthDomColat" title="reflectdirect.DirectImaging_Planet.Kernel_WidthDomColat"><code class="xref py py-func docutils literal"><span class="pre">Kernel_WidthDomColat()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Light_Curves" title="reflectdirect.DirectImaging_Planet.Light_Curves"><code class="xref py py-func docutils literal"><span class="pre">Light_Curves()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.SubOS_TimeDeg" title="reflectdirect.DirectImaging_Planet.SubOS_TimeDeg"><code class="xref py py-func docutils literal"><span class="pre">SubOS_TimeDeg()</span></code></a></li>
+</ul>
+</div></blockquote>
+<p>Visualize Param Sets:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.EquiRect_Amap" title="reflectdirect.DirectImaging_Planet.EquiRect_Amap"><code class="xref py py-func docutils literal"><span class="pre">EquiRect_Amap()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Geometry_Diagram" title="reflectdirect.DirectImaging_Planet.Geometry_Diagram"><code class="xref py py-func docutils literal"><span class="pre">Geometry_Diagram()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.KChar_Evolve_Plot" title="reflectdirect.DirectImaging_Planet.KChar_Evolve_Plot"><code class="xref py py-func docutils literal"><span class="pre">KChar_Evolve_Plot()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Kernels_Plot" title="reflectdirect.DirectImaging_Planet.Kernels_Plot"><code class="xref py py-func docutils literal"><span class="pre">Kernels_Plot()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.LightCurve_Plot" title="reflectdirect.DirectImaging_Planet.LightCurve_Plot"><code class="xref py py-func docutils literal"><span class="pre">LightCurve_Plot()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Orthographic_Viewer" title="reflectdirect.DirectImaging_Planet.Orthographic_Viewer"><code class="xref py py-func docutils literal"><span class="pre">Orthographic_Viewer()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Sandbox_Reflection" title="reflectdirect.DirectImaging_Planet.Sandbox_Reflection"><code class="xref py py-func docutils literal"><span class="pre">Sandbox_Reflection()</span></code></a> — interactive</li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.SpinAxis_Constraints" title="reflectdirect.DirectImaging_Planet.SpinAxis_Constraints"><code class="xref py py-func docutils literal"><span class="pre">SpinAxis_Constraints()</span></code></a></li>
+</ul>
+</div></blockquote>
+<p>Other:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Info_Printout" title="reflectdirect.DirectImaging_Planet.Info_Printout"><code class="xref py py-func docutils literal"><span class="pre">Info_Printout()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Kernel2D" title="reflectdirect.DirectImaging_Planet.Kernel2D"><code class="xref py py-func docutils literal"><span class="pre">Kernel2D()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.KernelClat" title="reflectdirect.DirectImaging_Planet.KernelClat"><code class="xref py py-func docutils literal"><span class="pre">KernelClat()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.KernelLong" title="reflectdirect.DirectImaging_Planet.KernelLong"><code class="xref py py-func docutils literal"><span class="pre">KernelLong()</span></code></a></li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>Attributes:</dt>
+<dd><dl class="first docutils">
+<dt>name (str):</dt>
+<dd>Your exoplanet’s name.</dd>
+<dt>times (1d array):</dt>
+<dd>Time array based on the master orbital period.</dd>
+<dt>n_clat (int):</dt>
+<dd>Number of colatitudes for the planetary grid.</dd>
+<dt>n_long (int):</dt>
+<dd>Number of longitudes for the planetary grid.</dd>
+<dt>clat_vec (1d array):</dt>
+<dd>Colatitude vector, zero to 180 degrees.</dd>
+<dt>long_vec (1d array):</dt>
+<dd>Longitude vector, zero to 360 degrees and zero in center.</dd>
+<dt>mono_long_vec (1d array):</dt>
+<dd>Monotonic longitude vector, -180 to 180 degrees.</dd>
+<dt>clats (2d array):</dt>
+<dd>Colatitude array, based on <code class="docutils literal"><span class="pre">clat_vec</span></code>.</dd>
+<dt>longs (2d array):</dt>
+<dd>Longitude array, based on <code class="docutils literal"><span class="pre">long_vec</span></code>.</dd>
+<dt>mono_longs (2d array):</dt>
+<dd>Monotonic longitude array, based on <code class="docutils literal"><span class="pre">mono_long_vec</span></code>.</dd>
+<dt>delta_clat (float):</dt>
+<dd>Gap between colatitudes.</dd>
+<dt>delta_long (float):</dt>
+<dd>Gap between longitudes.</dd>
+<dt>cos_clats (2d array):</dt>
+<dd>Cosine of colatitudes.</dd>
+<dt>cos_longs (2d array):</dt>
+<dd>Cosine of longitudes.</dd>
+<dt>sin_clats (2d array):</dt>
+<dd>Sine of colatitudes.</dd>
+<dt>sin_longs (2d array):</dt>
+<dd>Sine of longitudes.</dd>
+<dt>Master Params (append <code class="docutils literal"><span class="pre">_b</span></code> for Alternates):</dt>
+<dd><dl class="first last docutils">
+<dt>albedos (2d array):</dt>
+<dd>The planet’s albedo values with shape (<code class="docutils literal"><span class="pre">n_clat</span></code>,
+<code class="docutils literal"><span class="pre">n_long</span></code>).</dd>
+<dt>incD (int or float):</dt>
+<dd>Inclination of orbital plane to the observer, in degrees.
+Zero is face-on, 90 is edge-on.</dd>
+<dt>longzeroD (int or float):</dt>
+<dd>Longitude of the sub-observer point when t=0, in degrees.</dd>
+<dt>oblD (int or float):</dt>
+<dd>Obliquity relative to the orbital angular frequency vector,
+in degrees. This is the tilt of the planet’s spin axis.
+Zero is North pole up, 90 is maximal tilt, 180 is
+North pole down.</dd>
+<dt>orbT (int or float):</dt>
+<dd>Orbital period of the planet in any time unit.</dd>
+<dt>ratRO (int or float):</dt>
+<dd>Ratio of the planet’s rotational and orbital angular
+frequencies. This is how many spins the planet makes
+per orbit. Can be fractional, and negative numbers are
+retrograde rotation.</dd>
+<dt>solD (int or float):</dt>
+<dd>The orbital phase of Northern Summer solstice, in degrees.
+If the rotational angular frequency vector is projected
+into the orbital plane, then this phase is where that
+projection points at the star.</dd>
+</dl>
+</dd>
+</dl>
+<p>Stored Figures:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>fig_equi — <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.EquiRect_Amap" title="reflectdirect.DirectImaging_Planet.EquiRect_Amap"><code class="xref py py-func docutils literal"><span class="pre">EquiRect_Amap()</span></code></a></li>
+<li>fig_geom — <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Geometry_Diagram" title="reflectdirect.DirectImaging_Planet.Geometry_Diagram"><code class="xref py py-func docutils literal"><span class="pre">Geometry_Diagram()</span></code></a></li>
+<li>fig_kchar — <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.KChar_Evolve_Plot" title="reflectdirect.DirectImaging_Planet.KChar_Evolve_Plot"><code class="xref py py-func docutils literal"><span class="pre">KChar_Evolve_Plot()</span></code></a></li>
+<li>fig_kern — <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Kernels_Plot" title="reflectdirect.DirectImaging_Planet.Kernels_Plot"><code class="xref py py-func docutils literal"><span class="pre">Kernels_Plot()</span></code></a></li>
+<li>fig_light — <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.LightCurve_Plot" title="reflectdirect.DirectImaging_Planet.LightCurve_Plot"><code class="xref py py-func docutils literal"><span class="pre">LightCurve_Plot()</span></code></a></li>
+<li>fig_orth — <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Orthographic_Viewer" title="reflectdirect.DirectImaging_Planet.Orthographic_Viewer"><code class="xref py py-func docutils literal"><span class="pre">Orthographic_Viewer()</span></code></a></li>
+<li>fig_sand — <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Sandbox_Reflection" title="reflectdirect.DirectImaging_Planet.Sandbox_Reflection"><code class="xref py py-func docutils literal"><span class="pre">Sandbox_Reflection()</span></code></a></li>
+<li>fig_spin — <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.SpinAxis_Constraints" title="reflectdirect.DirectImaging_Planet.SpinAxis_Constraints"><code class="xref py py-func docutils literal"><span class="pre">SpinAxis_Constraints()</span></code></a></li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+<p><em>Constructor for the class DirectImaging_Planet.</em></p>
+<p>All arguments are for your <strong>master</strong> map and params.</p>
+<p>For your alternate map, inverts the master map. Other
+alternate params are set equal to the master values.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first docutils">
+<dt>name (str):</dt>
+<dd>Your exoplanet’s name. Default is ‘This Exoplanet’.</dd>
+<dt>n_clat (int):</dt>
+<dd>Number of colatitudes for the planetary grid.
+Method ensures this is odd so the equator is included.
+Default is 37.</dd>
+<dt>n_long (int):</dt>
+<dd>Number of longitudes for the planetary grid.
+Method ensures this is odd so the prime meridian is
+included. Default is 73.</dd>
+<dt>kind (str):</dt>
+<dd><p class="first">Style of planetary map. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘pngA’ to average values from a png image,</li>
+<li>‘pngI’ to interpolate values from a png image,</li>
+<li>‘ylm’ to use spherical harmonics (default),</li>
+<li>‘aryA’ to average values from a 2D array,</li>
+<li>‘aryI’ to interpolate values from a 2D array.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>mp_data:</dt>
+<dd><p class="first">Depends on <code class="docutils literal"><span class="pre">kind</span></code>.</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>For either ‘png’ this is the file path to your
+image.</li>
+<li>For ‘ylm’ this is an n-by-3 list of spherical
+harmonics with entries [degree ell, order m,
+coefficient]. Default list is
+[ [1, -1, 1.0], [2, 0, -1.0] ].</li>
+<li>For either ‘ary’ this is your 2D array itself.</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>All png images are assumed to be equirectangular maps,
+which means:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>poles on top and bottom edges,</li>
+<li>equator horizontal across middle,</li>
+<li>prime meridian vertical in center,</li>
+<li>anti-prime meridian on left and right edges.</li>
+</ul>
+</div></blockquote>
+</div>
+<dl class="last docutils">
+<dt>primeD (int or float):</dt>
+<dd>Longitude of the prime meridian in degrees, relative to
+the input data. Rounded to the nearest grid longitude.
+Default is zero.</dd>
+<dt>limit (bool):</dt>
+<dd>Set the lowest and highest albedo values. Default is True.</dd>
+<dt>alb_lims (list):</dt>
+<dd>The albedo limits as [lower, upper]. Default is [0, 1.0].</dd>
+<dt>invert (bool):</dt>
+<dd>Linearly change lower albedo values to higher values and
+vice versa. Default is False.</dd>
+<dt>flip (str):</dt>
+<dd><p class="first">Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘EW’ to flip map about the prime meridian,</li>
+<li>‘NS’ to flip map about the equator,</li>
+<li>‘both’ to flip map both ways,</li>
+<li>‘none’ to do nothing (default).</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>blend (str):</dt>
+<dd><p class="first">Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘EW’ to blend map into Jupiter-like bands,</li>
+<li>‘NS’ to blend map into beach ball-like stripes,</li>
+<li>‘both’ to blend map into a uniform ball,</li>
+<li>‘none’ to do nothing (default).</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>orbT (int or float):</dt>
+<dd>Orbital period of the planet in any unit.
+Default is 8640.0 (number of hours in one year).</dd>
+<dt>ratRO (int or float):</dt>
+<dd>Ratio of the planet’s rotational and orbital angular
+frequencies. Default is 10.0.</dd>
+<dt>incD (int or float):</dt>
+<dd>Inclination in degrees. Default is 85.</dd>
+<dt>oblD (int or float):</dt>
+<dd>Obliquity in degrees. Default is zero.</dd>
+<dt>solD (int or float):</dt>
+<dd>Solstice in degrees. Default is zero.</dd>
+<dt>longzeroD (int or float):</dt>
+<dd>Longitude of the sub-observer point when t=0, in degrees.
+Default is zero.</dd>
+</dl>
+</dd>
+</dl>
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Adjust_Geometry">
+<code class="descname">Adjust_Geometry</code><span class="sig-paren">(</span><em>which='both'</em>, <em>incD='no'</em>, <em>oblD='no'</em>, <em>solD='no'</em>, <em>longzeroD='no'</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Adjust_Geometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the geometry your planet is in.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>which (str):</dt>
+<dd><p class="first">Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ to adjust master params,</li>
+<li>‘alt’ to adjust alternate params,</li>
+<li>‘both’.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>incD (int, float, or str):</dt>
+<dd>New inclination in degrees (0 to 90), or any string to
+keep the current value. Default is ‘no’. Other args have
+same format.</dd>
+<dt>oblD:</dt>
+<dd>New obliquity (0 to 180).</dd>
+<dt>solD:</dt>
+<dd>New solstice (0 to 360).</dd>
+<dt>longzeroD:</dt>
+<dd>New sub-observer longitude at t=0.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Adjust_MotionTimes">
+<code class="descname">Adjust_MotionTimes</code><span class="sig-paren">(</span><em>which='both'</em>, <em>orbT='no'</em>, <em>ratRO='no'</em>, <em>orb_min='no'</em>, <em>orb_max='no'</em>, <em>rot_res='no'</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Adjust_MotionTimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the orbital and rotational params of your planet.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first docutils">
+<dt>which (str):</dt>
+<dd><p class="first">Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ to adjust master <code class="docutils literal"><span class="pre">orbT</span></code> and <code class="docutils literal"><span class="pre">ratRO</span></code>,</li>
+<li>‘alt’ to adjust alternate values,</li>
+<li>‘both’.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>orbT (int, float, or str):</dt>
+<dd>New orbital period in any unit, or any string to keep
+the current value. Default is ‘no’. Other args
+have same format.</dd>
+<dt>ratRO:</dt>
+<dd>New rotational-to-orbital frequency ratio.</dd>
+</dl>
+<p><strong>The args below are set relative to the master params.</strong></p>
+<dl class="last docutils">
+<dt>orb_min:</dt>
+<dd>New minimum time in orbits, can be negative.</dd>
+<dt>orb_max:</dt>
+<dd>New maximum time in orbits, can be negative.</dd>
+<dt>rot_res:</dt>
+<dd>New number of time steps per rotation.</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Whatever you choose for <code class="docutils literal"><span class="pre">rot_res</span></code>, there will be at least
+360 time steps per full orbit.</p>
+</div>
+<dl class="docutils">
+<dt>Effect:</dt>
+<dd>Also updates <code class="docutils literal"><span class="pre">times</span></code>, the time array based on the master
+orbital period.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Build_Amap">
+<code class="descname">Build_Amap</code><span class="sig-paren">(</span><em>kind='ylm', mp_data=[[1, -1, 1.0], [2, 0, -1.0]], primeD=0, limit=True, alb_lims=[0.0, 1.0], into='mast', invert=False, flip='none', blend='none'</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Build_Amap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an albedo map from input data.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first docutils">
+<dt>kind (str):</dt>
+<dd><p class="first">Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘pngA’ to average values from a png image,</li>
+<li>‘pngI’ to interpolate values from a png image,</li>
+<li>‘ylm’ to use spherical harmonics (default),</li>
+<li>‘aryA’ to average values from a 2D array,</li>
+<li>‘aryI’ to interpolate values from a 2D array.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>mp_data:</dt>
+<dd><p class="first">Depends on <code class="docutils literal"><span class="pre">kind</span></code>.</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>For either ‘png’ this is the file path to your
+image.</li>
+<li>For ‘ylm’ this is an n-by-3 list of spherical
+harmonics with entries [degree ell, order m,
+coefficient]. Default list is
+[ [1, -1, 1.0], [2, 0, -1.0] ].</li>
+<li>For either ‘ary’ this is your 2D array itself.</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>All png images are assumed to be equirectangular maps,
+which means:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>poles on top and bottom edges,</li>
+<li>equator horizontal across middle,</li>
+<li>prime meridian vertical in center,</li>
+<li>anti-prime meridian on left and right edges.</li>
+</ul>
+</div></blockquote>
+</div>
+<dl class="last docutils">
+<dt>primeD (int or float):</dt>
+<dd>Longitude of the prime meridian in degrees,
+relative to the input data. Rounded to the nearest grid
+longitude. Default is zero.</dd>
+<dt>limit (bool):</dt>
+<dd>Set the lowest and highest albedo values. Default is True.</dd>
+<dt>alb_lims (list):</dt>
+<dd>The albedo limits as [lower, upper]. Default is [0, 1.0].</dd>
+<dt>into (str):</dt>
+<dd><p class="first">Where the new map goes. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ for the master map,</li>
+<li>‘alt’ for the alternate map (default),</li>
+<li>‘none’ to just return the map.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>invert (bool):</dt>
+<dd>Linearly change lower albedo values to higher
+values and vice versa. Default is False.</dd>
+<dt>flip (str):</dt>
+<dd><p class="first">Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘EW’ to flip map about the prime meridian,</li>
+<li>‘NS’ to flip map about the equator,</li>
+<li>‘both’ to flip map both ways,</li>
+<li>‘none’ to do nothing (default).</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>blend (str):</dt>
+<dd><p class="first">Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘EW’ to blend map into Jupiter-like bands,</li>
+<li>‘NS’ to blend map into beach ball-like stripes,</li>
+<li>‘both’ to blend map into a uniform ball,</li>
+<li>‘none’ to do nothing (default).</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+<dt>Effect:</dt>
+<dd>If <code class="docutils literal"><span class="pre">into</span></code> is ‘mast’ or ‘alt’, stores new albedo map as <code class="docutils literal"><span class="pre">albedos</span></code>
+or <code class="docutils literal"><span class="pre">albedos_b</span></code>, respectively.</dd>
+<dt>Returns:</dt>
+<dd>New albedo map with shape (<code class="docutils literal"><span class="pre">n_clat</span></code>, <code class="docutils literal"><span class="pre">n_long</span></code>), if <code class="docutils literal"><span class="pre">into</span></code>
+is ‘none’.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.EquiRect_Amap">
+<code class="descname">EquiRect_Amap</code><span class="sig-paren">(</span><em>alt=True</em>, <em>same_scale=True</em>, <em>grat=True</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.EquiRect_Amap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows your albedo maps in equirectangular projection.</p>
+<img alt="_images/equirect_example.png" class="align-center" src="_images/equirect_example.png" />
+<p>This projection is a simple rectangle: colatitudes are horizontal lines
+and longitudes are vertical lines. The master map is always shown, and
+the color schemes adapt to the albedo values you are using (real,
+semi-real, or unrealistic).</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>alt (bool):</dt>
+<dd>Include the alternate map. Default is True.</dd>
+<dt>same_scale (bool):</dt>
+<dd>If the master and alternate maps have the same color scheme,
+then show both on the same color scale. Default is True.</dd>
+<dt>grat (bool):</dt>
+<dd>Overlay a basic graticule. Default is True.</dd>
+</dl>
+</dd>
+<dt>Effect:</dt>
+<dd>Stores this matplotlib figure as <code class="docutils literal"><span class="pre">fig_equi</span></code>, <strong>overwriting</strong>
+the previous version. You can save the image later by
+calling <code class="docutils literal"><span class="pre">fig_equi.savefig(...)</span></code>.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Geometry_Diagram">
+<code class="descname">Geometry_Diagram</code><span class="sig-paren">(</span><em>which='mast', _active=False, incD=85, oblD=0, solD=0, ratRO=10.0, phaseD=[0], ph_colors=['k']</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Geometry_Diagram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a diagram of the geometry your planet is in.</p>
+<a class="reference internal image-reference" href="_images/geomdiag_example.png"><img alt="_images/geomdiag_example.png" class="align-center" src="_images/geomdiag_example.png" style="width: 60%;" /></a>
+<p>This shows its inclination, obliquity, solstice, and spins per orbit.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>which (str):</dt>
+<dd><p class="first">Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ to use master params (default),</li>
+<li>‘alt’ to use alternate params.</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Starting with <code class="docutils literal"><span class="pre">_active</span></code>, ignore the remaining arguments.
+These are used by the interactive function
+<a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Sandbox_Reflection" title="reflectdirect.DirectImaging_Planet.Sandbox_Reflection"><code class="xref py py-func docutils literal"><span class="pre">Sandbox_Reflection()</span></code></a>.</p>
+</div>
+<dl class="docutils">
+<dt>Effect:</dt>
+<dd>Stores this matplotlib figure as <code class="docutils literal"><span class="pre">fig_geom</span></code>, <strong>overwriting</strong>
+the previous version. You can save the image later by
+calling <code class="docutils literal"><span class="pre">fig_geom.savefig(...)</span></code>.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Info_Printout">
+<code class="descname">Info_Printout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Info_Printout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints many of the current model parameters for your planet.</p>
+<p>Grouped by grid, albedo map, motion, and geometry. The latter three
+are broken down further into the master and alternate cases.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.InvertFlipBlend_Amap">
+<code class="descname">InvertFlipBlend_Amap</code><span class="sig-paren">(</span><em>image='mast'</em>, <em>into='alt'</em>, <em>invert=False</em>, <em>flip='none'</em>, <em>blend='none'</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.InvertFlipBlend_Amap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inverts, flips, and blends a given albedo map.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first docutils">
+<dt>image (str or ndarray):</dt>
+<dd><p class="first">The source map. If string, can be</p>
+<blockquote>
+<div><ul class="simple">
+<li>‘mast’ to use master map (default),</li>
+<li>‘alt’ to use alternate map.</li>
+</ul>
+</div></blockquote>
+<p class="last">Otherwise, an ndarry or values.</p>
+</dd>
+<dt>into (str):</dt>
+<dd><p class="first">Where the new map goes. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ for the master map,</li>
+<li>‘alt’ for the alternate map (default),</li>
+<li>‘na-pali-coast-wallpaper-for-one’ to just return the map.</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you try to put an <code class="docutils literal"><span class="pre">image</span></code> ndarray <code class="docutils literal"><span class="pre">into</span></code> the master
+or alternate map, it should have shape (<code class="docutils literal"><span class="pre">n_clat</span></code>,
+<code class="docutils literal"><span class="pre">n_long</span></code>).</p>
+</div>
+<dl class="last docutils">
+<dt>invert (bool):</dt>
+<dd>Linearly change lower albedo values to higher
+values and vice versa. Default is False.</dd>
+<dt>flip (str):</dt>
+<dd><p class="first">Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘EW’ to flip map about the prime meridian,</li>
+<li>‘NS’ to flip map about the equator,</li>
+<li>‘both’ to flip map both ways,</li>
+<li>‘none’ to do nothing (default).</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>blend (str):</dt>
+<dd><p class="first">Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘EW’ to blend map into Jupiter-like bands,</li>
+<li>‘NS’ to blend map into beach ball-like stripes,</li>
+<li>‘both’ to blend map into a uniform ball,</li>
+<li>‘none’ to do nothing (default).</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+<dt>Effect:</dt>
+<dd>If <code class="docutils literal"><span class="pre">into</span></code> is ‘mast’ or ‘alt’, stores new albedo map as <code class="docutils literal"><span class="pre">albedos</span></code>
+or <code class="docutils literal"><span class="pre">albedos_b</span></code>, respectively.</dd>
+<dt>Returns:</dt>
+<dd>New albedo map with same shape as source map, if <code class="docutils literal"><span class="pre">into</span></code>
+is ‘none’.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.KChar_Evolve_Plot">
+<code class="descname">KChar_Evolve_Plot</code><span class="sig-paren">(</span><em>char, which='mast', explode='none', gap=10, incD=85, oblD=0, solD=0, _active=False, phasesD_I=[0], ph_colors=['k']</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.KChar_Evolve_Plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the kernel’s characteristics over a full orbit.</p>
+<img alt="_images/kcharevo_example.png" class="align-center" src="_images/kcharevo_example.png" />
+<p>If you want to get the actual data instead, use
+<a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Kernel_WidthDomColat" title="reflectdirect.DirectImaging_Planet.Kernel_WidthDomColat"><code class="xref py py-func docutils literal"><span class="pre">Kernel_WidthDomColat()</span></code></a>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>char (str):</dt>
+<dd><p class="first">The characteristic to show. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘wid’ for longitudinal width,</li>
+<li>‘dom’ for dominant colatitude,</li>
+<li>‘both’.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>which (str):</dt>
+<dd><p class="first">The param set to use. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ for master (default),</li>
+<li>‘alt’ for alternate,</li>
+<li>‘_c’ for custom, see Optional below.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>explode (str):</dt>
+<dd><p class="first">The geometry param to vary, starting at zero. This shows you
+many evolutions instead of one curve. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘inc’ for inclination,</li>
+<li>‘obl’ for obliquity,</li>
+<li>‘sol’ for solstice,</li>
+<li>‘none’ to cancel (default).</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>gap (int or float):</dt>
+<dd>When you choose to <code class="docutils literal"><span class="pre">explode</span></code>, the exploded param’s
+spacing in degrees. Default is 10.</dd>
+</dl>
+</dd>
+<dt>Optional:</dt>
+<dd><dl class="first last docutils">
+<dt>incD, oblD, solD:</dt>
+<dd>Custom set of params to use if <code class="docutils literal"><span class="pre">which</span></code> is ‘_c’.
+Standard definitions and formats apply.
+See the <a class="reference internal" href="#reflectdirect.DirectImaging_Planet" title="reflectdirect.DirectImaging_Planet"><code class="xref py py-class docutils literal"><span class="pre">class</span> <span class="pre">and</span> <span class="pre">constructor</span></code></a>
+docstrings.</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Starting with <code class="docutils literal"><span class="pre">_active</span></code>, ignore the remaining arguments.
+These are used by the interactive function
+<a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Sandbox_Reflection" title="reflectdirect.DirectImaging_Planet.Sandbox_Reflection"><code class="xref py py-func docutils literal"><span class="pre">Sandbox_Reflection()</span></code></a>.</p>
+</div>
+<dl class="docutils">
+<dt>Effect:</dt>
+<dd>Stores this matplotlib figure as <code class="docutils literal"><span class="pre">fig_kchar</span></code>, <strong>overwriting</strong>
+the previous version. You can save the image later by
+calling <code class="docutils literal"><span class="pre">fig_kchar.savefig(...)</span></code>.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Kernel2D">
+<code class="descname">Kernel2D</code><span class="sig-paren">(</span><em>os_trigs</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Kernel2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a planet’s 2D kernel of reflection.</p>
+<p>This kernel is the product of visibility and illumination at each
+location on an exoplanet. See Section 2 of S16.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>os_trigs (ndarray):</dt>
+<dd>Trig values describing the sub-observer and sub-stellar
+points, with shape (8, # of time steps). Should
+be formatted like the output of <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.SubOS_TimeDeg" title="reflectdirect.DirectImaging_Planet.SubOS_TimeDeg"><code class="xref py py-func docutils literal"><span class="pre">SubOS_TimeDeg()</span></code></a>.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>2D kernel with shape (# of time steps, <code class="docutils literal"><span class="pre">n_clat</span></code>, <code class="docutils literal"><span class="pre">n_long</span></code>).</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.KernelClat">
+<code class="descname">KernelClat</code><span class="sig-paren">(</span><em>k2d</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.KernelClat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a planet’s colatitudinal kernel.</p>
+<p>Marginalizes the 2D kernel over longitude.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>k2d (ndarray):</dt>
+<dd>2D kernel with shape (# of time steps, <code class="docutils literal"><span class="pre">n_clat</span></code>,
+<code class="docutils literal"><span class="pre">n_long</span></code>), like output from <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Kernel2D" title="reflectdirect.DirectImaging_Planet.Kernel2D"><code class="xref py py-func docutils literal"><span class="pre">Kernel2D()</span></code></a>.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>Colatitudinal kernel with shape (# of time steps, <code class="docutils literal"><span class="pre">n_clat</span></code>).</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.KernelLong">
+<code class="descname">KernelLong</code><span class="sig-paren">(</span><em>k2d</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.KernelLong" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a planet’s longitudinal kernel.</p>
+<p>Marginalizes the 2D kernel over colatitude.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>k2d (ndarray):</dt>
+<dd>2D kernel with shape (# of time steps, <code class="docutils literal"><span class="pre">n_clat</span></code>,
+<code class="docutils literal"><span class="pre">n_long</span></code>), like output from <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Kernel2D" title="reflectdirect.DirectImaging_Planet.Kernel2D"><code class="xref py py-func docutils literal"><span class="pre">Kernel2D()</span></code></a>.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>Longitudinal kernel with shape (# of time steps, <code class="docutils literal"><span class="pre">n_long</span></code>).</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Kernel_WidthDomColat">
+<code class="descname">Kernel_WidthDomColat</code><span class="sig-paren">(</span><em>which='mast'</em>, <em>keep_kernels=False</em>, <em>times=0</em>, <em>orbT=8640.0</em>, <em>ratRO=10.0</em>, <em>incD=85</em>, <em>oblD=0</em>, <em>solD=0</em>, <em>longzeroD=0</em>, <em>bypass_time='no'</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Kernel_WidthDomColat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates characteristics of the kernel over time.</p>
+<p>The kernel of reflection has a longitudinal width (standard
+deviation) and a dominant colatitude (weighted average) that change
+throughout a planet’s orbit. See Section 2 of S16.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>which (str):</dt>
+<dd><p class="first">The param set to use. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ for master (default),</li>
+<li>‘alt’ for alternate,</li>
+<li>‘_c’ for custom, see Optional below.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>keep_kernels (bool):</dt>
+<dd>Output all kernel info, not just the characteristics,
+see Returns below. Default is False.</dd>
+<dt>bypass_time (int, float, 1d array, or str):</dt>
+<dd>Time value(s) in place of the instance <code class="docutils literal"><span class="pre">times</span></code>. All other
+master or alternate params are still used. Canceled if
+any string. Default is ‘no’.</dd>
+</dl>
+</dd>
+<dt>Optional:</dt>
+<dd><dl class="first last docutils">
+<dt>times, orbT, ratRO, incD, oblD, solD, longzeroD:</dt>
+<dd>Custom set of params to use if <code class="docutils literal"><span class="pre">which</span></code> is ‘_c’.
+Standard definitions and formats apply.
+See the <a class="reference internal" href="#reflectdirect.DirectImaging_Planet" title="reflectdirect.DirectImaging_Planet"><code class="xref py py-class docutils literal"><span class="pre">class</span> <span class="pre">and</span> <span class="pre">constructor</span></code></a>
+docstrings.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>sig_long (array):</dt>
+<dd>Longitudinal widths, shape (# of time steps).</dd>
+<dt>dom_clat (array):</dt>
+<dd>Dominant colatitudes, shape (# of time steps).</dd>
+<dt>If <code class="docutils literal"><span class="pre">keep_kernels</span></code> is True, also:</dt>
+<dd><dl class="first last docutils">
+<dt>actual_mu (array):</dt>
+<dd>Mean longitudes, shape (# of time steps).</dd>
+<dt>klong (array):</dt>
+<dd>Longitudinal kernel, shape (# of time steps, <code class="docutils literal"><span class="pre">n_long</span></code>).</dd>
+<dt>kclat (array):</dt>
+<dd>Colatitudinal kernel, shape (# of time steps, <code class="docutils literal"><span class="pre">n_clat</span></code>).</dd>
+<dt>k2d (array):</dt>
+<dd>2D kernel, shape (# of time steps, <code class="docutils literal"><span class="pre">n_clat</span></code>, <code class="docutils literal"><span class="pre">n_long</span></code>).</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Kernels_Plot">
+<code class="descname">Kernels_Plot</code><span class="sig-paren">(</span><em>phaseD</em>, <em>which='mast'</em>, <em>grat=True</em>, <em>fixed_lims=True</em>, <em>force_bright=True</em>, <em>over_amap=False</em>, <em>albs=array([[ 1.]])</em>, <em>orbT=8640.0</em>, <em>ratRO=10.0</em>, <em>incD=85</em>, <em>oblD=0</em>, <em>solD=0</em>, <em>longzeroD=0</em>, <em>bypass_time='no'</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Kernels_Plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Diagrams your planet’s kernel at a given orbital phase.</p>
+<img alt="_images/kernplot_example.png" class="align-center" src="_images/kernplot_example.png" />
+<p>This includes the 2D, longitudinal, and colatitudinal versions
+of the kernel. The diagram also shows you the kernel’s mean
+longitude (pink circle), longitudinal width (red bars), and
+dominant colatitude (blue circle). If you want to get the actual
+data instead, use <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Kernel_WidthDomColat" title="reflectdirect.DirectImaging_Planet.Kernel_WidthDomColat"><code class="xref py py-func docutils literal"><span class="pre">Kernel_WidthDomColat()</span></code></a>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>phaseD (int or float):</dt>
+<dd>Orbital phase of the planet in degrees. Standard range
+is [0, 360).</dd>
+<dt>which (str):</dt>
+<dd><p class="first">The param set to use. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ for master (default),</li>
+<li>‘alt’ for alternate,</li>
+<li>‘_c’ for custom, see Optional below.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>grat (bool):</dt>
+<dd>Overlay basic graticules. Default is True.</dd>
+<dt>fixed_lims (bool):</dt>
+<dd>Keep the plotted limits for the relative long. and
+colat. kernels fixed at [0, 1.0]. Default is True.</dd>
+<dt>force_bright (bool):</dt>
+<dd>Use the full color scale to draw the 2D kernel.
+The false brightness can make dark drawings (like
+crescent phases) easier to see. Default is True.</dd>
+<dt>over_amap (bool):</dt>
+<dd>Draw a dim version of the albedo map with the 2D kernel.
+This map is not affected by <code class="docutils literal"><span class="pre">force_bright</span></code>. Default is
+False.</dd>
+<dt>bypass_time (int, float, 1d array, or str):</dt>
+<dd>Time value(s) in place of the instance <code class="docutils literal"><span class="pre">times</span></code>. All
+other master or alternate params are still used. Canceled
+if any string. Default is ‘no’.</dd>
+</dl>
+</dd>
+<dt>Optional:</dt>
+<dd><dl class="first last docutils">
+<dt>albs (2D array):</dt>
+<dd>Custom albedo map to use if <code class="docutils literal"><span class="pre">which</span></code> is ‘_c’.
+Its shape should be, or work with, (n_clat, n_long).
+Default is <code class="docutils literal"><span class="pre">np.array(</span> <span class="pre">[</span> <span class="pre">[</span> <span class="pre">1.0</span> <span class="pre">]</span> <span class="pre">]</span> <span class="pre">)</span></code>.</dd>
+<dt>times, orbT, ratRO, incD, oblD, solD, longzeroD:</dt>
+<dd>Custom set of params to use if <code class="docutils literal"><span class="pre">which</span></code> is ‘_c’.
+Standard definitions and formats apply.
+See the <a class="reference internal" href="#reflectdirect.DirectImaging_Planet" title="reflectdirect.DirectImaging_Planet"><code class="xref py py-class docutils literal"><span class="pre">class</span> <span class="pre">and</span> <span class="pre">constructor</span></code></a>
+docstrings.</dd>
+</dl>
+</dd>
+<dt>Effect:</dt>
+<dd>Stores this matplotlib figure as <code class="docutils literal"><span class="pre">fig_kern</span></code>, <strong>overwriting</strong>
+the previous version. You can save the image later by
+calling <code class="docutils literal"><span class="pre">fig_kern.savefig(...)</span></code>.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.LightCurve_Plot">
+<code class="descname">LightCurve_Plot</code><span class="sig-paren">(</span><em>alt=True</em>, <em>diff=False</em>, <em>diff_only=False</em>, <em>show='flux'</em>, <em>_active=False</em>, <em>times_I=0</em>, <em>orbT_I=8640.0</em>, <em>ratRO_I=10.0</em>, <em>incD_I=90</em>, <em>oblD_I=0</em>, <em>solD_I=0</em>, <em>longzeroD_I=0</em>, <em>ph_color='k'</em>, <em>now_I=0</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.LightCurve_Plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots light curves of your planet.</p>
+<img alt="_images/lcplot_example.png" class="align-center" src="_images/lcplot_example.png" />
+<p>Uses the master and alternate params to calculate the light curves.
+If you want to get the actual data instead, use <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Light_Curves" title="reflectdirect.DirectImaging_Planet.Light_Curves"><code class="xref py py-func docutils literal"><span class="pre">Light_Curves()</span></code></a>.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>alt (bool):</dt>
+<dd>Include the alternate case. Default is True.</dd>
+<dt>diff (bool):</dt>
+<dd>Include the difference between the master and alternate
+light curves, if <code class="docutils literal"><span class="pre">alt</span></code> is True. Default is False.</dd>
+<dt>diff_only (bool):</dt>
+<dd>Plot <strong>only</strong> the difference light curve, if <code class="docutils literal"><span class="pre">alt</span></code> is
+True. Default is False.</dd>
+<dt>show (str):</dt>
+<dd><p class="first">Which light curves to calculate. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘flux’, the sum of [<em>AK</em>] where <em>A</em> is the albedo map
+and <em>K</em> is the kernel (default),</li>
+<li>‘appar’ for apparent brightness, or flux divided by
+sum of the kernel,</li>
+<li>‘both’.</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Starting with <code class="docutils literal"><span class="pre">_active</span></code>, ignore the remaining arguments.
+These are used by the interactive function
+<a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Sandbox_Reflection" title="reflectdirect.DirectImaging_Planet.Sandbox_Reflection"><code class="xref py py-func docutils literal"><span class="pre">Sandbox_Reflection()</span></code></a>.</p>
+</div>
+<dl class="docutils">
+<dt>Effect:</dt>
+<dd>Stores this matplotlib figure as <code class="docutils literal"><span class="pre">fig_light</span></code>, <strong>overwriting</strong>
+the previous version. You can save the image later by
+calling <code class="docutils literal"><span class="pre">fig_light.savefig(...)</span></code>.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Light_Curves">
+<code class="descname">Light_Curves</code><span class="sig-paren">(</span><em>which='mast'</em>, <em>albs=array([[ 1.]])</em>, <em>times=0</em>, <em>orbT=8640.0</em>, <em>ratRO=10.0</em>, <em>incD=85</em>, <em>oblD=0</em>, <em>solD=0</em>, <em>longzeroD=0</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Light_Curves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates light curves of your planet.</p>
+<p>Gives you both the exoplanet’s flux (the sum of [<em>AK</em>], where <em>A</em> is
+the albedo map and <em>K</em> is the kernel) and its apparent brightness
+(the flux divided by the sum of <em>K</em>) over time.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>which (str):</dt>
+<dd><p class="first">The param set to use. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ for master (default),</li>
+<li>‘alt’ for alternate,</li>
+<li>‘_c’ for custom, see Optional below.</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+<dt>Optional:</dt>
+<dd><dl class="first last docutils">
+<dt>albs (2D array):</dt>
+<dd>Custom albedo map to use if <code class="docutils literal"><span class="pre">which</span></code> is ‘_c’.
+Its shape should be, or work with, (<code class="docutils literal"><span class="pre">n_clat</span></code>, <code class="docutils literal"><span class="pre">n_long</span></code>).
+Default is <code class="docutils literal"><span class="pre">np.array(</span> <span class="pre">[</span> <span class="pre">[</span> <span class="pre">1.0</span> <span class="pre">]</span> <span class="pre">]</span> <span class="pre">)</span></code>.</dd>
+<dt>times, orbT, ratRO, incD, oblD, solD, longzeroD:</dt>
+<dd>Custom set of params to use if <code class="docutils literal"><span class="pre">which</span></code> is ‘_c’.
+Standard definitions and formats apply.
+See the <a class="reference internal" href="#reflectdirect.DirectImaging_Planet" title="reflectdirect.DirectImaging_Planet"><code class="xref py py-class docutils literal"><span class="pre">class</span> <span class="pre">and</span> <span class="pre">constructor</span></code></a>
+docstrings.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><dl class="first last docutils">
+<dt>flux_ak (array):</dt>
+<dd>flux with shape (# of time steps).</dd>
+<dt>appar_a (array):</dt>
+<dd>apparent brightness with shape (# of time steps).</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Orthographic_Viewer">
+<code class="descname">Orthographic_Viewer</code><span class="sig-paren">(</span><em>phaseD</em>, <em>show='real'</em>, <em>alt=False</em>, <em>same_scale=True</em>, <em>force_bright=True</em>, <em>_active=False</em>, <em>orbT_I=8640.0</em>, <em>ratRO_I=10.0</em>, <em>incD_I=90</em>, <em>oblD_I=0</em>, <em>solD_I=0</em>, <em>longzeroD_I=0</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Orthographic_Viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws your planet’s map and kernel in orthographic projection.</p>
+<img alt="_images/orthview_example.png" class="align-center" src="_images/orthview_example.png" />
+<p>Shows everything from the observer’s point of view (with one
+exception), based on the master and alternate params you are using.
+The North and South poles are drawn as a green circle and diamond,
+respectively.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>phaseD (int or float):</dt>
+<dd>Orbital phase of the planet in degrees. Standard range
+is [0, 360).</dd>
+<dt>show (str):</dt>
+<dd><p class="first">Which data to draw. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘amap’ for the albedo map,</li>
+<li>‘kern’ for the kernel,</li>
+<li>‘both’ for the map and kernel separate,</li>
+<li>‘real’ to multiply the map and kernel (default),</li>
+<li>‘sphere’ for the whole globe: the visible and opposite
+hemispheres with no kernel.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>alt (bool):</dt>
+<dd>Include the alternate albedo map. Default is True.</dd>
+<dt>same_scale (bool):</dt>
+<dd>If the master and alternate maps have the same color scheme
+(and <code class="docutils literal"><span class="pre">alt</span></code> is True), then show both with the same color
+scale. Default is True.</dd>
+<dt>force_bright (bool):</dt>
+<dd>Use the full color scale to draw the kernel. Also rescales
+the kernel values into [0, 1.0] when <code class="docutils literal"><span class="pre">show</span></code> is ‘real’.
+The false brightness can make dark drawings (like crescent
+phases) easier to see. Default is True.</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Starting with <code class="docutils literal"><span class="pre">_active</span></code>, ignore the remaining arguments.
+These are used by the interactive function
+<a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Sandbox_Reflection" title="reflectdirect.DirectImaging_Planet.Sandbox_Reflection"><code class="xref py py-func docutils literal"><span class="pre">Sandbox_Reflection()</span></code></a>.</p>
+</div>
+<dl class="docutils">
+<dt>Effect:</dt>
+<dd>Stores this matplotlib figure as <code class="docutils literal"><span class="pre">fig_orth</span></code>, <strong>overwriting</strong>
+the previous version. You can save the image later by
+calling <code class="docutils literal"><span class="pre">fig_orth.savefig(...)</span></code>.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Sandbox_Reflection">
+<code class="descname">Sandbox_Reflection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Sandbox_Reflection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an interactive module about your directly imaged planet.</p>
+<img alt="_images/sandref_example.png" class="align-center" src="_images/sandref_example.png" />
+<p>This module lets you explore how a planet’s geometry, motion,
+kernel, and light curves are related. You can also see predicted
+constraints on the planet’s spin axis (using the kernel and perfect
+data).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The larger your <code class="docutils literal"><span class="pre">n_clat</span></code> and <code class="docutils literal"><span class="pre">n_long</span></code>, the longer this
+module takes to update (e.g. seconds with default values).</p>
+</div>
+<p>The sandbox combines several methods from the class
+<a class="reference internal" href="#reflectdirect.DirectImaging_Planet" title="reflectdirect.DirectImaging_Planet"><code class="xref py py-class docutils literal"><span class="pre">DirectImaging_Planet</span></code></a> into one compact display. See each
+for details:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Geometry_Diagram" title="reflectdirect.DirectImaging_Planet.Geometry_Diagram"><code class="xref py py-func docutils literal"><span class="pre">Geometry_Diagram()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Orthographic_Viewer" title="reflectdirect.DirectImaging_Planet.Orthographic_Viewer"><code class="xref py py-func docutils literal"><span class="pre">Orthographic_Viewer()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Light_Curves" title="reflectdirect.DirectImaging_Planet.Light_Curves"><code class="xref py py-func docutils literal"><span class="pre">Light_Curves()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.KChar_Evolve_Plot" title="reflectdirect.DirectImaging_Planet.KChar_Evolve_Plot"><code class="xref py py-func docutils literal"><span class="pre">KChar_Evolve_Plot()</span></code></a></li>
+<li><a class="reference internal" href="#reflectdirect.DirectImaging_Planet.SpinAxis_Constraints" title="reflectdirect.DirectImaging_Planet.SpinAxis_Constraints"><code class="xref py py-func docutils literal"><span class="pre">SpinAxis_Constraints()</span></code></a></li>
+</ul>
+</div></blockquote>
+<p>The planet and light curves are rendered using your master albedo
+map. You have a main orbital phase (magenta) to view and can save
+up to 3 extra phases (light, medium, dark) to compare. Each phase
+has a color-coded marker on the geometry diagram and kernel
+characteristics plot, plus its own light curve.</p>
+<p>There are many controls (all angles in degrees):</p>
+<blockquote>
+<div><ul class="simple">
+<li>Inclination</li>
+<li>Obliquity</li>
+<li>Solstice</li>
+<li><dl class="first docutils">
+<dt>Orbital Phase</dt>
+<dd><ul class="first last">
+<li>[which] Extra Phase Slot</li>
+<li>Save [extra phase]</li>
+<li>Clear [extra phase(s)]</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>Spins per Orbit</li>
+<li>Time Steps per Spin</li>
+<li>Initial Longitude [at zero phase]</li>
+<li>[type of] Light Curve</li>
+<li>[type of] Axis Constraint</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For the subplot of spin axis constraints, curves are
+colored lightest to darkest in the phase order [main, light,
+medium, dark]. Red curves are for single phases, blue curves
+pairs of phases.</p>
+</div>
+<dl class="docutils">
+<dt>Effect:</dt>
+<dd>Stores this matplotlib figure as <code class="docutils literal"><span class="pre">fig_sand</span></code> <strong>whenever you
+interact with the module</strong>. You can save the image later by
+calling <code class="docutils literal"><span class="pre">fig_sand.savefig(...)</span></code>.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.Setup_ProRet_Degeneracy">
+<code class="descname">Setup_ProRet_Degeneracy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.Setup_ProRet_Degeneracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets your alternate params for a specific light curve degeneracy.</p>
+<p>The degeneracy involves the albedo map and is <strong>usually</strong> prograde
+vs. retrograde rotation (but see note below). Discussed in Section 4.5
+and Appendix B3 of S16.</p>
+<p>When a planet has zero obliquity and its orbit is edge-on to you
+(inclination 90 degrees), you cannot tell from a light curve whether:</p>
+<blockquote>
+<div><ul class="simple">
+<li>the planet does <em>N</em> spins per orbit (<code class="docutils literal"><span class="pre">ratRO</span></code>) with an albedo
+map <em>A</em>, or</li>
+<li>it does 1.0–<em>N</em> spins with an East-West flipped <em>A</em>.</li>
+</ul>
+</div></blockquote>
+<p>Most often <em>N</em> and 1.0–<em>N</em> have opposite signs, so one version spins
+prograde and the other retrograde. This light curve degeneracy breaks
+down if the planet is tilted or its orbit is not edge-on.</p>
+<p>After running this method, test with <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Light_Curves" title="reflectdirect.DirectImaging_Planet.Light_Curves"><code class="xref py py-func docutils literal"><span class="pre">Light_Curves()</span></code></a>,
+<a class="reference internal" href="#reflectdirect.DirectImaging_Planet.LightCurve_Plot" title="reflectdirect.DirectImaging_Planet.LightCurve_Plot"><code class="xref py py-func docutils literal"><span class="pre">LightCurve_Plot()</span></code></a>, or <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Orthographic_Viewer" title="reflectdirect.DirectImaging_Planet.Orthographic_Viewer"><code class="xref py py-func docutils literal"><span class="pre">Orthographic_Viewer()</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If <em>N</em> is between 0 and 1.0, both versions of the planet spin
+prograde. And when <em>N</em> = 0.5, their spins are identical!</p>
+</div>
+<dl class="docutils">
+<dt>Effect:</dt>
+<dd>Calls <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.InvertFlipBlend_Amap" title="reflectdirect.DirectImaging_Planet.InvertFlipBlend_Amap"><code class="xref py py-func docutils literal"><span class="pre">InvertFlipBlend_Amap()</span></code></a>, <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Adjust_Geometry" title="reflectdirect.DirectImaging_Planet.Adjust_Geometry"><code class="xref py py-func docutils literal"><span class="pre">Adjust_Geometry()</span></code></a>,
+and <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Adjust_MotionTimes" title="reflectdirect.DirectImaging_Planet.Adjust_MotionTimes"><code class="xref py py-func docutils literal"><span class="pre">Adjust_MotionTimes()</span></code></a>, using your master params to
+setup the alternate params as described.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.SpinAxis_Constraints">
+<code class="descname">SpinAxis_Constraints</code><span class="sig-paren">(</span><em>phaseD_list</em>, <em>which='mast'</em>, <em>constraint='both'</em>, <em>info=True</em>, <em>combine=True</em>, <em>combine_only=False</em>, <em>keep_probdata=False</em>, <em>res=500</em>, <em>n_sol=361</em>, <em>n_obl=91</em>, <em>phaseD_sig=10.0</em>, <em>incD_sig=10.0</em>, <em>kwid_sig=10.0</em>, <em>kddc_sig=20.0</em>, <em>_active=False</em>, <em>incD_I=85</em>, <em>solD_I=0</em>, <em>oblD_I=0</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.SpinAxis_Constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots how observations may constrain your planet’s spin axis.</p>
+<img alt="_images/spinaxis_example.png" class="align-center" src="_images/spinaxis_example.png" />
+<p>These predictions use the kernel characteristics and assume your
+planet’s light curves <strong>at single orbital phases</strong> are invertible
+(see note below). Discussed in Section 4 of S16.</p>
+<p>Say you are fitting a planet’s albedo map. We know the kernel depends
+on the planet’s spin axis (its obliquity and solstice). Invert a
+light curve from one orbital phase and you will also fit some
+East-West structure of the kernel, like the longitudinal width.
+Or invert from two different phases and you fit some North-South
+structure, like the <strong>change in</strong> dominant colatitude. So, kernel
+characteristics help us estimate constraints on the spin axis without
+doing inversions from real data.</p>
+<p>Learn more about the kernel and its characteristics with
+<a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Kernel_WidthDomColat" title="reflectdirect.DirectImaging_Planet.Kernel_WidthDomColat"><code class="xref py py-func docutils literal"><span class="pre">Kernel_WidthDomColat()</span></code></a>, <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Kernels_Plot" title="reflectdirect.DirectImaging_Planet.Kernels_Plot"><code class="xref py py-func docutils literal"><span class="pre">Kernels_Plot()</span></code></a>,
+and <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.KChar_Evolve_Plot" title="reflectdirect.DirectImaging_Planet.KChar_Evolve_Plot"><code class="xref py py-func docutils literal"><span class="pre">KChar_Evolve_Plot()</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Inverting a light curve will depend on the quality of the
+observational data. The planet’s albedo map matters too:
+East-West markings to sense daily brightness changes,
+North-South markings to sense longer changes.</p>
+<p class="last">We have pre-calculated characteristics stored in numpy binary
+files (the obvious two with names ending “values_all5deg.npy”).
+So, this method rounds inclination, obliquity, and solstice
+to the nearest 5 degrees. It also tracks the North (green
+circle) or South pole (green diamond) when obliquity is less
+than or greater than 90 degrees, respectively.</p>
+</div>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>phaseD_list (list):</dt>
+<dd><p class="first">Orbital phases of the planet in degrees. Standard range
+is [0, 360). Phases are integers or floats, and list
+elements can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li><em>phase</em> for a longitudinal width,</li>
+<li><em>[phase, phase]</em> for a change in dominant colatitude.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>which (str):</dt>
+<dd><p class="first">The param set to use. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ for master (default),</li>
+<li>‘alt’ for alternate,</li>
+<li>‘_c’ for custom, see Optional below.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>constraint (str):</dt>
+<dd><p class="first">The type of prediction. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘perf’ for perfect constraints with no data
+uncertainties,</li>
+<li>‘real’ to use uncertainties and show {1,2,3}–sigma
+regions,</li>
+<li>‘both’ (default).</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>info (bool):</dt>
+<dd>Include a legend subplot. Default is True.</dd>
+<dt>combine (bool):</dt>
+<dd>Join all constraints in a separate subplot. Default is True.</dd>
+<dt>combine_only (bool):</dt>
+<dd>Show <strong>only</strong> the combo constraint. Default is False.</dd>
+<dt>keep_probdata (bool):</dt>
+<dd>Output all probability data, see Returns below. Default
+is False.</dd>
+</dl>
+</dd>
+<dt>Optional:</dt>
+<dd><dl class="first last docutils">
+<dt>res (int):</dt>
+<dd>Resolution when <code class="docutils literal"><span class="pre">constraint</span></code> is ‘real’, the number of
+probability contours to test. Default is 500.</dd>
+<dt>n_sol (int):</dt>
+<dd>Number of solstice grid points. Default is 361.</dd>
+<dt>n_obl (int):</dt>
+<dd>Number of obliquity grid points. Default is 91.</dd>
+<dt>incD_I, solD_I, oblD_I:</dt>
+<dd>Custom set of params to use if <code class="docutils literal"><span class="pre">which</span></code> is ‘_c’.
+Standard definitions and formats apply.
+See the <a class="reference internal" href="#reflectdirect.DirectImaging_Planet" title="reflectdirect.DirectImaging_Planet"><code class="xref py py-class docutils literal"><span class="pre">class</span> <span class="pre">and</span> <span class="pre">constructor</span></code></a>
+docstrings.</dd>
+</dl>
+</dd>
+<dt>Very Optional:</dt>
+<dd><p class="first"><strong>You should probably check out Section 4.1 of S16 before
+you change any of these.</strong></p>
+<dl class="last docutils">
+<dt>phaseD_sig (float):</dt>
+<dd>Uncertainty on orbital phase, in degrees. Default is 10.0.</dd>
+<dt>incD_sig (float):</dt>
+<dd>Uncertainty on inclination, in degrees. Default is 10.0.</dd>
+<dt>kwid_sig (float):</dt>
+<dd>Uncertainty on longitudinal, width in degrees. Default
+is 10.0.</dd>
+<dt>kddc_sig (float):</dt>
+<dd>Uncertainty on change in dominant colatitude, in degrees.
+Default is 20.0.</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Ignore the argument <code class="docutils literal"><span class="pre">_active</span></code>. This is used by
+the interactive function <a class="reference internal" href="#reflectdirect.DirectImaging_Planet.Sandbox_Reflection" title="reflectdirect.DirectImaging_Planet.Sandbox_Reflection"><code class="xref py py-func docutils literal"><span class="pre">Sandbox_Reflection()</span></code></a>.</p>
+</div>
+<dl class="docutils">
+<dt>Effect:</dt>
+<dd>Stores this matplotlib figure as <code class="docutils literal"><span class="pre">fig_spin</span></code>, <strong>overwriting</strong>
+the previous version. You can save the image later by
+calling <code class="docutils literal"><span class="pre">fig_spin.savefig(...)</span></code>.</dd>
+<dt>Returns:</dt>
+<dd><p class="first">A list (user_file) if <code class="docutils literal"><span class="pre">keep_probdata</span></code> is True and <code class="docutils literal"><span class="pre">constraint</span></code>
+is <strong>not</strong> ‘perf’.</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>First entry is [incD, oblD, solD].</li>
+<li>Other entries are [<em>id</em>, 2D PDF, {1,2,3}–sigma
+probability levels], where <em>id</em> is either a phaseD_list
+element or ‘Combined’.</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="reflectdirect.DirectImaging_Planet.SubOS_TimeDeg">
+<code class="descname">SubOS_TimeDeg</code><span class="sig-paren">(</span><em>which='mast'</em>, <em>times=0</em>, <em>orbT=8640.0</em>, <em>ratRO=10.0</em>, <em>incD=85</em>, <em>oblD=0</em>, <em>solD=0</em>, <em>longzeroD=0</em>, <em>bypass_time='no'</em><span class="sig-paren">)</span><a class="headerlink" href="#reflectdirect.DirectImaging_Planet.SubOS_TimeDeg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates an planet’s sub-observer and -stellar locations over time.</p>
+<p>Wrapper for <a class="reference internal" href="subobsstel.html#exoplanetsubspots.sub_observerstellar" title="exoplanetsubspots.sub_observerstellar"><code class="xref py py-func docutils literal"><span class="pre">exoplanetsubspots.sub_observerstellar()</span></code></a> that
+works with the class <a class="reference internal" href="#reflectdirect.DirectImaging_Planet" title="reflectdirect.DirectImaging_Planet"><code class="xref py py-class docutils literal"><span class="pre">DirectImaging_Planet</span></code></a>. See Appendix A
+of S16.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>which (str):</dt>
+<dd><p class="first">The param set to use. Can be</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>‘mast’ for master (default),</li>
+<li>‘alt’ for alternate,</li>
+<li>‘_c’ for custom, see Optional below.</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt>bypass_time (int, float, 1d array, or str):</dt>
+<dd>Time value(s) in place of the instance <code class="docutils literal"><span class="pre">times</span></code>. All
+other master or alternate params are still used. Canceled
+if any string. Default is ‘no’.</dd>
+</dl>
+</dd>
+<dt>Optional:</dt>
+<dd><dl class="first last docutils">
+<dt>times, orbT, ratRO, incD, oblD, solD, longzeroD:</dt>
+<dd>Custom set of params to use if <code class="docutils literal"><span class="pre">which</span></code> is ‘_c’.
+Standard definitions and formats apply.
+See the <a class="reference internal" href="#reflectdirect.DirectImaging_Planet" title="reflectdirect.DirectImaging_Planet"><code class="xref py py-class docutils literal"><span class="pre">class</span> <span class="pre">and</span> <span class="pre">constructor</span></code></a>
+docstrings.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd><p class="first">Array of trigonometric values with shape (8, # of time steps).
+First dimension is ordered:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>sin theta_obs</li>
+<li>cos theta_obs</li>
+<li>sin phi_obs</li>
+<li>cos phi_obs</li>
+<li>sin theta_st</li>
+<li>cos theta_st</li>
+<li>sin phi_st</li>
+<li>cos phi_st</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2018, Joel C. Schwartz.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/dirimgplanet.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

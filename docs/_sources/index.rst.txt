@@ -1,0 +1,27 @@
+.. ReflectDirect documentation master file, 02/2018
+
+
+ReflectDirect: Python planets in Jupyter
+========================================
+
+.. automodule:: reflectdirect
+
+
+The API
+-------
+
+All compiled here. Use the sidebar navigation, the links above, or quick search to browse.
+
+.. toctree::
+	:maxdepth: 4
+	:hidden:
+	
+	dirimgplanet
+	geomref
+	subobsstel
+
+
+The Laundry List
+----------------
+
+* :ref:`genindex`
