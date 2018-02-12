@@ -1,7 +1,0 @@
-The Directly Imaged Planet
-==========================
-
-This class is the heart and soul of ReflectDirect. It's how you build, change, draw, and play with your worlds. Use it often and use it well.
-
-.. autoclass:: reflectdirect.DirectImaging_Planet
-	:members:
