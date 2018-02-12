@@ -1,0 +1,6 @@
+The Geometry Defined
+====================
+
+Ground-floor newbie or penthouse-suite expert, sometimes we could all use a refresher. If you need info on planet angles or spins, go here.
+
+.. autofunction:: reflectdirect.Geometry_Reference

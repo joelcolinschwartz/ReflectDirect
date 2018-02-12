@@ -511,11 +511,12 @@ class DirectImaging_Planet:
                 
                 Otherwise, an ndarry or values.
             
-            into (str): Where the new map goes. Can be
+            into (str):
+                Where the new map goes. Can be
             
-                - 'mast' for the master map,
-                - 'alt' for the alternate map (default),
-                - 'none' to just return the map.
+                    - 'mast' for the master map,
+                    - 'alt' for the alternate map (default),
+                    - 'na-pali-coast-wallpaper-for-one' to just return the map.
                 
             .. note::
                         
@@ -527,19 +528,21 @@ class DirectImaging_Planet:
                 Linearly change lower albedo values to higher
                 values and vice versa. Default is False.
             
-            flip (str): Can be
+            flip (str):
+                Can be
             
-                - 'EW' to flip map about the prime meridian,
-                - 'NS' to flip map about the equator,
-                - 'both' to flip map both ways,
-                - 'none' to do nothing (default).
+                    - 'EW' to flip map about the prime meridian,
+                    - 'NS' to flip map about the equator,
+                    - 'both' to flip map both ways,
+                    - 'none' to do nothing (default).
                 
-            blend (str): Can be
+            blend (str):
+                Can be
             
-                - 'EW' to blend map into Jupiter-like bands,
-                - 'NS' to blend map into beach ball-like stripes,
-                - 'both' to blend map into a uniform ball,
-                - 'none' to do nothing (default).
+                    - 'EW' to blend map into Jupiter-like bands,
+                    - 'NS' to blend map into beach ball-like stripes,
+                    - 'both' to blend map into a uniform ball,
+                    - 'none' to do nothing (default).
 
         Effect:
             If ``into`` is 'mast' or 'alt', stores new albedo map as ``albedos``
@@ -604,19 +607,25 @@ class DirectImaging_Planet:
         """Creates an albedo map from input data.
 
         Args:
-            kind (str): Can be
-                - 'pngA' to average values from a png image,
-                - 'pngI' to interpolate values from a png image,
-                - 'ylm' to use spherical harmonics (default),
-                - 'aryA' to average values from a 2D array,
-                - 'aryI' to interpolate values from a 2D array.
+            kind (str):
+                Can be
+                
+                    - 'pngA' to average values from a png image,
+                    - 'pngI' to interpolate values from a png image,
+                    - 'ylm' to use spherical harmonics (default),
+                    - 'aryA' to average values from a 2D array,
+                    - 'aryI' to interpolate values from a 2D array.
             
-            mp_data: Depends on ``kind``.
-                - For either 'png' this is the file path to your image.
-                - For 'ylm' this is an n-by-3 list of spherical harmonics
-                  with entries [degree ell, order m, coefficient]. Default
-                  list is [ [1, -1, 1.0], [2, 0, -1.0] ].
-                - For either 'ary' this is your 2D array itself.
+            mp_data:
+                Depends on ``kind``.
+                
+                    - For either 'png' this is the file path to your
+                      image.
+                    - For 'ylm' this is an n-by-3 list of spherical
+                      harmonics with entries [degree ell, order m,
+                      coefficient]. Default list is
+                      [ [1, -1, 1.0], [2, 0, -1.0] ].
+                    - For either 'ary' this is your 2D array itself.
 
             .. note::
                 
@@ -639,29 +648,32 @@ class DirectImaging_Planet:
             alb_lims (list):
                 The albedo limits as [lower, upper]. Default is [0, 1.0].
             
-            into (str): Where the new map goes. Can be
+            into (str):
+                Where the new map goes. Can be
             
-                - 'mast' for the master map,
-                - 'alt' for the alternate map (default),
-                - 'none' to just return the map.
+                    - 'mast' for the master map,
+                    - 'alt' for the alternate map (default),
+                    - 'none' to just return the map.
             
             invert (bool):
                 Linearly change lower albedo values to higher
                 values and vice versa. Default is False.
             
-            flip (str): Can be
+            flip (str):
+                Can be
             
-                - 'EW' to flip map about the prime meridian,
-                - 'NS' to flip map about the equator,
-                - 'both' to flip map both ways,
-                - 'none' to do nothing (default).
+                    - 'EW' to flip map about the prime meridian,
+                    - 'NS' to flip map about the equator,
+                    - 'both' to flip map both ways,
+                    - 'none' to do nothing (default).
             
-            blend (str): Can be
+            blend (str):
+                Can be
             
-                - 'EW' to blend map into Jupiter-like bands,
-                - 'NS' to blend map into beach ball-like stripes,
-                - 'both' to blend map into a uniform ball,
-                - 'none' to do nothing (default).
+                    - 'EW' to blend map into Jupiter-like bands,
+                    - 'NS' to blend map into beach ball-like stripes,
+                    - 'both' to blend map into a uniform ball,
+                    - 'none' to do nothing (default).
 
         Effect:
             If ``into`` is 'mast' or 'alt', stores new albedo map as ``albedos``
@@ -827,21 +839,25 @@ class DirectImaging_Planet:
                 Method ensures this is odd so the prime meridian is
                 included. Default is 73.
             
-            kind (str): Style of planetary map. Can be
+            kind (str):
+                Style of planetary map. Can be
             
-                - 'pngA' to average values from a png image,
-                - 'pngI' to interpolate values from a png image,
-                - 'ylm' to use spherical harmonics (default),
-                - 'aryA' to average values from a 2D array,
-                - 'aryI' to interpolate values from a 2D array.
+                    - 'pngA' to average values from a png image,
+                    - 'pngI' to interpolate values from a png image,
+                    - 'ylm' to use spherical harmonics (default),
+                    - 'aryA' to average values from a 2D array,
+                    - 'aryI' to interpolate values from a 2D array.
             
-            mp_data: Depends on ``kind``.
+            mp_data:
+                Depends on ``kind``.
             
-                - For either 'png' this is the file path to your image.
-                - For 'ylm' this is an n-by-3 list of spherical harmonics
-                  with entries [degree ell, order m, coefficient]. Default
-                  list is [ [1, -1, 1.0], [2, 0, -1.0] ].
-                - For either 'ary' this is your 2D array itself.
+                    - For either 'png' this is the file path to your
+                      image.
+                    - For 'ylm' this is an n-by-3 list of spherical
+                      harmonics with entries [degree ell, order m,
+                      coefficient]. Default list is
+                      [ [1, -1, 1.0], [2, 0, -1.0] ].
+                    - For either 'ary' this is your 2D array itself.
 
             .. note::
                         
@@ -868,19 +884,21 @@ class DirectImaging_Planet:
                 Linearly change lower albedo values to higher values and
                 vice versa. Default is False.
             
-            flip (str): Can be
+            flip (str):
+                Can be
             
-                - 'EW' to flip map about the prime meridian,
-                - 'NS' to flip map about the equator,
-                - 'both' to flip map both ways,
-                - 'none' to do nothing (default).
+                    - 'EW' to flip map about the prime meridian,
+                    - 'NS' to flip map about the equator,
+                    - 'both' to flip map both ways,
+                    - 'none' to do nothing (default).
             
-            blend (str): Can be
+            blend (str):
+                Can be
             
-                - 'EW' to blend map into Jupiter-like bands,
-                - 'NS' to blend map into beach ball-like stripes,
-                - 'both' to blend map into a uniform ball,
-                - 'none' to do nothing (default).
+                    - 'EW' to blend map into Jupiter-like bands,
+                    - 'NS' to blend map into beach ball-like stripes,
+                    - 'both' to blend map into a uniform ball,
+                    - 'none' to do nothing (default).
             
             orbT (int or float):
                 Orbital period of the planet in any unit.
@@ -947,11 +965,12 @@ class DirectImaging_Planet:
         """Changes the geometry your planet is in.
 
         Args:
-            which (str): Can be
+            which (str):
+                Can be
             
-                - 'mast' to adjust master params,
-                - 'alt' to adjust alternate params,
-                - 'both'.
+                    - 'mast' to adjust master params,
+                    - 'alt' to adjust alternate params,
+                    - 'both'.
             
             incD (int, float, or str):
                 New inclination in degrees (0 to 90), or any string to
@@ -985,11 +1004,12 @@ class DirectImaging_Planet:
         """Changes the orbital and rotational params of your planet.
 
         Args:
-            which (str): Can be
+            which (str):
+                Can be
             
-                - 'mast' to adjust master ``orbT`` and ``ratRO``,
-                - 'alt' to adjust alternate values,
-                - 'both'.
+                    - 'mast' to adjust master ``orbT`` and ``ratRO``,
+                    - 'alt' to adjust alternate values,
+                    - 'both'.
             
             orbT (int, float, or str):
                 New orbital period in any unit, or any string to keep
@@ -1145,10 +1165,11 @@ class DirectImaging_Planet:
         This shows its inclination, obliquity, solstice, and spins per orbit.
 
         Args:
-            which (str): Can be
+            which (str):
+                Can be
             
-                - 'mast' to use master params (default),
-                - 'alt' to use alternate params.
+                    - 'mast' to use master params (default),
+                    - 'alt' to use alternate params.
 
         .. note::
                 
@@ -1301,11 +1322,12 @@ class DirectImaging_Planet:
         of S16.
 
         Args:
-            which (str): The param set to use. Can be
+            which (str):
+                The param set to use. Can be
             
-                - 'mast' for master (default),
-                - 'alt' for alternate,
-                - '_c' for custom, see Optional below.
+                    - 'mast' for master (default),
+                    - 'alt' for alternate,
+                    - '_c' for custom, see Optional below.
             
             bypass_time (int, float, 1d array, or str):
                 Time value(s) in place of the instance ``times``. All
@@ -1419,11 +1441,12 @@ class DirectImaging_Planet:
         throughout a planet's orbit. See Section 2 of S16.
 
         Args:
-            which (str): The param set to use. Can be
+            which (str):
+                The param set to use. Can be
             
-                - 'mast' for master (default),
-                - 'alt' for alternate,
-                - '_c' for custom, see Optional below.
+                    - 'mast' for master (default),
+                    - 'alt' for alternate,
+                    - '_c' for custom, see Optional below.
             
             keep_kernels (bool):
                 Output all kernel info, not just the characteristics,
@@ -1520,11 +1543,12 @@ class DirectImaging_Planet:
                 Orbital phase of the planet in degrees. Standard range
                 is [0, 360).
             
-            which (str): The param set to use. Can be
+            which (str):
+                The param set to use. Can be
             
-		- 'mast' for master (default),
-		- 'alt' for alternate,
-		- '_c' for custom, see Optional below.
+                    - 'mast' for master (default),
+                    - 'alt' for alternate,
+                    - '_c' for custom, see Optional below.
 	    
             grat (bool):
                 Overlay basic graticules. Default is True.
@@ -1785,17 +1809,19 @@ class DirectImaging_Planet:
         :func:`Kernel_WidthDomColat`.
 
         Args:
-            char (str): The characteristic to show. Can be
+            char (str):
+                The characteristic to show. Can be
             
-		- 'wid' for longitudinal width,
-		- 'dom' for dominant colatitude,
-		- 'both'.
+                    - 'wid' for longitudinal width,
+                    - 'dom' for dominant colatitude,
+                    - 'both'.
 	    
-            which (str): The param set to use. Can be
+            which (str):
+                The param set to use. Can be
             
-		- 'mast' for master (default),
-		- 'alt' for alternate,
-		- '_c' for custom, see Optional below.
+                    - 'mast' for master (default),
+                    - 'alt' for alternate,
+                    - '_c' for custom, see Optional below.
 	    
             explode (str):
                 The geometry param to vary, starting at zero. This shows you
@@ -1880,11 +1906,12 @@ class DirectImaging_Planet:
         (the flux divided by the sum of *K*) over time.
 
         Args:
-            which (str): The param set to use. Can be
+            which (str):
+                The param set to use. Can be
             
-                - 'mast' for master (default),
-                - 'alt' for alternate,
-                - '_c' for custom, see Optional below.
+                    - 'mast' for master (default),
+                    - 'alt' for alternate,
+                    - '_c' for custom, see Optional below.
                 
         Optional:
             albs (2D array):
@@ -1963,13 +1990,14 @@ class DirectImaging_Planet:
                 Plot **only** the difference light curve, if ``alt`` is
                 True. Default is False.
             
-            show (str): Which light curves to calculate. Can be
+            show (str):
+                Which light curves to calculate. Can be
             
-                - 'flux', the sum of [*AK*] where *A* is the albedo map
-                  and *K* is the kernel (default),
-                - 'appar' for apparent brightness, or flux divided by sum of
-                  the kernel,
-                - 'both'.
+                    - 'flux', the sum of [*AK*] where *A* is the albedo map
+                      and *K* is the kernel (default),
+                    - 'appar' for apparent brightness, or flux divided by
+                      sum of the kernel,
+                    - 'both'.
                 
         .. note::
                 
@@ -2091,14 +2119,15 @@ class DirectImaging_Planet:
                 Orbital phase of the planet in degrees. Standard range
                 is [0, 360).
             
-            show (str): Which data to draw. Can be
+            show (str):
+                Which data to draw. Can be
             
-                - 'amap' for the albedo map,
-                - 'kern' for the kernel,
-                - 'both' for the map and kernel separate,
-                - 'real' to multiply the map and kernel (default),
-                - 'sphere' for the whole globe: the visible and opposite
-                  hemispheres with no kernel.
+                    - 'amap' for the albedo map,
+                    - 'kern' for the kernel,
+                    - 'both' for the map and kernel separate,
+                    - 'real' to multiply the map and kernel (default),
+                    - 'sphere' for the whole globe: the visible and opposite
+                      hemispheres with no kernel.
                 
             alt (bool):
                 Include the alternate albedo map. Default is True.
@@ -2372,17 +2401,21 @@ class DirectImaging_Planet:
                     - *phase* for a longitudinal width,
                     - *[phase, phase]* for a change in dominant colatitude.
                 
-            which (str): The param set to use. Can be
+            which (str):
+                The param set to use. Can be
             
-                - 'mast' for master (default),
-                - 'alt' for alternate,
-                - '_c' for custom, see Optional below.
+                    - 'mast' for master (default),
+                    - 'alt' for alternate,
+                    - '_c' for custom, see Optional below.
             
-            constraint (str): The type of prediction. Can be
+            constraint (str):
+                The type of prediction. Can be
             
-                - 'perf' for perfect constraints with no data uncertainties,
-                - 'real' to use uncertainties and show {1,2,3}--sigma regions,
-                - 'both' (default).
+                    - 'perf' for perfect constraints with no data
+                      uncertainties,
+                    - 'real' to use uncertainties and show {1,2,3}--sigma
+                      regions,
+                    - 'both' (default).
             
             info (bool):
                 Include a legend subplot. Default is True.
