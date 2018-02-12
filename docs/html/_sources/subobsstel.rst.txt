@@ -1,0 +1,8 @@
+The Visible and Illuminated
+===========================
+
+If you want to calculate light curves and kernel properties, you have to know how your planets are lit up first. This core script handles the details, tracking where the observer and star are over the planet's surface.
+
+The :class:`DirectImaging_Planet <reflectdirect.DirectImaging_Planet>` class uses degrees for most angles while this backend computing happens in radians. The method :func:`SubOS_TimeDeg() <reflectdirect.DirectImaging_Planet.SubOS_TimeDeg>` takes care of the conversions.
+
+.. autofunction:: exoplanetsubspots.sub_observerstellar

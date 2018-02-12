@@ -1,0 +1,151 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ReflectDirect: Python planets in Jupyter &#8212; ReflectDirect  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The Directly Imaged Planet" href="dirimgplanet.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">ReflectDirect</a></h1>
+
+
+
+<p class="blurb">Your Jupyter stage for reflected light from directly imaged planets.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=joelcolinschwartz&repo=ReflectDirect&type=watch&count=false&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dirimgplanet.html">The Directly Imaged Planet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geomref.html">The Geometry Defined</a></li>
+<li class="toctree-l1"><a class="reference internal" href="subobsstel.html">The Visible and Illuminated</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="dirimgplanet.html" title="next chapter">The Directly Imaged Planet</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-reflectdirect">
+<span id="reflectdirect-python-planets-in-jupyter"></span><h1>ReflectDirect: Python planets in Jupyter<a class="headerlink" href="#module-reflectdirect" title="Permalink to this headline">¶</a></h1>
+<p>A suite about reflected light from directly imaged planets.</p>
+<p>ReflectDirect is an MIT licensed Python suite designed for
+exploring exoplanetary systems in Jupyter. Customize a planet’s
+brightness map and geometry, generate and compare
+light curves, analyze the kernel of reflection, and more.</p>
+<p>This suite defines the class <a class="reference internal" href="dirimgplanet.html#reflectdirect.DirectImaging_Planet" title="reflectdirect.DirectImaging_Planet"><code class="xref py py-class docutils literal"><span class="pre">DirectImaging_Planet</span></code></a> that
+has most of the important features. There’s also the method
+<a class="reference internal" href="geomref.html#reflectdirect.Geometry_Reference" title="reflectdirect.Geometry_Reference"><code class="xref py py-func docutils literal"><span class="pre">Geometry_Reference()</span></code></a> if you need a diagram explaining
+some conventions used.</p>
+<p>Dependent on:</p>
+<blockquote>
+<div><ul class="simple">
+<li>numpy</li>
+<li>scipy</li>
+<li>matplotlib</li>
+<li>ipywidgets</li>
+<li>IPython</li>
+</ul>
+</div></blockquote>
+<p>Uses the function <a class="reference internal" href="subobsstel.html#exoplanetsubspots.sub_observerstellar" title="exoplanetsubspots.sub_observerstellar"><code class="xref py py-func docutils literal"><span class="pre">sub_observerstellar()</span></code></a> and the binary files
+kernel_width_values_all5deg.npy and
+kernel_domcolat_values_all5deg.npy for some backend
+calculations.</p>
+<p>See <a class="reference external" href="https://arxiv.org/abs/1511.05152">Schwartz et al. (2016)</a>
+for background info.</p>
+<div class="section" id="the-api">
+<h2>The API<a class="headerlink" href="#the-api" title="Permalink to this headline">¶</a></h2>
+<p>All compiled here. Use the sidebar navigation, the links above, or quick search to browse.</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="the-laundry-list">
+<h2>The Laundry List<a class="headerlink" href="#the-laundry-list" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2018, Joel C. Schwartz.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
