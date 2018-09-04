@@ -1870,8 +1870,9 @@ class DirectImaging_Planet:
             self._kcevo_styledom(ax2,'medium','medium',_active)
             tit = self._kcevo_loop(char,explode,gap,times,here_incD,here_oblD,here_solD,ax1,ax2,
                                    _active,phasesD_I,ph_colors)
-            ax1.set(adjustable='box-forced',aspect=1.0/ax1.get_data_ratio())
-            ax2.set(adjustable='box-forced',aspect=1.0/ax2.get_data_ratio())
+            # 'box-forced' messes up the interactive module, 'datalim' is better.
+            ax1.set(adjustable='datalim',aspect=1.0/ax1.get_data_ratio())
+            ax2.set(adjustable='datalim',aspect=1.0/ax2.get_data_ratio())
         
         else:
             plt.figure(figsize=(10,5))
