@@ -40,7 +40,6 @@ from scipy.special import sph_harm
 from scipy.interpolate import RectBivariateSpline
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.cbook import get_sample_data
-from matplotlib._png import read_png
 from ipywidgets import Layout
 from IPython.display import display as IPy_display
 
@@ -55,8 +54,9 @@ def _rolling(vec,window):
     new_bytes = (vec.itemsize,vec.itemsize)
     return stride_tricks.as_strided(vec,shape=new_dim,strides=new_bytes)
 
-kernel_widths_ = np.load('kernel_width_values_all5deg.npy')[:-1,:,:,:19]  # Pre-handling duplicates and unneeded
-kernel_domcolats_ = np.load('kernel_domcolat_values_all5deg.npy')[:-1,:,:,:19]
+##  State parent folder (../) to load more reliably, especially when making Sphinx docs.
+kernel_widths_ = np.load('../kernel_width_values_all5deg.npy')[:-1,:,:,:19]  # Pre-handling duplicates and unneeded
+kernel_domcolats_ = np.load('../kernel_domcolat_values_all5deg.npy')[:-1,:,:,:19]
 
 
 def _serial_shift(ary):
@@ -441,7 +441,7 @@ class DirectImaging_Planet:
         
     def _import_image(self,filename):
         """Imports a png image to make a brightness map."""
-        rawvalues = read_png(get_sample_data(filename,asfileobj=False))
+        rawvalues = plt.imread(filename)
         if rawvalues.ndim == 2:
             return rawvalues
         else:
@@ -516,7 +516,7 @@ class DirectImaging_Planet:
             
                     - 'mast' for the master map,
                     - 'alt' for the alternate map (default),
-                    - 'na-pali-coast-wallpaper-for-one' to just return the map.
+                    - 'none' to just return the map.
                 
             .. note::
                         
@@ -1657,7 +1657,7 @@ class DirectImaging_Planet:
             y_mu = 1.075*klong_rel.max()
         if actual_mu > pi:
             actual_mu -= 2.0*pi
-        plt.scatter(np.degrees(actual_mu),y_mu,s=100,c=cm.Reds(0.33),edgecolor='k',marker='o',zorder=3)
+        plt.scatter(np.degrees(actual_mu),y_mu,s=100,color=cm.Reds(0.33),edgecolor='k',marker='o',zorder=3)
         if (actual_mu + sig_long) > pi:
             plt.plot([-180,-180+np.degrees(actual_mu+sig_long-pi)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
         if (actual_mu - sig_long) < -pi:
@@ -1686,7 +1686,7 @@ class DirectImaging_Planet:
             plt.xticks(size='large')
             plt.xlim([-0.05*kclat_rel.max(),1.15*kclat_rel.max()])
             y_dom = 1.075*kclat_rel.max()
-        plt.scatter(y_dom,np.degrees(dom_clat),s=100,c=cm.Blues(0.75),edgecolor='k',marker='o',zorder=3)
+        plt.scatter(y_dom,np.degrees(dom_clat),s=100,color=cm.Blues(0.75),edgecolor='k',marker='o',zorder=3)
         if grat:
             d_c = '0.33'
             plt.axhline(45,c=d_c,ls=':',lw=1)
@@ -1735,9 +1735,9 @@ class DirectImaging_Planet:
                     if isinstance(p,(int,float)):
                         pt_ind = round(p % 360.0)
                         ax1.scatter(times[pt_ind],np.degrees(sig_long[pt_ind]),
-                                    c=ph_colors[n],edgecolor='k',s=100,marker='o',zorder=2)
+                                    color=ph_colors[n],edgecolor='k',s=100,marker='o',zorder=2)
                         ax2.scatter(times[pt_ind],np.degrees(dom_clat[pt_ind]),
-                                    c=ph_colors[n],edgecolor='k',s=100,marker='o',zorder=2)
+                                    color=ph_colors[n],edgecolor='k',s=100,marker='o',zorder=2)
                     n += 1
                 ax1.legend(handles=[liwi,doco],loc='best',fontsize='medium')
     
@@ -1870,7 +1870,7 @@ class DirectImaging_Planet:
             self._kcevo_styledom(ax2,'medium','medium',_active)
             tit = self._kcevo_loop(char,explode,gap,times,here_incD,here_oblD,here_solD,ax1,ax2,
                                    _active,phasesD_I,ph_colors)
-            # 'box-forced' messes up the interactive module, 'datalim' is better.
+            # 'datalim' continues to be the best option, others mess up the interactive module.
             ax1.set(adjustable='datalim',aspect=1.0/ax1.get_data_ratio())
             ax2.set(adjustable='datalim',aspect=1.0/ax2.get_data_ratio())
         
@@ -2089,9 +2089,9 @@ class DirectImaging_Planet:
         for c in cnt_plot.collections:
             c.set_edgecolor('face')
         if round(poleN_viz,3) >= 0:
-            plt.scatter(poleN_x,poleN_y,s=100,c=(0,1,0),edgecolor='k',marker='o')
+            plt.scatter(poleN_x,poleN_y,s=100,color=(0,1,0),edgecolor='k',marker='o')
         if round(poleN_viz,3) <= 0:
-            plt.scatter(-poleN_x,-poleN_y,s=70,c=(0,1,0),edgecolor='k',marker='D')
+            plt.scatter(-poleN_x,-poleN_y,s=70,color=(0,1,0),edgecolor='k',marker='D')
         plt.xlim([-1.05,1.05])
         plt.ylim([-1.05,1.05])
         if name != 'NONE':
@@ -2343,12 +2343,12 @@ class DirectImaging_Planet:
                 if not _active:
                     axs.text(np.radians(225),np.radians(110),'Combined',color='0.5',
                              size='x-large',ha='center',va='center')
-            axs.scatter(solR,oblR,s=100,c=(0,1,0),edgecolor='k',marker=mark,zorder=2)
+            axs.scatter(solR,oblR,s=100,color=(0,1,0),edgecolor='k',marker=mark,zorder=2)
 
         axs.set_thetalim([0,2.0*pi])
         axs.set_rlim([0,pi/2.0])
         ts = lambda a: 'medium' if a else 'large'
-        axs.set_thetagrids(np.linspace(0,360,9),sol_ticks_,size=ts(_active))
+        axs.set_thetagrids(np.linspace(0,315,8),sol_ticks_,size=ts(_active))  # Match numbers to sol_ticks to avoid error.
         axs.set_rgrids(np.linspace(0,pi/2.0,4),obl_ticks_,size=ts(_active))
         return s+1
     
@@ -2723,7 +2723,7 @@ class DirectImaging_Planet:
             plt.subplot(235,projection='polar')
             plt.gca().set_theta_zero_location('S')
             plt.gca().set_rlabel_position(45)
-            plt.xticks(np.linspace(0,2.0*pi,9),sol_ticks_,size='medium',alpha=0.1)
+            plt.xticks(np.linspace(0,1.75*pi,8),sol_ticks_,size='medium',alpha=0.1)  # Match numbers to sol_ticks to avoid error.
             plt.yticks(np.linspace(0,pi/2.0,4),obl_ticks_,size='medium',alpha=0.1)
             plt.gca().axes.spines['polar'].set_alpha(0.1)
             plt.gca().grid(alpha=0.1)
