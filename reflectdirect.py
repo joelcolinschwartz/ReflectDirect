@@ -35,6 +35,7 @@ import matplotlib.cm as cm
 import matplotlib.patches as pat
 import ipywidgets as widgets
 
+from pathlib import Path
 from numpy.lib import stride_tricks
 from scipy.special import sph_harm
 from scipy.interpolate import RectBivariateSpline
@@ -54,9 +55,10 @@ def _rolling(vec,window):
     new_bytes = (vec.itemsize,vec.itemsize)
     return stride_tricks.as_strided(vec,shape=new_dim,strides=new_bytes)
 
-##  State parent folder (../) to load more reliably, especially when making Sphinx docs.
-kernel_widths_ = np.load('../kernel_width_values_all5deg.npy')[:-1,:,:,:19]  # Pre-handling duplicates and unneeded
-kernel_domcolats_ = np.load('../kernel_domcolat_values_all5deg.npy')[:-1,:,:,:19]
+## Use RD folder's absolute path to load reliably, especially when making Sphinx docs.
+folder_path = str(Path(__file__).parent.absolute())
+kernel_widths_ = np.load(folder_path + '/kernel_width_values_all5deg.npy')[:-1,:,:,:19]  # Pre-handling duplicates and unneeded
+kernel_domcolats_ = np.load(folder_path + '/kernel_domcolat_values_all5deg.npy')[:-1,:,:,:19]
 
 
 def _serial_shift(ary):
