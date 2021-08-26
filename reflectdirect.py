@@ -2380,8 +2380,7 @@ class DirectImaging_Planet:
     
     def SpinAxis_Constraints(self,phaseD_list,which='mast',constraint='both',info=True,combine=True,
                              combine_only=False,keep_probdata=False,res=500,n_sol=361,n_obl=91,
-                             phaseD_sig=10.0,incD_sig=10.0,kwid_sig=10.0,kddc_sig=20.0,_active=False,
-                             incD_I=85,solD_I=0,oblD_I=0):
+                             phaseD_sig=10.0,incD_sig=10.0,kwid_sig=10.0,kddc_sig=20.0,**kwargs):
         """Plots how observations may constrain your planet's spin axis.
 
         .. image:: _static/spinaxis_example.png
@@ -2511,6 +2510,12 @@ class DirectImaging_Planet:
                   element or 'Combined'.
                     
         """
+        ## Default keywords
+        _active = kwargs.get('_active',False)
+        incD_I = kwargs.get('incD_I',85)
+        solD_I = kwargs.get('solD_I',0)
+        oblD_I = kwargs.get('oblD_I',0)
+        
         made_combo_flag = False
         
         entries = len(phaseD_list)
@@ -2764,10 +2769,9 @@ class DirectImaging_Planet:
             plt.text(np.radians(0),np.radians(0),bads,color=(1.0,0.5,0),size='x-large',
                      ha='center',va='center',weight='bold')
         else:
-            self.SpinAxis_Constraints(phasesD_forspin,'_c','perf',False,False,
-                                      True,False,500,361,91,
-                                      10.0,10.0,10.0,20.0,True,
-                                      incD_I,solD_I,oblD_I)
+            self.SpinAxis_Constraints(phasesD_forspin,which='_c',constraint='perf',
+                                      info=False,combine=False,combine_only=True,_active=True,
+                                      incD_I=incD_I,solD_I=solD_I,oblD_I=oblD_I)
             plt.text(np.radians(225),np.radians(112),'Spin Axis\nConstraints',color='k',size='medium',
                      ha='center',va='center')
         
