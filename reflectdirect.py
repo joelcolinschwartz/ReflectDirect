@@ -1865,7 +1865,7 @@ class DirectImaging_Planet:
         """
         ## Default keywords
         _active = kwargs.get('_active',False)
-        phasesD_I = kwargs.get('phaseD',[0])
+        phasesD_I = kwargs.get('phasesD_I',[0])
         ph_colors = kwargs.get('ph_colors',['k'])
         
         times = np.linspace(0,1,361)
