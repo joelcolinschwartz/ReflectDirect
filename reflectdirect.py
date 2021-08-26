@@ -1981,9 +1981,7 @@ class DirectImaging_Planet:
             plt.plot(T,A_app,c=l_c,ls='--',label=laba,zorder=zo)
     
     
-    def LightCurve_Plot(self,alt=True,diff=False,diff_only=False,show='flux',_active=False,
-                        times_I=0,orbT_I=(24.0*360.0),ratRO_I=10.0,incD_I=90,oblD_I=0,solD_I=0,longzeroD_I=0,
-                        ph_color='k',now_I=0):
+    def LightCurve_Plot(self,alt=True,diff=False,diff_only=False,show='flux',**kwargs):
         """Plots light curves of your planet.
 
         .. image:: _static/lcplot_example.png
@@ -2015,9 +2013,7 @@ class DirectImaging_Planet:
                 
         .. note::
                 
-            Starting with ``_active``, ignore the remaining arguments.
-            These are used by the interactive function
-            :func:`Sandbox_Reflection`.
+            Keywords are only used by the interactive function :func:`Sandbox_Reflection`.
 
         Effect:
             Stores this matplotlib figure as ``fig_light``, **overwriting**
@@ -2025,7 +2021,18 @@ class DirectImaging_Planet:
             calling ``fig_light.savefig(...)``.
             
         """
-        if _active:
+        if kwargs.get('_active',False):
+            ## Default keywords
+            times_I = kwargs.get('times_I',0)
+            orbT_I = kwargs.get('orbT_I',(24.0*360.0))
+            ratRO_I = kwargs.get('ratRO_I',10.0)
+            incD_I = kwargs.get('incD_I',90)
+            oblD_I = kwargs.get('oblD_I',0)
+            solD_I = kwargs.get('solD_I',0)
+            longzeroD_I = kwargs.get('longzeroD_I',0)
+            ph_color = kwargs.get('ph_color','k')
+            now_I = kwargs.get('now_I',0)
+            
             flux_ak,appar_a = self.Light_Curves('_c',self.albedos,times_I,orbT_I,ratRO_I,
                                                 incD_I,oblD_I,solD_I,longzeroD_I)
             Ph = np.linspace(-2.5,2.5,times_I.size)
@@ -2712,8 +2719,10 @@ class DirectImaging_Planet:
         for p in phasesD_single:
             if isinstance(p,(int,float)):
                 times_I = orbT_I*((p + rel_tphase)/360.0)
-                self.LightCurve_Plot(False,False,False,lc_swit,True,
-                                     times_I,orbT_I,ratRO_I,incD_I,oblD_I,solD_I,longzeroD_I,ph_colors[n],n)
+                self.LightCurve_Plot(alt=False,show=lc_swit,_active=True,
+                                     times_I=times_I,orbT_I=orbT_I,ratRO_I=ratRO_I,
+                                     incD_I=incD_I,oblD_I=oblD_I,solD_I=solD_I,
+                                     longzeroD_I=longzeroD_I,ph_color=ph_colors[n],now_I=n)
             n += 1
         n = 0
         plt.xlim([-2.5,2.5])
