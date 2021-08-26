@@ -118,22 +118,22 @@ def Geometry_Reference(ref_save=False,**kwargs):
     .. image:: _static/geomref_example.png
         :width: 60%
         :align: center
-	
+    
     For example, this shows how important angles are defined. See
     Appendix A of
     `Schwartz et al. (2016) <https://arxiv.org/abs/1511.05152>`_.
 
     Args:
-	ref_save (bool):
+        ref_save (bool):
             Save the diagram as "geometry_reference.pdf" in the current
             working directory. Default is False.
 
     .. note::
-	
-	Keywords are only used by the class :class:`DirectImaging_Planet`
-	for the interactive function :func:`Sandbox_Reflection()
-	<reflectdirect.DirectImaging_Planet.Sandbox_Reflection>`.
-	
+        
+        Keywords are only used by the class :class:`DirectImaging_Planet`
+        for the interactive function :func:`Sandbox_Reflection()
+        <reflectdirect.DirectImaging_Planet.Sandbox_Reflection>`.
+    
     """
     ## Default keywords
     _active = kwargs.get('_active',False)
@@ -1809,8 +1809,7 @@ class DirectImaging_Planet:
         ax.set_xlabel('Time (orbits)',size=s_lab)
     
     
-    def KChar_Evolve_Plot(self,char,which='mast',explode='none',gap=10,incD=85,oblD=0,solD=0,_active=False,
-                          phasesD_I=[0],ph_colors=['k']):
+    def KChar_Evolve_Plot(self,char,which='mast',explode='none',gap=10,incD=85,oblD=0,solD=0,**kwargs):
         """Plots the kernel's characteristics over a full orbit.
 
         .. image:: _static/kcharevo_example.png
@@ -1826,14 +1825,14 @@ class DirectImaging_Planet:
                     - 'wid' for longitudinal width,
                     - 'dom' for dominant colatitude,
                     - 'both'.
-	    
+                    
             which (str):
                 The param set to use. Can be
             
                     - 'mast' for master (default),
                     - 'alt' for alternate,
                     - '_c' for custom, see Optional below.
-	    
+                    
             explode (str):
                 The geometry param to vary, starting at zero. This shows you
                 many evolutions instead of one curve. Can be
@@ -1855,10 +1854,8 @@ class DirectImaging_Planet:
                 docstrings.
 
         .. note::
-	
-            Starting with ``_active``, ignore the remaining arguments.
-            These are used by the interactive function
-            :func:`Sandbox_Reflection`.
+            
+            Keywords are only used by the interactive function :func:`Sandbox_Reflection`.
 
         Effect:
             Stores this matplotlib figure as ``fig_kchar``, **overwriting**
@@ -1866,6 +1863,11 @@ class DirectImaging_Planet:
             calling ``fig_kchar.savefig(...)``.
             
         """
+        ## Default keywords
+        _active = kwargs.get('_active',False)
+        phasesD_I = kwargs.get('phaseD',[0])
+        ph_colors = kwargs.get('ph_colors',['k'])
+        
         times = np.linspace(0,1,361)
         if which == 'mast':
             here_incD,here_oblD,here_solD = self.incD,self.oblD,self.solD
@@ -2727,7 +2729,8 @@ class DirectImaging_Planet:
                  transform=plt.gca().transAxes)
         
         ### subplot(236)
-        self.KChar_Evolve_Plot('both','_c','none','N/A',incD_I,oblD_I,solD_I,True,phasesD_single,ph_colors)
+        self.KChar_Evolve_Plot('both',which='_c',incD=incD_I,oblD=oblD_I,solD=solD_I,
+                               _active=True,phasesD_I=phasesD_single,ph_colors=ph_colors)
         plt.text(0.5,1.01,'Kernel Characteristics',color='k',size='medium',ha='center',va='bottom',
                  transform=plt.gca().transAxes)
         
