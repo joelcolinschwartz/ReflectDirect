@@ -1191,8 +1191,8 @@ class DirectImaging_Planet:
             calling ``fig_geom.savefig(...)``.
             
         """
-        ## Takes almost all keywords from Geometry_Reference: _active,incD,oblD,solD,ratRO,phaseD,ph_colors.
-        reference = False  # You never make the reference diagram here.
+        ## Takes almost all keywords from Geometry_Reference: _active,incD,oblD,solD,ratRO,phaseD,ph_colors...
+        reference = False  # ...except this one; you never make the reference diagram here.
         
         if kwargs.get('_active',False):
             Geometry_Reference(reference=reference,**kwargs)
@@ -2123,8 +2123,7 @@ class DirectImaging_Planet:
         return s+1
     
     
-    def Orthographic_Viewer(self,phaseD,show='real',alt=False,same_scale=True,force_bright=True,_active=False,
-                            orbT_I=(24.0*360.0),ratRO_I=10.0,incD_I=90,oblD_I=0,solD_I=0,longzeroD_I=0):
+    def Orthographic_Viewer(self,phaseD,show='real',alt=False,same_scale=True,force_bright=True,**kwargs):
         """Draws your planet's map and kernel in orthographic projection.
 
         .. image:: _static/orthview_example.png
@@ -2166,9 +2165,7 @@ class DirectImaging_Planet:
                 
         .. note::
                 
-            Starting with ``_active``, ignore the remaining arguments.
-            These are used by the interactive function
-            :func:`Sandbox_Reflection`.
+            Keywords are only used by the interactive function :func:`Sandbox_Reflection`.
 
         Effect:
             Stores this matplotlib figure as ``fig_orth``, **overwriting**
@@ -2176,8 +2173,16 @@ class DirectImaging_Planet:
             calling ``fig_orth.savefig(...)``.
             
         """
-        if _active:
-            row,col,s = 2,3,1
+        if kwargs.get('_active',False):
+            ## Default keywords
+            orbT_I = kwargs.get('orbT_I',(24.0*360.0))
+            ratRO_I = kwargs.get('ratRO_I',10.0)
+            incD_I = kwargs.get('incD_I',90)
+            oblD_I = kwargs.get('oblD_I',0)
+            solD_I = kwargs.get('solD_I',0)
+            longzeroD_I = kwargs.get('longzeroD_I',0)
+            
+            row,col,s = 2,3,1  # Start on subplot(231)
             
             vm_l,vm_h,va_l,va_h = self._double_amap_colorbounds(alt,same_scale)
             (k2d,orth_Viz,orth_X,orth_Y,
@@ -2187,7 +2192,7 @@ class DirectImaging_Planet:
             s = self._orth_style(row,col,s,'amap',self.albedos,vm_l,vm_h,
                                  orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,'NONE')
             plt.text(-0.7,1.04,'Visible Map',color='k',size='medium',ha='center',va='center')
-            s += 1
+            s += 1  # Now on subplot(233)
             up = lambda fb: k2d.max() if fb else 1.0/pi
             s = self._orth_style(row,col,s,'kern',k2d,0,up(force_bright),
                                  orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,'NONE')
@@ -2711,8 +2716,10 @@ class DirectImaging_Planet:
                               phaseD=phasesD_single,ph_colors=ph_colors)
         
         ### subplot(231) and subplot(233)
-        self.Orthographic_Viewer(phaseD_I,'both',False,True,True,True,
-                                 orbT_I,ratRO_I,incD_I,oblD_I,solD_I,longzeroD_I)
+        self.Orthographic_Viewer(phaseD_I,show='both',_active=True,
+                                 orbT_I=orbT_I,ratRO_I=ratRO_I,
+                                 incD_I=incD_I,oblD_I=oblD_I,solD_I=solD_I,
+                                 longzeroD_I=longzeroD_I)
         
         plt.subplot(234)
         n = 0
