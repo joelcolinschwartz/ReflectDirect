@@ -130,8 +130,7 @@ def Geometry_Reference(ref_save=False,**kwargs):
 
     .. note::
 	
-	Starting with ``_active``, ignore the remaining arguments.
-	These are used by the class :class:`DirectImaging_Planet`
+	Keywords are only used by the class :class:`DirectImaging_Planet`
 	for the interactive function :func:`Sandbox_Reflection()
 	<reflectdirect.DirectImaging_Planet.Sandbox_Reflection>`.
 	
@@ -1184,9 +1183,7 @@ class DirectImaging_Planet:
 
         .. note::
                 
-            Starting with ``_active``, ignore the remaining arguments.
-            These are used by the interactive function
-            :func:`Sandbox_Reflection`.
+            Keywords are only used by the interactive function :func:`Sandbox_Reflection`.
 
         Effect:
             Stores this matplotlib figure as ``fig_geom``, **overwriting**
