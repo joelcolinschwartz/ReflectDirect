@@ -2431,7 +2431,7 @@ class DirectImaging_Planet:
             
                     - 'mast' for master (default),
                     - 'alt' for alternate,
-                    - '_c' for custom, see Optional below.
+                    - '_c' for custom, see Note below.
             
             constraint (str):
                 The type of prediction. Can be
@@ -2465,12 +2465,6 @@ class DirectImaging_Planet:
             
             n_obl (int):
                 Number of obliquity grid points. Default is 91.
-            
-            incD_I, solD_I, oblD_I:
-                Custom set of params to use if ``which`` is '_c'.
-                Standard definitions and formats apply.
-                See the :class:`class and constructor <DirectImaging_Planet>`
-                docstrings.
 
         Very Optional:
             **You should probably check out Section 4.1 of S16 before
@@ -2492,8 +2486,12 @@ class DirectImaging_Planet:
                 
         .. note::
                 
-            Ignore the argument ``_active``. This is used by
-            the interactive function :func:`Sandbox_Reflection`.
+            Keywords are used by the interactive function :func:`Sandbox_Reflection`.
+            But if ``which`` is '_c', then enter your custom
+            params as ``incD_I``, ``solD_I`` and ``oblD_I``.
+            Standard definitions and formats apply.
+            See the :class:`class and constructor <DirectImaging_Planet>` 
+            docstrings.
 
         Effect:
             Stores this matplotlib figure as ``fig_spin``, **overwriting**
