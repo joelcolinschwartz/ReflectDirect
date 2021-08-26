@@ -112,8 +112,7 @@ def _rotate_ccw_angle(X,Y,ang):
     return X_new,Y_new
 
 
-def Geometry_Reference(ref_save=False,_active=False,incD=85,oblD=0,solD=0,ratRO=10.0,phaseD=[0],ph_colors=['k'],
-                       name='NONE',reference=True):
+def Geometry_Reference(ref_save=False,**kwargs):
     """Makes a reference diagram about exoplanetary systems.
 
     .. image:: _static/geomref_example.png
@@ -137,6 +136,17 @@ def Geometry_Reference(ref_save=False,_active=False,incD=85,oblD=0,solD=0,ratRO=
 	<reflectdirect.DirectImaging_Planet.Sandbox_Reflection>`.
 	
     """
+    ## Default keywords
+    _active = kwargs.get('_active',False)
+    incD = kwargs.get('incD',85)
+    oblD = kwargs.get('oblD',0)
+    solD = kwargs.get('solD',0)
+    ratRO = kwargs.get('ratRO',10.0)
+    phaseD = kwargs.get('phaseD',[0])
+    ph_colors = kwargs.get('ph_colors',['k'])
+    name = kwargs.get('name','NONE')
+    reference = kwargs.get('reference',True)  # Gets set to False by Geometry_Diagram
+    
     if _active:
         comp_tweak,comp_siz = 0.04,'medium'
     else:
@@ -1156,8 +1166,7 @@ class DirectImaging_Planet:
         print(form_cols.format('Alternate',self.incD_b,self.oblD_b,self.solD_b,self.longzeroD_b))
     
     
-    def Geometry_Diagram(self,which='mast',_active=False,incD=85,oblD=0,solD=0,ratRO=10.0,
-                         phaseD=[0],ph_colors=['k']):
+    def Geometry_Diagram(self,which='mast',**kwargs):
         """Makes a diagram of the geometry your planet is in.
 
         .. image:: _static/geomdiag_example.png
@@ -1185,15 +1194,18 @@ class DirectImaging_Planet:
             calling ``fig_geom.savefig(...)``.
             
         """
-        if _active:
-            Geometry_Reference(False,True,incD,oblD,solD,ratRO,phaseD,ph_colors,reference=False)
+        ## Takes almost all keywords from Geometry_Reference: _active,incD,oblD,solD,ratRO,phaseD,ph_colors.
+        reference = False  # You never make the reference diagram here.
+        
+        if kwargs.get('_active',False):
+            Geometry_Reference(reference=reference,**kwargs)
         else:
             if which == 'mast':
-                Geometry_Reference(False,False,self.incD,self.oblD,self.solD,self.ratRO,
-                                   self.solD,ph_colors,self.name,reference=False)
+                Geometry_Reference(incD=self.incD,oblD=self.oblD,solD=self.solD,ratRO=self.ratRO,
+                                   phaseD=self.solD,name=self.name,reference=reference)
             elif which == 'alt':
-                Geometry_Reference(False,False,self.incD_b,self.oblD_b,self.solD_b,self.ratRO_b,
-                                   self.solD_b,ph_colors,'Alt. '+self.name,reference=False)
+                Geometry_Reference(incD=self.incD_b,oblD=self.oblD_b,solD=self.solD_b,ratRO=self.ratRO_b,
+                                   phaseD=self.solD_b,name='Alt. '+self.name,reference=reference)
 
             plt.tight_layout()
             self.fig_geom = plt.gcf()
@@ -2688,7 +2700,9 @@ class DirectImaging_Planet:
         plt.figure(figsize=(14,9.3))
         
         plt.subplot(232)
-        self.Geometry_Diagram('N/A',True,incD_I,oblD_I,solD_I,ratRO_I,phasesD_single,ph_colors)
+        self.Geometry_Diagram(which='N/A',_active=True,
+                              incD=incD_I,oblD=oblD_I,solD=solD_I,ratRO=ratRO_I,
+                              phaseD=phasesD_single,ph_colors=ph_colors)
         
         ### subplot(231) and subplot(233)
         self.Orthographic_Viewer(phaseD_I,'both',False,True,True,True,
