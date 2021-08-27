@@ -296,7 +296,7 @@ class DirectImaging_Planet:
     This class is based on the model, equations, and discussion of
     `Schwartz et al. (2016) <https://arxiv.org/abs/1511.05152>`_,
     S16 in the methods below. It has two sets of planetary
-    parameters, a master and an alternate, that users control. These
+    parameters, a primary and an alternate, that users control. These
     sets make calling many of the class methods simple and consistent.
     Several methods store figures that can be saved later.
 
@@ -341,7 +341,7 @@ class DirectImaging_Planet:
         name (str):
             Your exoplanet's name.
         times (1d array):
-            Time array based on the master orbital period.
+            Time array based on the primary orbital period.
             
         n_clat (int):
             Number of colatitudes for the planetary grid.
@@ -376,7 +376,7 @@ class DirectImaging_Planet:
         sin_longs (2d array):
             Sine of longitudes.
         
-        Master Params (append ``_b`` for Alternates):
+        Primary Params (append ``_b`` for Alternates):
             albedos (2d array):
                 The planet's albedo values with shape (``n_clat``,
                 ``n_long``).
@@ -510,14 +510,14 @@ class DirectImaging_Planet:
         return np.sum(image[:,:-1]*self.sin_clats[:,:-1])*self.delta_clat*self.delta_long/(4.0*pi)
     
 
-    def InvertFlipBlend_Amap(self,image='mast',into='alt',invert=False,flip='none',blend='none'):
+    def InvertFlipBlend_Amap(self,image='pri',into='alt',invert=False,flip='none',blend='none'):
         """Inverts, flips, and blends a given albedo map.
 
         Args:
             image (str or ndarray):
                 The source map. If string, can be
                 
-                    - 'mast' to use master map (default),
+                    - 'pri' to use primary map (default),
                     - 'alt' to use alternate map.
                 
                 Otherwise, an ndarry or values.
@@ -525,13 +525,13 @@ class DirectImaging_Planet:
             into (str):
                 Where the new map goes. Can be
             
-                    - 'mast' for the master map,
+                    - 'pri' for the primary map,
                     - 'alt' for the alternate map (default),
                     - 'none' to just return the map.
                 
             .. note::
                         
-                If you try to put an ``image`` ndarray ``into`` the master
+                If you try to put an ``image`` ndarray ``into`` the primary
                 or alternate map, it should have shape (``n_clat``,
                 ``n_long``).
                 
@@ -556,7 +556,7 @@ class DirectImaging_Planet:
                     - 'none' to do nothing (default).
 
         Effect:
-            If ``into`` is 'mast' or 'alt', stores new albedo map as ``albedos``
+            If ``into`` is 'pri' or 'alt', stores new albedo map as ``albedos``
             or ``albedos_b``, respectively.
 
         Returns:
@@ -565,14 +565,14 @@ class DirectImaging_Planet:
             
         """
         if isinstance(image,str):
-            if image == 'mast':
+            if image == 'pri':
                 old_image = self.albedos
                 new_image = np.copy(self.albedos)
             elif image == 'alt':
                 old_image = self.albedos_b
                 new_image = np.copy(self.albedos_b)
         else:
-            if into in ['mast','alt']:
+            if into in ['pri','alt']:
                 if image.shape != (self.n_clat,self.n_long):
                     print('InvertFlipBlend_Amap warning: you tried storing an image with shape {},'.format(image.shape))
                     print('    but right now {} is expecting albedo maps with shape ({}, {}).'.format(self.name,
@@ -605,7 +605,7 @@ class DirectImaging_Planet:
             
         new_image[:,-1] = new_image[:,0]
 
-        if into == 'mast':
+        if into == 'pri':
             self.albedos = new_image
         elif into == 'alt':
             self.albedos_b = new_image
@@ -614,7 +614,7 @@ class DirectImaging_Planet:
     
 
     def Build_Amap(self,kind='ylm',mp_data=[[1,-1,1.0],[2,0,-1.0]],primeD=0,limit=True,alb_lims=[0.0,1.0],
-                   into='mast',invert=False,flip='none',blend='none'):
+                   into='pri',invert=False,flip='none',blend='none'):
         """Creates an albedo map from input data.
 
         Args:
@@ -662,7 +662,7 @@ class DirectImaging_Planet:
             into (str):
                 Where the new map goes. Can be
             
-                    - 'mast' for the master map,
+                    - 'pri' for the primary map,
                     - 'alt' for the alternate map (default),
                     - 'none' to just return the map.
             
@@ -687,7 +687,7 @@ class DirectImaging_Planet:
                     - 'none' to do nothing (default).
 
         Effect:
-            If ``into`` is 'mast' or 'alt', stores new albedo map as ``albedos``
+            If ``into`` is 'pri' or 'alt', stores new albedo map as ``albedos``
             or ``albedos_b``, respectively.
 
         Returns:
@@ -738,7 +738,7 @@ class DirectImaging_Planet:
         if limit:
             primed_albedos = self._linear_convert(primed_albedos,alb_lims)
 
-        if into in ['mast','alt']:
+        if into in ['pri','alt']:
             self.InvertFlipBlend_Amap(primed_albedos,into,invert,flip,blend)
         elif into == 'none':
             return self.InvertFlipBlend_Amap(primed_albedos,into,invert,flip,blend)
@@ -831,10 +831,10 @@ class DirectImaging_Planet:
                  incD=85,oblD=0,solD=0,longzeroD=0):
         """*Constructor for the class DirectImaging_Planet.*
 
-        All arguments are for your **master** map and params.
+        All arguments are for your **primary** map and params.
 
-        For your alternate map, inverts the master map. Other
-        alternate params are set equal to the master values.
+        For your alternate map, inverts the primary map. Other
+        alternate params are set equal to the primary values.
         
         Args:
             name (str):
@@ -936,7 +936,7 @@ class DirectImaging_Planet:
         self.name = name
         
         self._colat_long(n_clat,n_long)
-        self.Build_Amap(kind,mp_data,primeD,limit,alb_lims,'mast',invert,flip,blend)
+        self.Build_Amap(kind,mp_data,primeD,limit,alb_lims,'pri',invert,flip,blend)
         
         self.orbT = orbT
         self.ratRO = ratRO
@@ -952,7 +952,7 @@ class DirectImaging_Planet:
         self.solD = solD
         self.longzeroD = longzeroD
         
-        self.InvertFlipBlend_Amap('mast','alt',invert=True,flip='none',blend='none')
+        self.InvertFlipBlend_Amap('pri','alt',invert=True,flip='none',blend='none')
         self.orbT_b = orbT
         self.ratRO_b = ratRO
         self.incD_b = incD
@@ -979,7 +979,7 @@ class DirectImaging_Planet:
             which (str):
                 Can be
             
-                    - 'mast' to adjust master params,
+                    - 'pri' to adjust primary params,
                     - 'alt' to adjust alternate params,
                     - 'both'.
             
@@ -998,7 +998,7 @@ class DirectImaging_Planet:
                 New sub-observer longitude at t=0.
             
         """
-        if which in ['mast','both']:
+        if which in ['pri','both']:
             self.incD = self._compare_param(incD,self.incD)
             self.oblD = self._compare_param(oblD,self.oblD)
             self.solD = self._compare_param(solD,self.solD)
@@ -1018,7 +1018,7 @@ class DirectImaging_Planet:
             which (str):
                 Can be
             
-                    - 'mast' to adjust master ``orbT`` and ``ratRO``,
+                    - 'pri' to adjust primary ``orbT`` and ``ratRO``,
                     - 'alt' to adjust alternate values,
                     - 'both'.
             
@@ -1030,7 +1030,7 @@ class DirectImaging_Planet:
             ratRO:
                 New rotational-to-orbital frequency ratio.
 
-            **The args below are set relative to the master params.**
+            **The args below are set relative to the primary params.**
             
             orb_min:
                 New minimum time in orbits, can be negative.
@@ -1047,11 +1047,11 @@ class DirectImaging_Planet:
             360 time steps per full orbit.
 
         Effect:
-            Also updates ``times``, the time array based on the master
+            Also updates ``times``, the time array based on the primary
             orbital period.
             
         """
-        if which in ['mast','both']:
+        if which in ['pri','both']:
             self.orbT = self._compare_param(orbT,self.orbT)
             self.ratRO = self._compare_param(ratRO,self.ratRO)
         if which in ['alt','both']:
@@ -1095,7 +1095,7 @@ class DirectImaging_Planet:
 
         Effect:
             Calls :func:`InvertFlipBlend_Amap`, :func:`Adjust_Geometry`,
-            and :func:`Adjust_MotionTimes`, using your master params to
+            and :func:`Adjust_MotionTimes`, using your primary params to
             setup the alternate params as described.
             
         """
@@ -1118,7 +1118,7 @@ class DirectImaging_Planet:
         """Prints many of the current model parameters for your planet.
 
         Grouped by grid, albedo map, motion, and geometry. The latter three
-        are broken down further into the master and alternate cases.
+        are broken down further into the primary and alternate cases.
         
         """
         print('Below are some parameters you are using to model {}.'.format(self.name))
@@ -1136,7 +1136,7 @@ class DirectImaging_Planet:
         print(form_cols.format('**Albedo Map**','Low','Average','High','Realistic?'))
         form_cols = '{:<16} {:^14.3f} {:^14.3f} {:^14.3f} {:^16}'
         a_low,a_avg,a_high = self.albedos.min(),self._amap_average(self.albedos),self.albedos.max()
-        print(form_cols.format('Master',a_low,a_avg,a_high,self._describe_amap(a_low,a_high)))
+        print(form_cols.format('Primary',a_low,a_avg,a_high,self._describe_amap(a_low,a_high)))
         a_low_b,a_avg_b,a_high_b = self.albedos_b.min(),self._amap_average(self.albedos_b),self.albedos_b.max()
         print(form_cols.format('Alternate',a_low_b,a_avg_b,a_high_b,self._describe_amap(a_low_b,a_high_b)))
         print('')
@@ -1149,7 +1149,7 @@ class DirectImaging_Planet:
             low_t,high_t = self.times,self.times
         else:
             low_t,high_t = self.times[0],self.times[-1]
-        print(form_cols.format('Master',self.orbT,self.ratRO,
+        print(form_cols.format('Primary',self.orbT,self.ratRO,
                                low_t/abs(self.orbT),high_t/abs(self.orbT)))
         form_cols = '{:<14} {:^24.3f} {:^22.4f} {:^17} {:^17}'
         low_orb_b = '(({:.4f}))'.format(low_t/abs(self.orbT_b))
@@ -1161,11 +1161,11 @@ class DirectImaging_Planet:
         print(form_cols.format('**Geometry**','Inclination (deg)','Obliquity (deg)',
                                'Solstice (deg)','t=0 Longitude (deg)'))
         form_cols = '{:<14} {:^20.2f} {:^18.2f} {:^18.2f} {:^22.2f}'
-        print(form_cols.format('Master',self.incD,self.oblD,self.solD,self.longzeroD))
+        print(form_cols.format('Primary',self.incD,self.oblD,self.solD,self.longzeroD))
         print(form_cols.format('Alternate',self.incD_b,self.oblD_b,self.solD_b,self.longzeroD_b))
     
     
-    def Geometry_Diagram(self,which='mast',**kwargs):
+    def Geometry_Diagram(self,which='pri',**kwargs):
         """Makes a diagram of the geometry your planet is in.
 
         .. image:: _static/geomdiag_example.png
@@ -1178,7 +1178,7 @@ class DirectImaging_Planet:
             which (str):
                 Can be
             
-                    - 'mast' to use master params (default),
+                    - 'pri' to use primary params (default),
                     - 'alt' to use alternate params.
 
         .. note::
@@ -1197,7 +1197,7 @@ class DirectImaging_Planet:
         if kwargs.get('_active',False):
             Geometry_Reference(reference=reference,**kwargs)
         else:
-            if which == 'mast':
+            if which == 'pri':
                 Geometry_Reference(incD=self.incD,oblD=self.oblD,solD=self.solD,ratRO=self.ratRO,
                                    phaseD=self.solD,name=self.name,reference=reference)
             elif which == 'alt':
@@ -1275,7 +1275,7 @@ class DirectImaging_Planet:
             :align: center
 
         This projection is a simple rectangle: colatitudes are horizontal lines
-        and longitudes are vertical lines. The master map is always shown, and
+        and longitudes are vertical lines. The primary map is always shown, and
         the color schemes adapt to the albedo values you are using (real,
         semi-real, or unrealistic).
 
@@ -1284,7 +1284,7 @@ class DirectImaging_Planet:
                 Include the alternate map. Default is True.
             
             same_scale (bool):
-                If the master and alternate maps have the same color scheme,
+                If the primary and alternate maps have the same color scheme,
                 then show both on the same color scale. Default is True.
             
             grat (bool):
@@ -1324,7 +1324,7 @@ class DirectImaging_Planet:
         return worb,wrot,inc,obl,sol,longzero
     
     
-    def SubOS_TimeDeg(self,which='mast',times=0,orbT=(24.0*360.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0,
+    def SubOS_TimeDeg(self,which='pri',times=0,orbT=(24.0*360.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0,
                         bypass_time='no'):
         """Calculates an planet's sub-observer and -stellar locations over time.
 
@@ -1336,13 +1336,13 @@ class DirectImaging_Planet:
             which (str):
                 The param set to use. Can be
             
-                    - 'mast' for master (default),
+                    - 'pri' for primary (default),
                     - 'alt' for alternate,
                     - '_c' for custom, see Optional below.
             
             bypass_time (int, float, 1d array, or str):
                 Time value(s) in place of the instance ``times``. All
-                other master or alternate params are still used. Canceled
+                other primary or alternate params are still used. Canceled
                 if any string. Default is 'no'.
 
         Optional:
@@ -1366,7 +1366,7 @@ class DirectImaging_Planet:
                 - cos phi_st
         
         """
-        if which == 'mast':
+        if which == 'pri':
             here_times = self.times
             worb,wrot,inc,obl,sol,longzero = self._convert_omega_rad(self.orbT,self.ratRO,
                                                                      self.incD,self.oblD,self.solD,self.longzeroD)
@@ -1443,7 +1443,7 @@ class DirectImaging_Planet:
         return np.sum(k2d,axis=2)*self.delta_long
     
     
-    def Kernel_WidthDomColat(self,which='mast',keep_kernels=False,times=0,orbT=(24.0*360.0),ratRO=10.0,
+    def Kernel_WidthDomColat(self,which='pri',keep_kernels=False,times=0,orbT=(24.0*360.0),ratRO=10.0,
                              incD=85,oblD=0,solD=0,longzeroD=0,bypass_time='no'):
         """Calculates characteristics of the kernel over time.
 
@@ -1455,7 +1455,7 @@ class DirectImaging_Planet:
             which (str):
                 The param set to use. Can be
             
-                    - 'mast' for master (default),
+                    - 'pri' for primary (default),
                     - 'alt' for alternate,
                     - '_c' for custom, see Optional below.
             
@@ -1465,7 +1465,7 @@ class DirectImaging_Planet:
             
             bypass_time (int, float, 1d array, or str):
                 Time value(s) in place of the instance ``times``. All other
-                master or alternate params are still used. Canceled if
+                primary or alternate params are still used. Canceled if
                 any string. Default is 'no'.
 
         Optional:
@@ -1496,7 +1496,7 @@ class DirectImaging_Planet:
                     2D kernel, shape (# of time steps, ``n_clat``, ``n_long``).
             
         """
-        if which == 'mast':
+        if which == 'pri':
             os_trigs = self.SubOS_TimeDeg(bypass_time=bypass_time)
         elif which == 'alt':
             os_trigs = self.SubOS_TimeDeg(which,bypass_time=bypass_time)
@@ -1535,7 +1535,7 @@ class DirectImaging_Planet:
             return sig_long,dom_clat
     
     
-    def Kernels_Plot(self,phaseD,which='mast',grat=True,fixed_lims=True,force_bright=True,
+    def Kernels_Plot(self,phaseD,which='pri',grat=True,fixed_lims=True,force_bright=True,
                      over_amap=False,albs=np.array([[1.0]]),
                      orbT=(24.0*360.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0,bypass_time='no'):
         """Diagrams your planet's kernel at a given orbital phase.
@@ -1557,7 +1557,7 @@ class DirectImaging_Planet:
             which (str):
                 The param set to use. Can be
             
-                    - 'mast' for master (default),
+                    - 'pri' for primary (default),
                     - 'alt' for alternate,
                     - '_c' for custom, see Optional below.
 	    
@@ -1580,7 +1580,7 @@ class DirectImaging_Planet:
             
             bypass_time (int, float, 1d array, or str):
                 Time value(s) in place of the instance ``times``. All
-                other master or alternate params are still used. Canceled
+                other primary or alternate params are still used. Canceled
                 if any string. Default is 'no'.
 	
         Optional:
@@ -1601,7 +1601,7 @@ class DirectImaging_Planet:
             calling ``fig_kern.savefig(...)``.
             
         """
-        if which == 'mast':
+        if which == 'pri':
             here_albs = self.albedos
             time = self.orbT*(phaseD/360.0)
             here_incD,here_oblD,here_solD = self.incD,self.oblD,self.solD
@@ -1809,7 +1809,7 @@ class DirectImaging_Planet:
         ax.set_xlabel('Time (orbits)',size=s_lab)
     
     
-    def KChar_Evolve_Plot(self,char,which='mast',explode='none',gap=10,incD=85,oblD=0,solD=0,**kwargs):
+    def KChar_Evolve_Plot(self,char,which='pri',explode='none',gap=10,incD=85,oblD=0,solD=0,**kwargs):
         """Plots the kernel's characteristics over a full orbit.
 
         .. image:: _static/kcharevo_example.png
@@ -1829,7 +1829,7 @@ class DirectImaging_Planet:
             which (str):
                 The param set to use. Can be
             
-                    - 'mast' for master (default),
+                    - 'pri' for primary (default),
                     - 'alt' for alternate,
                     - '_c' for custom, see Optional below.
                     
@@ -1869,7 +1869,7 @@ class DirectImaging_Planet:
         ph_colors = kwargs.get('ph_colors',['k'])
         
         times = np.linspace(0,1,361)
-        if which == 'mast':
+        if which == 'pri':
             here_incD,here_oblD,here_solD = self.incD,self.oblD,self.solD
         elif which == 'alt':
             here_incD,here_oblD,here_solD = self.incD_b,self.oblD_b,self.solD_b
@@ -1911,7 +1911,7 @@ class DirectImaging_Planet:
             plt.show()
         
     
-    def Light_Curves(self,which='mast',albs=np.array([[1.0]]),
+    def Light_Curves(self,which='pri',albs=np.array([[1.0]]),
                      times=0,orbT=(24.0*360.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0):
         """Calculates light curves of your planet.
 
@@ -1923,7 +1923,7 @@ class DirectImaging_Planet:
             which (str):
                 The param set to use. Can be
             
-                    - 'mast' for master (default),
+                    - 'pri' for primary (default),
                     - 'alt' for alternate,
                     - '_c' for custom, see Optional below.
                 
@@ -1947,7 +1947,7 @@ class DirectImaging_Planet:
                 apparent brightness with shape (# of time steps).
             
         """
-        if which == 'mast':
+        if which == 'pri':
             here_albs = self.albedos
             os_trigs = self.SubOS_TimeDeg()
         elif which == 'alt':
@@ -1966,7 +1966,7 @@ class DirectImaging_Planet:
     def _lc_style(self,which,F_ak,A_app,show,diff,diff_only):
         """Styles plots of light curves."""
         alph = lambda d: 0.25 if d else 1.0
-        if which == 'mast':
+        if which == 'pri':
             orbT,l_c,labf,laba,zo = self.orbT,(1,0,1,alph(diff)),'Flux',r'$A_{\mathrm{apparent}}$',2
         elif which == 'alt':
             orbT,l_c,labf,laba,zo = self.orbT_b,(0,1,1,alph(diff)),'Alt. Flux',r'Alt. $A_{\mathrm{apparent}}$',1
@@ -1987,7 +1987,7 @@ class DirectImaging_Planet:
         .. image:: _static/lcplot_example.png
             :align: center
 
-        Uses the master and alternate params to calculate the light curves.
+        Uses the primary and alternate params to calculate the light curves.
         If you want to get the actual data instead, use :func:`Light_Curves`.
 
         Args:
@@ -1995,7 +1995,7 @@ class DirectImaging_Planet:
                 Include the alternate case. Default is True.
             
             diff (bool):
-                Include the difference between the master and alternate
+                Include the difference between the primary and alternate
                 light curves, if ``alt`` is True. Default is False.
             
             diff_only (bool):
@@ -2046,8 +2046,8 @@ class DirectImaging_Planet:
         else:
             plt.figure(figsize=(10,5))
             
-            flux_ak,appar_a = self.Light_Curves('mast')
-            self._lc_style('mast',flux_ak,appar_a,show,diff,diff_only)
+            flux_ak,appar_a = self.Light_Curves('pri')
+            self._lc_style('pri',flux_ak,appar_a,show,diff,diff_only)
             if alt:
                 flux_ak_b,appar_a_b = self.Light_Curves('alt')
                 self._lc_style('alt',flux_ak_b,appar_a_b,show,diff,diff_only)
@@ -2055,7 +2055,7 @@ class DirectImaging_Planet:
                     if self.orbT == self.orbT_b:
                         self._lc_style('diff',flux_ak-flux_ak_b,appar_a-appar_a_b,show,diff,diff_only)
                     else:
-                        print('LightCurve_Plot warning: diffs plot only if master and alternate orbital periods match.')
+                        print('LightCurve_Plot warning: diffs plot only if primary and alternate orbital periods match.')
             
             plt.axhline(0,c='0.67',ls=':',zorder=0)
             plt.legend(loc='best',fontsize='large')
@@ -2130,7 +2130,7 @@ class DirectImaging_Planet:
             :align: center
 
         Shows everything from the observer's point of view (with one
-        exception), based on the master and alternate params you are using.
+        exception), based on the primary and alternate params you are using.
         The North and South poles are drawn as a green circle and diamond,
         respectively.
 
@@ -2153,7 +2153,7 @@ class DirectImaging_Planet:
                 Include the alternate albedo map. Default is True.
             
             same_scale (bool):
-                If the master and alternate maps have the same color scheme
+                If the primary and alternate maps have the same color scheme
                 (and ``alt`` is True), then show both with the same color
                 scale. Default is True.
             
@@ -2215,7 +2215,7 @@ class DirectImaging_Planet:
             
             orbT,incD,oblD,solD = self.orbT,self.incD,self.oblD,self.solD
             (k2d,orth_Viz,orth_X,orth_Y,
-             poleN_viz,poleN_x,poleN_y) = self._orth_project(phaseD,orbT,'mast',incD,oblD,solD,False,0,0)
+             poleN_viz,poleN_x,poleN_y) = self._orth_project(phaseD,orbT,'pri',incD,oblD,solD,False,0,0)
             if show in ['kern','both']:
                 up = lambda fb: k2d.max() if fb else 1.0/pi
                 s = self._orth_style(row,sub,s,'kern',k2d,0,up(force_bright),
@@ -2378,7 +2378,7 @@ class DirectImaging_Planet:
         return s+1
     
     
-    def SpinAxis_Constraints(self,phaseD_list,which='mast',constraint='both',info=True,combine=True,
+    def SpinAxis_Constraints(self,phaseD_list,which='pri',constraint='both',info=True,combine=True,
                              combine_only=False,keep_probdata=False,res=500,n_sol=361,n_obl=91,
                              phaseD_sig=10.0,incD_sig=10.0,kwid_sig=10.0,kddc_sig=20.0,**kwargs):
         """Plots how observations may constrain your planet's spin axis.
@@ -2429,7 +2429,7 @@ class DirectImaging_Planet:
             which (str):
                 The param set to use. Can be
             
-                    - 'mast' for master (default),
+                    - 'pri' for primary (default),
                     - 'alt' for alternate,
                     - '_c' for custom, see Note below.
             
@@ -2527,7 +2527,7 @@ class DirectImaging_Planet:
             w,h,s = min(sub,3),1+((sub-1)//3),1
         p = 0
         
-        if which == 'mast':
+        if which == 'pri':
             incD,solD,oblD = self.incD,self.solD,self.oblD
         elif which == 'alt':
             incD,solD,oblD = self.incD_b,self.solD_b,self.oblD_b
@@ -2856,7 +2856,7 @@ class DirectImaging_Planet:
             - :func:`KChar_Evolve_Plot`
             - :func:`SpinAxis_Constraints`
         
-        The planet and light curves are rendered using your master albedo
+        The planet and light curves are rendered using your primary albedo
         map. You have a main orbital phase (magenta) to view and can save
         up to 3 extra phases (light, medium, dark) to compare. Each phase
         has a color-coded marker on the geometry diagram and kernel
