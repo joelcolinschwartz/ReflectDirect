@@ -35,12 +35,12 @@ import matplotlib.cm as cm
 import matplotlib.patches as pat
 import ipywidgets as widgets
 
+from pathlib import Path
 from numpy.lib import stride_tricks
 from scipy.special import sph_harm
 from scipy.interpolate import RectBivariateSpline
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.cbook import get_sample_data
-from matplotlib._png import read_png
 from ipywidgets import Layout
 from IPython.display import display as IPy_display
 
@@ -55,8 +55,10 @@ def _rolling(vec,window):
     new_bytes = (vec.itemsize,vec.itemsize)
     return stride_tricks.as_strided(vec,shape=new_dim,strides=new_bytes)
 
-kernel_widths_ = np.load('kernel_width_values_all5deg.npy')[:-1,:,:,:19]  # Pre-handling duplicates and unneeded
-kernel_domcolats_ = np.load('kernel_domcolat_values_all5deg.npy')[:-1,:,:,:19]
+## Use RD folder's absolute path to load reliably, especially when making Sphinx docs.
+folder_path = str(Path(__file__).parent.absolute())
+kernel_widths_ = np.load(folder_path + '/kernel_width_values_all5deg.npy')[:-1,:,:,:19]  # Pre-handling duplicates and unneeded
+kernel_domcolats_ = np.load(folder_path + '/kernel_domcolat_values_all5deg.npy')[:-1,:,:,:19]
 
 
 def _serial_shift(ary):
@@ -110,31 +112,40 @@ def _rotate_ccw_angle(X,Y,ang):
     return X_new,Y_new
 
 
-def Geometry_Reference(ref_save=False,_active=False,incD=85,oblD=0,solD=0,ratRO=10.0,phaseD=[0],ph_colors=['k'],
-                       name='NONE',reference=True):
+def Geometry_Reference(ref_save=False,**kwargs):
     """Makes a reference diagram about exoplanetary systems.
 
     .. image:: _static/geomref_example.png
         :width: 60%
         :align: center
-	
+    
     For example, this shows how important angles are defined. See
     Appendix A of
     `Schwartz et al. (2016) <https://arxiv.org/abs/1511.05152>`_.
 
     Args:
-	ref_save (bool):
+        ref_save (bool):
             Save the diagram as "geometry_reference.pdf" in the current
             working directory. Default is False.
 
     .. note::
-	
-	Starting with ``_active``, ignore the remaining arguments.
-	These are used by the class :class:`DirectImaging_Planet`
-	for the interactive function :func:`Sandbox_Reflection()
-	<reflectdirect.DirectImaging_Planet.Sandbox_Reflection>`.
-	
+        
+        Keywords are only used by the class :class:`DirectImaging_Planet`
+        for the interactive function :func:`Sandbox_Reflection()
+        <reflectdirect.DirectImaging_Planet.Sandbox_Reflection>`.
+    
     """
+    ## Default keywords
+    _active = kwargs.get('_active',False)
+    incD = kwargs.get('incD',85)
+    oblD = kwargs.get('oblD',0)
+    solD = kwargs.get('solD',0)
+    ratRO = kwargs.get('ratRO',10.0)
+    phaseD = kwargs.get('phaseD',[0])
+    ph_colors = kwargs.get('ph_colors',['k'])
+    name = kwargs.get('name','NONE')
+    reference = kwargs.get('reference',True)  # Gets set to False by Geometry_Diagram
+    
     if _active:
         comp_tweak,comp_siz = 0.04,'medium'
     else:
@@ -441,7 +452,7 @@ class DirectImaging_Planet:
         
     def _import_image(self,filename):
         """Imports a png image to make a brightness map."""
-        rawvalues = read_png(get_sample_data(filename,asfileobj=False))
+        rawvalues = plt.imread(filename)
         if rawvalues.ndim == 2:
             return rawvalues
         else:
@@ -516,7 +527,7 @@ class DirectImaging_Planet:
             
                     - 'mast' for the master map,
                     - 'alt' for the alternate map (default),
-                    - 'na-pali-coast-wallpaper-for-one' to just return the map.
+                    - 'none' to just return the map.
                 
             .. note::
                         
@@ -1154,8 +1165,7 @@ class DirectImaging_Planet:
         print(form_cols.format('Alternate',self.incD_b,self.oblD_b,self.solD_b,self.longzeroD_b))
     
     
-    def Geometry_Diagram(self,which='mast',_active=False,incD=85,oblD=0,solD=0,ratRO=10.0,
-                         phaseD=[0],ph_colors=['k']):
+    def Geometry_Diagram(self,which='mast',**kwargs):
         """Makes a diagram of the geometry your planet is in.
 
         .. image:: _static/geomdiag_example.png
@@ -1173,9 +1183,7 @@ class DirectImaging_Planet:
 
         .. note::
                 
-            Starting with ``_active``, ignore the remaining arguments.
-            These are used by the interactive function
-            :func:`Sandbox_Reflection`.
+            Keywords are only used by the interactive function :func:`Sandbox_Reflection`.
 
         Effect:
             Stores this matplotlib figure as ``fig_geom``, **overwriting**
@@ -1183,15 +1191,18 @@ class DirectImaging_Planet:
             calling ``fig_geom.savefig(...)``.
             
         """
-        if _active:
-            Geometry_Reference(False,True,incD,oblD,solD,ratRO,phaseD,ph_colors,reference=False)
+        ## Takes almost all keywords from Geometry_Reference: _active,incD,oblD,solD,ratRO,phaseD,ph_colors...
+        reference = False  # ...except this one; you never make the reference diagram here.
+        
+        if kwargs.get('_active',False):
+            Geometry_Reference(reference=reference,**kwargs)
         else:
             if which == 'mast':
-                Geometry_Reference(False,False,self.incD,self.oblD,self.solD,self.ratRO,
-                                   self.solD,ph_colors,self.name,reference=False)
+                Geometry_Reference(incD=self.incD,oblD=self.oblD,solD=self.solD,ratRO=self.ratRO,
+                                   phaseD=self.solD,name=self.name,reference=reference)
             elif which == 'alt':
-                Geometry_Reference(False,False,self.incD_b,self.oblD_b,self.solD_b,self.ratRO_b,
-                                   self.solD_b,ph_colors,'Alt. '+self.name,reference=False)
+                Geometry_Reference(incD=self.incD_b,oblD=self.oblD_b,solD=self.solD_b,ratRO=self.ratRO_b,
+                                   phaseD=self.solD_b,name='Alt. '+self.name,reference=reference)
 
             plt.tight_layout()
             self.fig_geom = plt.gcf()
@@ -1657,7 +1668,7 @@ class DirectImaging_Planet:
             y_mu = 1.075*klong_rel.max()
         if actual_mu > pi:
             actual_mu -= 2.0*pi
-        plt.scatter(np.degrees(actual_mu),y_mu,s=100,c=cm.Reds(0.33),edgecolor='k',marker='o',zorder=3)
+        plt.scatter(np.degrees(actual_mu),y_mu,s=100,color=cm.Reds(0.33),edgecolor='k',marker='o',zorder=3)
         if (actual_mu + sig_long) > pi:
             plt.plot([-180,-180+np.degrees(actual_mu+sig_long-pi)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
         if (actual_mu - sig_long) < -pi:
@@ -1686,7 +1697,7 @@ class DirectImaging_Planet:
             plt.xticks(size='large')
             plt.xlim([-0.05*kclat_rel.max(),1.15*kclat_rel.max()])
             y_dom = 1.075*kclat_rel.max()
-        plt.scatter(y_dom,np.degrees(dom_clat),s=100,c=cm.Blues(0.75),edgecolor='k',marker='o',zorder=3)
+        plt.scatter(y_dom,np.degrees(dom_clat),s=100,color=cm.Blues(0.75),edgecolor='k',marker='o',zorder=3)
         if grat:
             d_c = '0.33'
             plt.axhline(45,c=d_c,ls=':',lw=1)
@@ -1735,9 +1746,9 @@ class DirectImaging_Planet:
                     if isinstance(p,(int,float)):
                         pt_ind = round(p % 360.0)
                         ax1.scatter(times[pt_ind],np.degrees(sig_long[pt_ind]),
-                                    c=ph_colors[n],edgecolor='k',s=100,marker='o',zorder=2)
+                                    color=ph_colors[n],edgecolor='k',s=100,marker='o',zorder=2)
                         ax2.scatter(times[pt_ind],np.degrees(dom_clat[pt_ind]),
-                                    c=ph_colors[n],edgecolor='k',s=100,marker='o',zorder=2)
+                                    color=ph_colors[n],edgecolor='k',s=100,marker='o',zorder=2)
                     n += 1
                 ax1.legend(handles=[liwi,doco],loc='best',fontsize='medium')
     
@@ -1798,8 +1809,7 @@ class DirectImaging_Planet:
         ax.set_xlabel('Time (orbits)',size=s_lab)
     
     
-    def KChar_Evolve_Plot(self,char,which='mast',explode='none',gap=10,incD=85,oblD=0,solD=0,_active=False,
-                          phasesD_I=[0],ph_colors=['k']):
+    def KChar_Evolve_Plot(self,char,which='mast',explode='none',gap=10,incD=85,oblD=0,solD=0,**kwargs):
         """Plots the kernel's characteristics over a full orbit.
 
         .. image:: _static/kcharevo_example.png
@@ -1815,14 +1825,14 @@ class DirectImaging_Planet:
                     - 'wid' for longitudinal width,
                     - 'dom' for dominant colatitude,
                     - 'both'.
-	    
+                    
             which (str):
                 The param set to use. Can be
             
                     - 'mast' for master (default),
                     - 'alt' for alternate,
                     - '_c' for custom, see Optional below.
-	    
+                    
             explode (str):
                 The geometry param to vary, starting at zero. This shows you
                 many evolutions instead of one curve. Can be
@@ -1844,10 +1854,8 @@ class DirectImaging_Planet:
                 docstrings.
 
         .. note::
-	
-            Starting with ``_active``, ignore the remaining arguments.
-            These are used by the interactive function
-            :func:`Sandbox_Reflection`.
+            
+            Keywords are only used by the interactive function :func:`Sandbox_Reflection`.
 
         Effect:
             Stores this matplotlib figure as ``fig_kchar``, **overwriting**
@@ -1855,6 +1863,11 @@ class DirectImaging_Planet:
             calling ``fig_kchar.savefig(...)``.
             
         """
+        ## Default keywords
+        _active = kwargs.get('_active',False)
+        phasesD_I = kwargs.get('phasesD_I',[0])
+        ph_colors = kwargs.get('ph_colors',['k'])
+        
         times = np.linspace(0,1,361)
         if which == 'mast':
             here_incD,here_oblD,here_solD = self.incD,self.oblD,self.solD
@@ -1870,7 +1883,7 @@ class DirectImaging_Planet:
             self._kcevo_styledom(ax2,'medium','medium',_active)
             tit = self._kcevo_loop(char,explode,gap,times,here_incD,here_oblD,here_solD,ax1,ax2,
                                    _active,phasesD_I,ph_colors)
-            # 'box-forced' messes up the interactive module, 'datalim' is better.
+            # 'datalim' continues to be the best option, others mess up the interactive module.
             ax1.set(adjustable='datalim',aspect=1.0/ax1.get_data_ratio())
             ax2.set(adjustable='datalim',aspect=1.0/ax2.get_data_ratio())
         
@@ -1968,9 +1981,7 @@ class DirectImaging_Planet:
             plt.plot(T,A_app,c=l_c,ls='--',label=laba,zorder=zo)
     
     
-    def LightCurve_Plot(self,alt=True,diff=False,diff_only=False,show='flux',_active=False,
-                        times_I=0,orbT_I=(24.0*360.0),ratRO_I=10.0,incD_I=90,oblD_I=0,solD_I=0,longzeroD_I=0,
-                        ph_color='k',now_I=0):
+    def LightCurve_Plot(self,alt=True,diff=False,diff_only=False,show='flux',**kwargs):
         """Plots light curves of your planet.
 
         .. image:: _static/lcplot_example.png
@@ -2002,9 +2013,7 @@ class DirectImaging_Planet:
                 
         .. note::
                 
-            Starting with ``_active``, ignore the remaining arguments.
-            These are used by the interactive function
-            :func:`Sandbox_Reflection`.
+            Keywords are only used by the interactive function :func:`Sandbox_Reflection`.
 
         Effect:
             Stores this matplotlib figure as ``fig_light``, **overwriting**
@@ -2012,7 +2021,18 @@ class DirectImaging_Planet:
             calling ``fig_light.savefig(...)``.
             
         """
-        if _active:
+        if kwargs.get('_active',False):
+            ## Default keywords
+            times_I = kwargs.get('times_I',0)
+            orbT_I = kwargs.get('orbT_I',(24.0*360.0))
+            ratRO_I = kwargs.get('ratRO_I',10.0)
+            incD_I = kwargs.get('incD_I',90)
+            oblD_I = kwargs.get('oblD_I',0)
+            solD_I = kwargs.get('solD_I',0)
+            longzeroD_I = kwargs.get('longzeroD_I',0)
+            ph_color = kwargs.get('ph_color','k')
+            now_I = kwargs.get('now_I',0)
+            
             flux_ak,appar_a = self.Light_Curves('_c',self.albedos,times_I,orbT_I,ratRO_I,
                                                 incD_I,oblD_I,solD_I,longzeroD_I)
             Ph = np.linspace(-2.5,2.5,times_I.size)
@@ -2089,9 +2109,9 @@ class DirectImaging_Planet:
         for c in cnt_plot.collections:
             c.set_edgecolor('face')
         if round(poleN_viz,3) >= 0:
-            plt.scatter(poleN_x,poleN_y,s=100,c=(0,1,0),edgecolor='k',marker='o')
+            plt.scatter(poleN_x,poleN_y,s=100,color=(0,1,0),edgecolor='k',marker='o')
         if round(poleN_viz,3) <= 0:
-            plt.scatter(-poleN_x,-poleN_y,s=70,c=(0,1,0),edgecolor='k',marker='D')
+            plt.scatter(-poleN_x,-poleN_y,s=70,color=(0,1,0),edgecolor='k',marker='D')
         plt.xlim([-1.05,1.05])
         plt.ylim([-1.05,1.05])
         if name != 'NONE':
@@ -2103,8 +2123,7 @@ class DirectImaging_Planet:
         return s+1
     
     
-    def Orthographic_Viewer(self,phaseD,show='real',alt=False,same_scale=True,force_bright=True,_active=False,
-                            orbT_I=(24.0*360.0),ratRO_I=10.0,incD_I=90,oblD_I=0,solD_I=0,longzeroD_I=0):
+    def Orthographic_Viewer(self,phaseD,show='real',alt=False,same_scale=True,force_bright=True,**kwargs):
         """Draws your planet's map and kernel in orthographic projection.
 
         .. image:: _static/orthview_example.png
@@ -2146,9 +2165,7 @@ class DirectImaging_Planet:
                 
         .. note::
                 
-            Starting with ``_active``, ignore the remaining arguments.
-            These are used by the interactive function
-            :func:`Sandbox_Reflection`.
+            Keywords are only used by the interactive function :func:`Sandbox_Reflection`.
 
         Effect:
             Stores this matplotlib figure as ``fig_orth``, **overwriting**
@@ -2156,8 +2173,16 @@ class DirectImaging_Planet:
             calling ``fig_orth.savefig(...)``.
             
         """
-        if _active:
-            row,col,s = 2,3,1
+        if kwargs.get('_active',False):
+            ## Default keywords
+            orbT_I = kwargs.get('orbT_I',(24.0*360.0))
+            ratRO_I = kwargs.get('ratRO_I',10.0)
+            incD_I = kwargs.get('incD_I',90)
+            oblD_I = kwargs.get('oblD_I',0)
+            solD_I = kwargs.get('solD_I',0)
+            longzeroD_I = kwargs.get('longzeroD_I',0)
+            
+            row,col,s = 2,3,1  # Start on subplot(231)
             
             vm_l,vm_h,va_l,va_h = self._double_amap_colorbounds(alt,same_scale)
             (k2d,orth_Viz,orth_X,orth_Y,
@@ -2167,7 +2192,7 @@ class DirectImaging_Planet:
             s = self._orth_style(row,col,s,'amap',self.albedos,vm_l,vm_h,
                                  orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,'NONE')
             plt.text(-0.7,1.04,'Visible Map',color='k',size='medium',ha='center',va='center')
-            s += 1
+            s += 1  # Now on subplot(233)
             up = lambda fb: k2d.max() if fb else 1.0/pi
             s = self._orth_style(row,col,s,'kern',k2d,0,up(force_bright),
                                  orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,'NONE')
@@ -2343,20 +2368,19 @@ class DirectImaging_Planet:
                 if not _active:
                     axs.text(np.radians(225),np.radians(110),'Combined',color='0.5',
                              size='x-large',ha='center',va='center')
-            axs.scatter(solR,oblR,s=100,c=(0,1,0),edgecolor='k',marker=mark,zorder=2)
+            axs.scatter(solR,oblR,s=100,color=(0,1,0),edgecolor='k',marker=mark,zorder=2)
 
         axs.set_thetalim([0,2.0*pi])
         axs.set_rlim([0,pi/2.0])
         ts = lambda a: 'medium' if a else 'large'
-        axs.set_thetagrids(np.linspace(0,360,9),sol_ticks_,size=ts(_active))
+        axs.set_thetagrids(np.linspace(0,315,8),sol_ticks_,size=ts(_active))  # Match numbers to sol_ticks to avoid error.
         axs.set_rgrids(np.linspace(0,pi/2.0,4),obl_ticks_,size=ts(_active))
         return s+1
     
     
     def SpinAxis_Constraints(self,phaseD_list,which='mast',constraint='both',info=True,combine=True,
                              combine_only=False,keep_probdata=False,res=500,n_sol=361,n_obl=91,
-                             phaseD_sig=10.0,incD_sig=10.0,kwid_sig=10.0,kddc_sig=20.0,_active=False,
-                             incD_I=85,solD_I=0,oblD_I=0):
+                             phaseD_sig=10.0,incD_sig=10.0,kwid_sig=10.0,kddc_sig=20.0,**kwargs):
         """Plots how observations may constrain your planet's spin axis.
 
         .. image:: _static/spinaxis_example.png
@@ -2407,7 +2431,7 @@ class DirectImaging_Planet:
             
                     - 'mast' for master (default),
                     - 'alt' for alternate,
-                    - '_c' for custom, see Optional below.
+                    - '_c' for custom, see Note below.
             
             constraint (str):
                 The type of prediction. Can be
@@ -2441,12 +2465,6 @@ class DirectImaging_Planet:
             
             n_obl (int):
                 Number of obliquity grid points. Default is 91.
-            
-            incD_I, solD_I, oblD_I:
-                Custom set of params to use if ``which`` is '_c'.
-                Standard definitions and formats apply.
-                See the :class:`class and constructor <DirectImaging_Planet>`
-                docstrings.
 
         Very Optional:
             **You should probably check out Section 4.1 of S16 before
@@ -2468,8 +2486,12 @@ class DirectImaging_Planet:
                 
         .. note::
                 
-            Ignore the argument ``_active``. This is used by
-            the interactive function :func:`Sandbox_Reflection`.
+            Keywords are used by the interactive function :func:`Sandbox_Reflection`.
+            But if ``which`` is '_c', then enter your custom
+            params as ``incD_I``, ``solD_I`` and ``oblD_I``.
+            Standard definitions and formats apply.
+            See the :class:`class and constructor <DirectImaging_Planet>` 
+            docstrings.
 
         Effect:
             Stores this matplotlib figure as ``fig_spin``, **overwriting**
@@ -2486,6 +2508,12 @@ class DirectImaging_Planet:
                   element or 'Combined'.
                     
         """
+        ## Default keywords
+        _active = kwargs.get('_active',False)
+        incD_I = kwargs.get('incD_I',85)
+        solD_I = kwargs.get('solD_I',0)
+        oblD_I = kwargs.get('oblD_I',0)
+        
         made_combo_flag = False
         
         entries = len(phaseD_list)
@@ -2686,19 +2714,25 @@ class DirectImaging_Planet:
         plt.figure(figsize=(14,9.3))
         
         plt.subplot(232)
-        self.Geometry_Diagram('N/A',True,incD_I,oblD_I,solD_I,ratRO_I,phasesD_single,ph_colors)
+        self.Geometry_Diagram(which='N/A',_active=True,
+                              incD=incD_I,oblD=oblD_I,solD=solD_I,ratRO=ratRO_I,
+                              phaseD=phasesD_single,ph_colors=ph_colors)
         
         ### subplot(231) and subplot(233)
-        self.Orthographic_Viewer(phaseD_I,'both',False,True,True,True,
-                                 orbT_I,ratRO_I,incD_I,oblD_I,solD_I,longzeroD_I)
+        self.Orthographic_Viewer(phaseD_I,show='both',_active=True,
+                                 orbT_I=orbT_I,ratRO_I=ratRO_I,
+                                 incD_I=incD_I,oblD_I=oblD_I,solD_I=solD_I,
+                                 longzeroD_I=longzeroD_I)
         
         plt.subplot(234)
         n = 0
         for p in phasesD_single:
             if isinstance(p,(int,float)):
                 times_I = orbT_I*((p + rel_tphase)/360.0)
-                self.LightCurve_Plot(False,False,False,lc_swit,True,
-                                     times_I,orbT_I,ratRO_I,incD_I,oblD_I,solD_I,longzeroD_I,ph_colors[n],n)
+                self.LightCurve_Plot(alt=False,show=lc_swit,_active=True,
+                                     times_I=times_I,orbT_I=orbT_I,ratRO_I=ratRO_I,
+                                     incD_I=incD_I,oblD_I=oblD_I,solD_I=solD_I,
+                                     longzeroD_I=longzeroD_I,ph_color=ph_colors[n],now_I=n)
             n += 1
         n = 0
         plt.xlim([-2.5,2.5])
@@ -2714,7 +2748,8 @@ class DirectImaging_Planet:
                  transform=plt.gca().transAxes)
         
         ### subplot(236)
-        self.KChar_Evolve_Plot('both','_c','none','N/A',incD_I,oblD_I,solD_I,True,phasesD_single,ph_colors)
+        self.KChar_Evolve_Plot('both',which='_c',incD=incD_I,oblD=oblD_I,solD=solD_I,
+                               _active=True,phasesD_I=phasesD_single,ph_colors=ph_colors)
         plt.text(0.5,1.01,'Kernel Characteristics',color='k',size='medium',ha='center',va='bottom',
                  transform=plt.gca().transAxes)
         
@@ -2723,7 +2758,7 @@ class DirectImaging_Planet:
             plt.subplot(235,projection='polar')
             plt.gca().set_theta_zero_location('S')
             plt.gca().set_rlabel_position(45)
-            plt.xticks(np.linspace(0,2.0*pi,9),sol_ticks_,size='medium',alpha=0.1)
+            plt.xticks(np.linspace(0,1.75*pi,8),sol_ticks_,size='medium',alpha=0.1)  # Match numbers to sol_ticks to avoid error.
             plt.yticks(np.linspace(0,pi/2.0,4),obl_ticks_,size='medium',alpha=0.1)
             plt.gca().axes.spines['polar'].set_alpha(0.1)
             plt.gca().grid(alpha=0.1)
@@ -2732,10 +2767,9 @@ class DirectImaging_Planet:
             plt.text(np.radians(0),np.radians(0),bads,color=(1.0,0.5,0),size='x-large',
                      ha='center',va='center',weight='bold')
         else:
-            self.SpinAxis_Constraints(phasesD_forspin,'_c','perf',False,False,
-                                      True,False,500,361,91,
-                                      10.0,10.0,10.0,20.0,True,
-                                      incD_I,solD_I,oblD_I)
+            self.SpinAxis_Constraints(phasesD_forspin,which='_c',constraint='perf',
+                                      info=False,combine=False,combine_only=True,_active=True,
+                                      incD_I=incD_I,solD_I=solD_I,oblD_I=oblD_I)
             plt.text(np.radians(225),np.radians(112),'Spin Axis\nConstraints',color='k',size='medium',
                      ha='center',va='center')
         
