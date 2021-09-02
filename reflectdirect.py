@@ -704,9 +704,9 @@ class DirectImaging_Planet:
             
         else:
             print('Build_Amap aborted because kind must be one of below.')
-            print('\"pngA\" or \"pngI\": values averaged or interpolated from a png image.')
-            print('\"ylm\": n-by-3 list of spherical harmonics with entries [degree ell, order m, coefficient].')
-            print('\"aryA\" or \"aryI\": values averaged or interpolated from an ndarray (2D).')
+            print('    \'pngA\' or \'pngI\': values averaged or interpolated from a png image.')
+            print('    \'ylm\': n-by-3 list of spherical harmonics with entries [degree ell, order m, coefficient].')
+            print('    \'aryA\' or \'aryI\': values averaged or interpolated from an ndarray (2D).')
             return
         
         if (primeD % 360.0) != 0:
@@ -720,7 +720,7 @@ class DirectImaging_Planet:
                 directions = ['West','East']
             print('You asked to put the prime meridian {:.2f} degrees {} of normal on your input albedo map.'
                   .format(abs(simple_prime),directions[0]))
-            print('There are only {} unique longitudes, so I rotated your map {:.2f} degrees to the {}.'
+            print('    There are only {} unique longitudes, so I rotated your map {:.2f} degrees to the {}.'
                   .format(self.n_long-1,abs(ang_amap_rotated),directions[1]))
         else:
             primed_albedos = pre_albedos
@@ -960,19 +960,18 @@ class DirectImaging_Planet:
     
     
     def Adjust_Geometry(self,which='both',incD='no',oblD='no',solD='no',longzeroD='no'):
-        """Changes the geometry your planet is in.
+        """Changes your planetary system's geometry.
 
         Args:
             which (str):
-                Can be
             
-                    - 'pri' to adjust primary params,
-                    - 'alt' to adjust alternate params,
-                    - 'both'.
+                - 'pri' to adjust primary params,
+                - 'alt' to adjust alternate params,
+                - 'both'.
             
             incD (int, float, or str):
                 New inclination in degrees (0 to 90), or any string to
-                keep the current value. Default is 'no'. Other args have
+                keep the current value. Default is 'no'. Other args use
                 same format.
                 
             oblD:
@@ -995,6 +994,8 @@ class DirectImaging_Planet:
             self.oblD_b = self._compare_param(oblD,self.oblD_b)
             self.solD_b = self._compare_param(solD,self.solD_b)
             self.longzeroD_b = self._compare_param(longzeroD,self.longzeroD_b)
+        if which not in ['pri','alt','both']:
+            print('I adjusted nothing because which should be \'pri\', \'alt\' or \'both\'.')
     
     
     def Adjust_MotionTimes(self,which='both',orbT='no',ratRO='no',
@@ -1003,16 +1004,15 @@ class DirectImaging_Planet:
 
         Args:
             which (str):
-                Can be
             
-                    - 'pri' to adjust primary ``orbT`` and ``ratRO``,
-                    - 'alt' to adjust alternate values,
-                    - 'both'.
+                - 'pri' to adjust primary ``orbT`` and ``ratRO``,
+                - 'alt' to adjust alternate values,
+                - 'both'.
             
             orbT (int, float, or str):
                 New orbital period in any unit, or any string to keep
                 the current value. Default is 'no'. Other args
-                have same format.
+                use same format.
             
             ratRO:
                 New rotational-to-orbital frequency ratio.
@@ -1044,6 +1044,8 @@ class DirectImaging_Planet:
         if which in ['alt','both']:
             self.orbT_b = self._compare_param(orbT,self.orbT_b)
             self.ratRO_b = self._compare_param(ratRO,self.ratRO_b)
+        if which not in ['pri','alt','both']:
+            print('I did not adjust orbT or ratRO because which should be \'pri\', \'alt\' or \'both\'.')
 
         self._orb_min = self._compare_param(orb_min,self._orb_min)
         self._orb_max = self._compare_param(orb_max,self._orb_max)
@@ -1058,7 +1060,7 @@ class DirectImaging_Planet:
         """Sets your alternate params for a specific light curve degeneracy.
 
         The degeneracy involves the albedo map and is **usually** prograde
-        vs. retrograde rotation (but see note below). Discussed in Section 4.5
+        vs. retrograde rotation (see note below). Discussed in Section 4.5
         and Appendix B3 of S16.
 
         When a planet has zero obliquity and its orbit is edge-on to you
@@ -1077,8 +1079,8 @@ class DirectImaging_Planet:
 
         .. note::
 	
-            If *N* is between 0 and 1.0, both versions of the planet spin
-            prograde. And when *N* = 0.5, their spins are identical!
+            If *N* is between 0 and 1.0, both versions of the planet will
+            spin prograde. And when *N* = 0.5, their spins are identical!
 
         Effect:
             Calls :func:`InvertFlipBlend_Amap`, :func:`Adjust_Geometry`,
@@ -1104,8 +1106,8 @@ class DirectImaging_Planet:
     def Info_Printout(self):
         """Prints many of the current model parameters for your planet.
 
-        Grouped by grid, albedo map, motion, and geometry. The latter three
-        are broken down further into the primary and alternate cases.
+        Grouped by grid, albedo map, motion and geometry. The latter three
+        are broken into primary and alternate sets.
         
         """
         print('Below are some parameters you are using to model {}.'.format(self.name))
