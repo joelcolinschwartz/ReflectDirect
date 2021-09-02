@@ -117,9 +117,8 @@ def Geometry_Reference(ref_save=False,**kwargs):
         :width: 60%
         :align: center
     
-    For example, this shows how important angles are defined. See
-    Appendix A of
-    `Schwartz et al. (2016) <https://arxiv.org/abs/1511.05152>`_.
+    For example, this figure defines important angles. See
+    Appendix A of `Schwartz et al. (2016) <https://arxiv.org/abs/1511.05152>`_.
 
     Args:
         ref_save (bool):
@@ -291,7 +290,7 @@ class DirectImaging_Planet:
     
     """An exoplanet that is directly imaged using reflected starlight.
 
-    This class is based on the model, equations, and discussion of
+    This class is based on the model, equations and discussion of
     `Schwartz et al. (2016) <https://arxiv.org/abs/1511.05152>`_,
     S16 in the methods below. It has two sets of planetary
     parameters, a primary and an alternate, that users control. These
@@ -393,7 +392,7 @@ class DirectImaging_Planet:
                 North pole down.
                 
             orbT (int or float):
-                Orbital period of the planet in any time unit.
+                Orbital period of the planet, in any time unit.
                 
             ratRO (int or float):
                 Ratio of the planet's rotational and orbital angular
@@ -411,9 +410,9 @@ class DirectImaging_Planet:
             
             - fig_equi --- :func:`EquiRect_Amap`
             - fig_geom --- :func:`Geometry_Diagram`
-            - fig_kchar --- :func:`KChar_Evolve_Plot`
+            - fig_kcha --- :func:`KChar_Evolve_Plot`
             - fig_kern --- :func:`Kernels_Plot`
-            - fig_light --- :func:`LightCurve_Plot`
+            - fig_ligh --- :func:`LightCurve_Plot`
             - fig_orth --- :func:`Orthographic_Viewer`
             - fig_sand --- :func:`Sandbox_Reflection`
             - fig_spin --- :func:`SpinAxis_Constraints`
@@ -814,9 +813,9 @@ class DirectImaging_Planet:
         null_draw = 'Figure not made yet'
         self.fig_equi = null_draw
         self.fig_geom = null_draw
-        self.fig_kchar = null_draw
+        self.fig_kcha = null_draw
         self.fig_kern = null_draw
-        self.fig_light = null_draw
+        self.fig_ligh = null_draw
         self.fig_orth = null_draw
         self.fig_sand = null_draw
         self.fig_spin = null_draw
@@ -1856,9 +1855,9 @@ class DirectImaging_Planet:
             Keywords are only used by the interactive function :func:`Sandbox_Reflection`.
 
         Effect:
-            Stores this matplotlib figure as ``fig_kchar``, **overwriting**
+            Stores this matplotlib figure as ``fig_kcha``, **overwriting**
             the previous version. You can save the image later by
-            calling ``fig_kchar.savefig(...)``.
+            calling ``fig_kcha.savefig(...)``.
             
         """
         ## Default keywords
@@ -1905,7 +1904,7 @@ class DirectImaging_Planet:
 
             plt.title(tit,size='large')
             plt.tight_layout()
-            self.fig_kchar = plt.gcf()
+            self.fig_kcha = plt.gcf()
             plt.show()
         
     
@@ -2014,9 +2013,9 @@ class DirectImaging_Planet:
             Keywords are only used by the interactive function :func:`Sandbox_Reflection`.
 
         Effect:
-            Stores this matplotlib figure as ``fig_light``, **overwriting**
+            Stores this matplotlib figure as ``fig_ligh``, **overwriting**
             the previous version. You can save the image later by
-            calling ``fig_light.savefig(...)``.
+            calling ``fig_ligh.savefig(...)``.
             
         """
         if kwargs.get('_active',False):
@@ -2062,7 +2061,7 @@ class DirectImaging_Planet:
             plt.title('Light Curves of {}'.format(self.name),size='x-large')
             
             plt.tight_layout()
-            self.fig_light = plt.gcf()
+            self.fig_ligh = plt.gcf()
             plt.show()
     
     
