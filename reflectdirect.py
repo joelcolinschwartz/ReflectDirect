@@ -375,8 +375,7 @@ class DirectImaging_Planet:
         
         Primary Params (append ``_b`` for Alternates):
             albedos (2d array):
-                The planet's albedo values with shape (``n_clat``,
-                ``n_long``).
+                The planet's albedo values with shape (``n_clat``,``n_long``).
                 
             incD (int or float):
                 Inclination of orbital plane to the observer, in degrees.
@@ -508,7 +507,7 @@ class DirectImaging_Planet:
     
 
     def InvertFlipBlend_Amap(self,image='pri',into='alt',invert=False,flip='none',blend='none'):
-        """Inverts, flips, and blends a given albedo map.
+        """Inverts, flips and blends a given albedo map.
 
         Args:
             image (str or ndarray):
@@ -529,28 +528,25 @@ class DirectImaging_Planet:
             .. note::
                         
                 If you try to put an ``image`` ndarray ``into`` the primary
-                or alternate map, it should have shape (``n_clat``,
-                ``n_long``).
+                or alternate map, it should have shape (``n_clat``,``n_long``).
                 
             invert (bool):
                 Linearly change lower albedo values to higher
                 values and vice versa. Default is False.
             
             flip (str):
-                Can be
             
-                    - 'EW' to flip map about the prime meridian,
-                    - 'NS' to flip map about the equator,
-                    - 'both' to flip map both ways,
-                    - 'none' to do nothing (default).
+                - 'EW' to flip map about the prime meridian,
+                - 'NS' to flip map about the equator,
+                - 'both' to flip map both ways,
+                - 'none' to do nothing (default).
                 
             blend (str):
-                Can be
             
-                    - 'EW' to blend map into Jupiter-like bands,
-                    - 'NS' to blend map into beach ball-like stripes,
-                    - 'both' to blend map into a uniform ball,
-                    - 'none' to do nothing (default).
+                - 'EW' to blend map into Jupiter-like bands,
+                - 'NS' to blend map into beach ball-like stripes,
+                - 'both' to blend map into a uniform ball,
+                - 'none' to do nothing (default).
 
         Effect:
             If ``into`` is 'pri' or 'alt', stores new albedo map as ``albedos``
@@ -616,7 +612,7 @@ class DirectImaging_Planet:
 
         Args:
             kind (str):
-                Can be
+                Style of planetary map. Can be
                 
                     - 'pngA' to average values from a png image,
                     - 'pngI' to interpolate values from a png image,
@@ -637,12 +633,11 @@ class DirectImaging_Planet:
 
             .. note::
                 
-                All png images are assumed to be equirectangular maps,
-                which means:
+                Png images are assumed to be equirectangular maps:
                 
                     - poles on top and bottom edges,
                     - equator horizontal across middle,
-                    - prime meridian vertical in center,
+                    - prime meridian vertical in center, and
                     - anti-prime meridian on left and right edges.
                 
             primeD (int or float):
@@ -668,20 +663,18 @@ class DirectImaging_Planet:
                 values and vice versa. Default is False.
             
             flip (str):
-                Can be
             
-                    - 'EW' to flip map about the prime meridian,
-                    - 'NS' to flip map about the equator,
-                    - 'both' to flip map both ways,
-                    - 'none' to do nothing (default).
+                - 'EW' to flip map about the prime meridian,
+                - 'NS' to flip map about the equator,
+                - 'both' to flip map both ways,
+                - 'none' to do nothing (default).
             
             blend (str):
-                Can be
             
-                    - 'EW' to blend map into Jupiter-like bands,
-                    - 'NS' to blend map into beach ball-like stripes,
-                    - 'both' to blend map into a uniform ball,
-                    - 'none' to do nothing (default).
+                - 'EW' to blend map into Jupiter-like bands,
+                - 'NS' to blend map into beach ball-like stripes,
+                - 'both' to blend map into a uniform ball,
+                - 'none' to do nothing (default).
 
         Effect:
             If ``into`` is 'pri' or 'alt', stores new albedo map as ``albedos``
@@ -826,7 +819,7 @@ class DirectImaging_Planet:
                  invert=False,flip='none',blend='none',
                  orbT=(24.0*360.0),ratRO=10.0,
                  incD=85,oblD=0,solD=0,longzeroD=0):
-        """*Constructor for the class DirectImaging_Planet.*
+        """*Constructor for the class DirectImaging_Planet*
 
         All arguments are for your **primary** map and params.
 
@@ -869,12 +862,11 @@ class DirectImaging_Planet:
 
             .. note::
                         
-                All png images are assumed to be equirectangular maps,
-                which means:
+                Png images are assumed to be equirectangular maps:
                 
                     - poles on top and bottom edges,
                     - equator horizontal across middle,
-                    - prime meridian vertical in center,
+                    - prime meridian vertical in center, and
                     - anti-prime meridian on left and right edges.
                         
             primeD (int or float):
@@ -893,23 +885,21 @@ class DirectImaging_Planet:
                 vice versa. Default is False.
             
             flip (str):
-                Can be
             
-                    - 'EW' to flip map about the prime meridian,
-                    - 'NS' to flip map about the equator,
-                    - 'both' to flip map both ways,
-                    - 'none' to do nothing (default).
+                - 'EW' to flip map about the prime meridian,
+                - 'NS' to flip map about the equator,
+                - 'both' to flip map both ways,
+                - 'none' to do nothing (default).
             
             blend (str):
-                Can be
             
-                    - 'EW' to blend map into Jupiter-like bands,
-                    - 'NS' to blend map into beach ball-like stripes,
-                    - 'both' to blend map into a uniform ball,
-                    - 'none' to do nothing (default).
+                - 'EW' to blend map into Jupiter-like bands,
+                - 'NS' to blend map into beach ball-like stripes,
+                - 'both' to blend map into a uniform ball,
+                - 'none' to do nothing (default).
             
             orbT (int or float):
-                Orbital period of the planet in any unit.
+                Orbital period of the planet, in any unit.
                 Default is 8640.0 (number of hours in one year).
             
             ratRO (int or float):
