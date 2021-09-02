@@ -1,22 +1,20 @@
 """A suite about reflected light from directly imaged planets.
 
-ReflectDirect is an MIT licensed Python suite designed for
-exploring exoplanetary systems in Jupyter. Customize a planet's
+ReflectDirect is an MIT licensed Python suite for exploring
+exoplanetary systems in JupyterLab. Customize a planet's
 brightness map and geometry, generate and compare
-light curves, analyze the kernel of reflection, and more.
+light curves, analyze the kernel of reflection and more.
 
 This suite defines the class :class:`DirectImaging_Planet` that
 has most of the important features. There's also the method
-:func:`Geometry_Reference` if you need a diagram explaining
-some conventions used.
+:func:`Geometry_Reference` if you need a diagram that explains
+some conventions.
 
-Dependent on:
+Depends on:
 
-    - numpy
-    - scipy
+    - scipy & numpy
     - matplotlib
-    - ipywidgets
-    - IPython
+    - Jupyter(Lab), ipywidgets & IPython
 
 Uses the function :func:`sub_observerstellar()
 <exoplanetsubspots.sub_observerstellar>` and the binary files
