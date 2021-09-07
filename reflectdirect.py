@@ -1078,7 +1078,7 @@ class DirectImaging_Planet:
         :func:`LightCurve_Plot`, or :func:`Orthographic_Viewer`.
 
         .. note::
-	
+        
             If *N* is between 0 and 1.0, both versions of the planet will
             spin prograde. And when *N* = 0.5, their spins are identical!
 
@@ -1161,11 +1161,10 @@ class DirectImaging_Planet:
             :width: 60%
             :align: center
 
-        This shows its inclination, obliquity, solstice, and spins per orbit.
+        This shows its inclination, obliquity, solstice and spins per orbit.
 
         Args:
             which (str):
-                Can be
             
                     - 'pri' to use primary params (default),
                     - 'alt' to use alternate params.
@@ -1265,8 +1264,8 @@ class DirectImaging_Planet:
 
         This projection is a simple rectangle: colatitudes are horizontal lines
         and longitudes are vertical lines. The primary map is always shown, and
-        the color schemes adapt to the albedo values you are using (real,
-        semi-real, or unrealistic).
+        the color schemes adapt to your albedo values (real, semi-real
+        or unrealistic).
 
         Args:
             alt (bool):
@@ -1532,10 +1531,10 @@ class DirectImaging_Planet:
         .. image:: _static/kernplot_example.png
             :align: center
 
-        This includes the 2D, longitudinal, and colatitudinal versions
-        of the kernel. The diagram also shows you the kernel's mean
+        This includes the 2D, longitudinal and colatitudinal versions
+        of the kernel. The diagram also shows the kernel's mean
         longitude (pink circle), longitudinal width (red bars), and
-        dominant colatitude (blue circle). If you want to get the actual
+        dominant colatitude (blue circle). If you want actual
         data instead, use :func:`Kernel_WidthDomColat`.
 
         Args:
@@ -1549,7 +1548,7 @@ class DirectImaging_Planet:
                     - 'pri' for primary (default),
                     - 'alt' for alternate,
                     - '_c' for custom, see Optional below.
-	    
+            
             grat (bool):
                 Overlay basic graticules. Default is True.
             
@@ -1560,8 +1559,8 @@ class DirectImaging_Planet:
             force_bright (bool):
                 Use the full color scale to draw the 2D kernel.
                 The false brightness can make dark drawings (like
-		crescent phases) easier to see. Default is True.
-	    
+                crescent phases) easier to see. Default is True.
+            
             over_amap (bool):
                 Draw a dim version of the albedo map with the 2D kernel.
                 This map is not affected by ``force_bright``. Default is
@@ -1571,11 +1570,11 @@ class DirectImaging_Planet:
                 Time value(s) in place of the instance ``times``. All
                 other primary or alternate params are still used. Canceled
                 if any string. Default is 'no'.
-	
+            
         Optional:
             albs (2D array):
                 Custom albedo map to use if ``which`` is '_c'.
-                Its shape should be, or work with, (n_clat, n_long).
+                Its shape should be, or work with, (``n_clat``, ``n_long``).
                 Default is ``np.array( [ [ 1.0 ] ] )``.
             
             times, orbT, ratRO, incD, oblD, solD, longzeroD:
@@ -1804,8 +1803,7 @@ class DirectImaging_Planet:
         .. image:: _static/kcharevo_example.png
             :align: center
 
-        If you want to get the actual data instead, use
-        :func:`Kernel_WidthDomColat`.
+        If you want actual data instead, use :func:`Kernel_WidthDomColat`.
 
         Args:
             char (str):
@@ -1823,7 +1821,7 @@ class DirectImaging_Planet:
                     - '_c' for custom, see Optional below.
                     
             explode (str):
-                The geometry param to vary, starting at zero. This shows you
+                The geometry param to vary, starting at zero. This shows
                 many evolutions instead of one curve. Can be
                 
                     - 'inc' for inclination,
@@ -1977,7 +1975,7 @@ class DirectImaging_Planet:
             :align: center
 
         Uses the primary and alternate params to calculate the light curves.
-        If you want to get the actual data instead, use :func:`Light_Curves`.
+        If you want actual data instead, use :func:`Light_Curves`.
 
         Args:
             alt (bool):
@@ -2119,7 +2117,7 @@ class DirectImaging_Planet:
             :align: center
 
         Shows everything from the observer's point of view (with one
-        exception), based on the primary and alternate params you are using.
+        exception), based on your primary and alternate params.
         The North and South poles are drawn as a green circle and diamond,
         respectively.
 
@@ -2129,7 +2127,7 @@ class DirectImaging_Planet:
                 is [0, 360).
             
             show (str):
-                Which data to draw. Can be
+                The data to draw. Can be
             
                     - 'amap' for the albedo map,
                     - 'kern' for the kernel,
@@ -2383,7 +2381,7 @@ class DirectImaging_Planet:
         on the planet's spin axis (its obliquity and solstice). Invert a
         light curve from one orbital phase and you will also fit some
         East-West structure of the kernel, like the longitudinal width.
-        Or invert from two different phases and you fit some North-South
+        Or, invert from two different phases and you fit some North-South
         structure, like the **change in** dominant colatitude. So, kernel
         characteristics help us estimate constraints on the spin axis without
         doing inversions from real data.
@@ -2401,7 +2399,7 @@ class DirectImaging_Planet:
             
             We have pre-calculated characteristics stored in numpy binary
             files (the obvious two with names ending "values_all5deg.npy").
-            So, this method rounds inclination, obliquity, and solstice
+            So, this method rounds inclination, obliquity and solstice
             to the nearest 5 degrees. It also tracks the North (green
             circle) or South pole (green diamond) when obliquity is less
             than or greater than 90 degrees, respectively.
@@ -2466,7 +2464,7 @@ class DirectImaging_Planet:
                 Uncertainty on inclination, in degrees. Default is 10.0.
             
             kwid_sig (float):
-                Uncertainty on longitudinal, width in degrees. Default
+                Uncertainty on longitudinal width, in degrees. Default
                 is 10.0.
             
             kddc_sig (float):
@@ -2826,17 +2824,17 @@ class DirectImaging_Planet:
             :align: center
 
         This module lets you explore how a planet's geometry, motion,
-        kernel, and light curves are related. You can also see predicted
+        kernel and light curves are related. You can also see predicted
         constraints on the planet's spin axis (using the kernel and perfect
         data).
 
         .. note::
-	
+        
             The larger your ``n_clat`` and ``n_long``, the longer this
             module takes to update (e.g. seconds with default values).
 
         The sandbox combines several methods from the class
-        :class:`DirectImaging_Planet` into one compact display. See each
+        :class:`DirectImaging_Planet` into one display. See each
         for details:
         
             - :func:`Geometry_Diagram`
@@ -2845,9 +2843,9 @@ class DirectImaging_Planet:
             - :func:`KChar_Evolve_Plot`
             - :func:`SpinAxis_Constraints`
         
-        The planet and light curves are rendered using your primary albedo
-        map. You have a main orbital phase (magenta) to view and can save
-        up to 3 extra phases (light, medium, dark) to compare. Each phase
+        The planet and light curves are rendered with your primary albedo
+        map. You view a main orbital phase (magenta) and can compare
+        up to 3 extra phases (light, medium, dark). Each phase
         has a color-coded marker on the geometry diagram and kernel
         characteristics plot, plus its own light curve.
 
