@@ -99,7 +99,9 @@ def _combine_2_colormaps(cm1,va1,vb1,n1,cm2,va2,vb2,n2,power,name):
     C[:,0:3] *= (d_Li[:,np.newaxis]/d_Li.max())**power
     return LinearSegmentedColormap.from_list(name,C)
 
-darkmid_BrBG_ = _combine_2_colormaps(cm.BrBG,0.4,0,128,cm.BrBG,0.99,0.59,128,0.5,'darkmid_BrBG_')
+darkmid_BrBG_ = _combine_2_colormaps(cm1=cm.BrBG,va1=0.4,vb1=0,n1=128,
+                                     cm2=cm.BrBG,va2=0.99,vb2=0.59,n2=128,
+                                     power=0.5,name='darkmid_BrBG_')
 
 
 def _rotate_ccw_angle(X,Y,ang):
@@ -418,7 +420,7 @@ class DirectImaging_Planet:
         
     """
 
-    def _odd_check(self,n,number,quality):
+    def _odd_check(self,n,number,quality):#$$#
         """Makes sure your input number is odd."""
         if (n % 2) == 1:
             return n
