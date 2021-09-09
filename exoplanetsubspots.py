@@ -13,36 +13,36 @@ def sub_observerstellar(times,worb,wrot,inc,obl,sol,longzero=0):
     """Calculates an exoplanet's sub-observer and -stellar locations over time.
 
     Calculates time-dependent, trigonometric values of an exoplanet's sub-
-    observer and sub-stellar locations when on a circular orbit. Planet
+    observer and sub-stellar locations on circular orbits. Planet
     coordinates are colatitude (theta) and longitude (phi). Orbital phase
     is zero when planet is opposite star from observer (superior conjunction)
     and increases CCW when system is viewed above star's North pole. See
     Appendix A of `Schwartz et al. (2016) <https://arxiv.org/abs/1511.05152>`_.
 
     Args:
-	times (1d array, int, or float):
+        times (1d array, int, or float):
             Discrete time values in any unit, with total number *n_time*.
             At t=0 planet is at superior conjunction.
             
-	worb (int or float):
+        worb (int or float):
             Orbital angular frequency in radians per unit time. Positive
             values are prograde orbits (CCW), negative are retrograde (CW).
             
-	wrot (int or float):
+        wrot (int or float):
             Rotational angular frequency in radians per unit time.
             For prograde orbits, positive values are prograde rotation,
             negative are retrograde (vice versa for retrograde orbits).
             
-	inc (int or float):
+        inc (int or float):
             Inclination of orbital plane to the observer, in radians.
             Zero is face-on, pi/2 is edge-on.
             
-	obl (int or float):
+        obl (int or float):
             Obliquity relative to the ``worb`` vector, in radians.
-	    This is the tilt of the planet's spin axis. Zero is North
-	    pole up, pi/2 is maximal tilt, pi is North pole down.
-	    
-	sol (int or float):
+            This is the tilt of the planet's spin axis. Zero is North
+            pole up, pi/2 is maximal tilt, pi is North pole down.
+            
+        sol (int or float):
             The orbital phase of Northern Summer solstice, in radians.
             If the ``wrot`` vector is projected into the orbital plane,
             then this phase is where that projection points at the star.
