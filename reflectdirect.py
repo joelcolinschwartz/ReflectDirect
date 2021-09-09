@@ -448,7 +448,7 @@ class DirectImaging_Planet:
         self.cos_longs = np.cos(self.longs)
         
         
-    def _import_image(self,filename):#$$#
+    def _import_image(self,filename):
         """Imports a png image to make a brightness map."""
         raw_values = plt.imread(filename)
         if raw_values.ndim == 2:
@@ -745,9 +745,11 @@ class DirectImaging_Planet:
             primed_albedos = self._linear_convert(primed_albedos,alb_lims)
 
         if into in ['pri','alt']:
-            self.InvertFlipBlend_Amap(primed_albedos,into,invert,flip,blend)
+            self.InvertFlipBlend_Amap(image=primed_albedos,into=into,
+                                      invert=invert,flip=flip,blend=blend)
         elif into == 'none':
-            return self.InvertFlipBlend_Amap(primed_albedos,into,invert,flip,blend)
+            return self.InvertFlipBlend_Amap(image=primed_albedos,into=into,
+                                             invert=invert,flip=flip,blend=blend)
     
     
     def _setup_for_actmodule(self):
@@ -831,7 +833,8 @@ class DirectImaging_Planet:
     
     
     def __init__(self,name='This Exoplanet',n_clat=37,n_long=73,
-                 kind='ylm',map_data=[[1,-1,1.0],[2,0,-1.0]],primeD=0,limit=True,alb_lims=[0.0,1.0],
+                 kind='ylm',map_data=[[1,-1,1.0],[2,0,-1.0]],primeD=0,
+                 limit=True,alb_lims=[0.0,1.0],
                  invert=False,flip='none',blend='none',
                  orbT=(24.0*360.0),ratRO=10.0,
                  incD=85,oblD=0,solD=0,longzeroD=0):
@@ -939,7 +942,9 @@ class DirectImaging_Planet:
         self.name = name
         
         self._colat_long(n_clat,n_long)
-        self.Build_Amap(kind,map_data,primeD,limit,alb_lims,'pri',invert,flip,blend)
+        self.Build_Amap(kind=kind,map_data=map_data,primeD=primeD,
+                        limit=limit,alb_lims=alb_lims,
+                        into='pri',invert=invert,flip=flip,blend=blend)
         
         self.orbT = orbT
         self.ratRO = ratRO
@@ -955,7 +960,7 @@ class DirectImaging_Planet:
         self.solD = solD
         self.longzeroD = longzeroD
         
-        self.InvertFlipBlend_Amap('pri','alt',invert=True,flip='none',blend='none')
+        self.InvertFlipBlend_Amap(image='pri',into='alt',invert=True)
         self.orbT_b = orbT
         self.ratRO_b = ratRO
         self.incD_b = incD
@@ -1105,8 +1110,9 @@ class DirectImaging_Planet:
             
         """
         self.InvertFlipBlend_Amap(flip='EW')
-        self.Adjust_Geometry('alt',self.incD,self.oblD,self.solD,-self.longzeroD)
-        self.Adjust_MotionTimes('alt',ratRO=1.0-self.ratRO)
+        self.Adjust_Geometry(which='alt',incD=self.incD,oblD=self.oblD,solD=self.solD,
+                             longzeroD=-self.longzeroD)
+        self.Adjust_MotionTimes(which='alt',ratRO=1.0-self.ratRO)
     
     
     def _describe_amap(self,low,high):
@@ -1213,7 +1219,7 @@ class DirectImaging_Planet:
             plt.show()
     
     
-    def _flat_style(self,albs,v_l,v_h,grat):
+    def _flat_style(self,albs,v_l,v_h,grat):#$$#
         """Styles plots for equirectangular maps."""
         if albs.min() < 0:
             m_c,lab,d_c = darkmid_BrBG_,'value',(1,0,0)
