@@ -420,7 +420,7 @@ class DirectImaging_Planet:
         
     """
 
-    def _odd_check(self,n,number,quality):#$$#
+    def _odd_check(self,n,number,quality):
         """Makes sure your input number is odd."""
         if (n % 2) == 1:
             return n
@@ -448,13 +448,27 @@ class DirectImaging_Planet:
         self.cos_longs = np.cos(self.longs)
         
         
-    def _import_image(self,filename):
+    def _import_image(self,filename):#$$#
         """Imports a png image to make a brightness map."""
-        rawvalues = plt.imread(filename)
-        if rawvalues.ndim == 2:
-            return rawvalues
+        raw_values = plt.imread(filename)
+        if raw_values.ndim == 2:
+            return raw_values
         else:
-            return np.sum(rawvalues[:,:,:3]*[0.2126,0.7152,0.0722],axis=2)
+            ## Convert from sRGB to luminance (e.g. BT.709)
+            ## imread should give values between 0 and 1 (divide by 255.0 otherwise)
+            gamma_rgb = raw_values[:,:,:3]  # Don't use alpha channel if it's there
+            linear_rgb = np.zeros(gamma_rgb.shape)
+            
+            ## Separate values by cutoff in formula
+            low_mask = (gamma_rgb <= 0.04045)
+            high_mask = np.logical_not(low_mask)
+            
+            ## Transform gamma encoded rgb to linear
+            linear_rgb[low_mask] = gamma_rgb[low_mask]/12.92
+            linear_rgb[high_mask] = ((gamma_rgb[high_mask]+0.055)/1.055)**2.4
+            
+            ## Multiply by the transform coefficients and sum
+            return np.sum(linear_rgb*[0.2126,0.7152,0.0722],axis=2)
     
     def _pixel_bounds(self,i,skip):
         """Returns low and high limits for pixels."""
