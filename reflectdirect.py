@@ -1219,7 +1219,7 @@ class DirectImaging_Planet:
             plt.show()
     
     
-    def _flat_style(self,albs,v_l,v_h,grat):#$$#
+    def _flat_style(self,albs,v_l,v_h,grat):
         """Styles plots for equirectangular maps."""
         if albs.min() < 0:
             m_c,lab,d_c = darkmid_BrBG_,'value',(1,0,0)
@@ -1335,7 +1335,7 @@ class DirectImaging_Planet:
     
     
     def SubOS_TimeDeg(self,which='pri',times=0,orbT=(24.0*360.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0,
-                        bypass_time='no'):
+                      bypass_time='no'):
         """Calculates an planet's sub-observer and -stellar locations over time.
 
         Wrapper for :func:`exoplanetsubspots.sub_observerstellar` that
@@ -1378,16 +1378,19 @@ class DirectImaging_Planet:
         """
         if which == 'pri':
             here_times = self.times
-            worb,wrot,inc,obl,sol,longzero = self._convert_omega_rad(self.orbT,self.ratRO,
-                                                                     self.incD,self.oblD,self.solD,self.longzeroD)
+            worb,wrot,inc,obl,sol,longzero = self._convert_omega_rad(orbT=self.orbT,ratRO=self.ratRO,
+                                                                     incD=self.incD,oblD=self.oblD,
+                                                                     solD=self.solD,longzeroD=self.longzeroD)
         elif which == 'alt':
             here_times = self.times
-            worb,wrot,inc,obl,sol,longzero = self._convert_omega_rad(self.orbT_b,self.ratRO_b,
-                                                                     self.incD_b,self.oblD_b,self.solD_b,
-                                                                     self.longzeroD_b)
+            worb,wrot,inc,obl,sol,longzero = self._convert_omega_rad(orbT=self.orbT_b,ratRO=self.ratRO_b,
+                                                                     incD=self.incD_b,oblD=self.oblD_b,
+                                                                     solD=self.solD_b,longzeroD=self.longzeroD_b)
         elif which == '_c':
             here_times = times
-            worb,wrot,inc,obl,sol,longzero = self._convert_omega_rad(orbT,ratRO,incD,oblD,solD,longzeroD)
+            worb,wrot,inc,obl,sol,longzero = self._convert_omega_rad(orbT=orbT,ratRO=ratRO,
+                                                                     incD=incD,oblD=oblD,
+                                                                     solD=solD,longzeroD=longzeroD)
         if (which != '_c') and not isinstance(bypass_time,str):
             here_times = bypass_time
         return exoss.sub_observerstellar(here_times,worb,wrot,inc,obl,sol,longzero)
@@ -1509,9 +1512,10 @@ class DirectImaging_Planet:
         if which == 'pri':
             os_trigs = self.SubOS_TimeDeg(bypass_time=bypass_time)
         elif which == 'alt':
-            os_trigs = self.SubOS_TimeDeg(which,bypass_time=bypass_time)
+            os_trigs = self.SubOS_TimeDeg(which=which,bypass_time=bypass_time)
         elif which == '_c':
-            os_trigs = self.SubOS_TimeDeg(which,times,orbT,ratRO,incD,oblD,solD,longzeroD)
+            os_trigs = self.SubOS_TimeDeg(which=which,times=times,orbT=orbT,ratRO=ratRO,
+                                          incD=incD,oblD=oblD,solD=solD,longzeroD=longzeroD)
         
         k2d = self.Kernel2D(os_trigs)
         klong = self.KernelLong(k2d)
@@ -1621,14 +1625,16 @@ class DirectImaging_Planet:
             here_albs = self.albedos_b
             time = self.orbT_b*(phaseD/360.0)
             here_incD,here_oblD,here_solD = self.incD_b,self.oblD_b,self.solD_b
-            sig_long,dom_clat,actual_mu,klong,kclat,k2d = self.Kernel_WidthDomColat(which,keep_kernels=True,
+            sig_long,dom_clat,actual_mu,klong,kclat,k2d = self.Kernel_WidthDomColat(which=which,keep_kernels=True,
                                                                                     bypass_time=time)
         elif which == '_c':
             here_albs = albs
             time = orbT*(phaseD/360.0)
             here_incD,here_oblD,here_solD = incD,oblD,solD
-            sig_long,dom_clat,actual_mu,klong,kclat,k2d = self.Kernel_WidthDomColat(which,True,time,orbT,ratRO,
-                                                                                    incD,oblD,solD,longzeroD)
+            sig_long,dom_clat,actual_mu,klong,kclat,k2d = self.Kernel_WidthDomColat(which=which,keep_kernels=True,
+                                                                                    times=time,orbT=orbT,ratRO=ratRO,
+                                                                                    incD=incD,oblD=oblD,solD=solD,
+                                                                                    longzeroD=longzeroD)
         sig_long,dom_clat,actual_mu,klong,kclat,k2d = sig_long[0],dom_clat[0],actual_mu[0],klong[0],kclat[0],k2d[0]
         tot_k2d = np.sum(k2d[:,:-1]*self.sin_clats[:,:-1])*self.delta_clat*self.delta_long
         kern_frac = tot_k2d/(2.0/3.0)
@@ -1739,7 +1745,7 @@ class DirectImaging_Planet:
         plt.show()
     
     
-    def _kcevo_style(self,char,times,sig_long,dom_clat,i,imax,ax1,ax2,_active,phasesD_I,ph_colors):
+    def _kcevo_style(self,char,times,sig_long,dom_clat,i,imax,ax1,ax2,_active,phasesD_I,ph_colors):#$$#
         """Styles part of plots for kernel characteristics."""
         if char == 'wid':
             ax1.plot(times,np.degrees(sig_long),c=cm.Reds(0.85-0.7*i/(imax-1)),zorder=1)
@@ -1770,7 +1776,8 @@ class DirectImaging_Planet:
                                                                                                            gap)
             for i in np.arange(imax):
                 now_incD = i*gap
-                sig_long,dom_clat = self.Kernel_WidthDomColat('_c',False,times,1,1,now_incD,oblD,solD)
+                sig_long,dom_clat = self.Kernel_WidthDomColat(which='_c',times=times,orbT=1,ratRO=1,
+                                                              incD=now_incD,oblD=oblD,solD=solD)
                 self._kcevo_style(char,times,sig_long,dom_clat,i,imax,ax1,ax2,_active,phasesD_I,ph_colors)
         elif explode == 'obl':
             imax = int(90//gap) + 1
@@ -1778,7 +1785,8 @@ class DirectImaging_Planet:
                                                                                                          gap)
             for i in np.arange(imax):
                 now_oblD = i*gap
-                sig_long,dom_clat = self.Kernel_WidthDomColat('_c',False,times,1,1,incD,now_oblD,solD)
+                sig_long,dom_clat = self.Kernel_WidthDomColat(which='_c',times=times,orbT=1,ratRO=1,
+                                                              incD=incD,oblD=now_oblD,solD=solD)
                 self._kcevo_style(char,times,sig_long,dom_clat,i,imax,ax1,ax2,_active,phasesD_I,ph_colors)
         elif explode == 'sol':
             imax = int(360//gap)
@@ -1786,11 +1794,13 @@ class DirectImaging_Planet:
                                                                                                         gap)
             for i in np.arange(imax):
                 now_solD = i*gap
-                sig_long,dom_clat = self.Kernel_WidthDomColat('_c',False,times,1,1,incD,oblD,now_solD)
+                sig_long,dom_clat = self.Kernel_WidthDomColat(which='_c',times=times,orbT=1,ratRO=1,
+                                                              incD=incD,oblD=oblD,solD=now_solD)
                 self._kcevo_style(char,times,sig_long,dom_clat,i,imax,ax1,ax2,_active,phasesD_I,ph_colors)
         elif explode == 'none':
             ex_lab = ''
-            sig_long,dom_clat = self.Kernel_WidthDomColat('_c',False,times,1,1,incD,oblD,solD)
+            sig_long,dom_clat = self.Kernel_WidthDomColat(which='_c',times=times,orbT=1,ratRO=1,
+                                                          incD=incD,oblD=oblD,solD=solD)
             self._kcevo_style(char,times,sig_long,dom_clat,1,3,ax1,ax2,_active,phasesD_I,ph_colors)
         return 'Kernel Characteristics of {}'.format(self.name)+ex_lab
     
@@ -1961,10 +1971,11 @@ class DirectImaging_Planet:
             os_trigs = self.SubOS_TimeDeg()
         elif which == 'alt':
             here_albs = self.albedos_b
-            os_trigs = self.SubOS_TimeDeg(which)
+            os_trigs = self.SubOS_TimeDeg(which=which)
         elif which == '_c':
             here_albs = albs
-            os_trigs = self.SubOS_TimeDeg(which,times,orbT,ratRO,incD,oblD,solD,longzeroD)
+            os_trigs = self.SubOS_TimeDeg(which=which,times=times,orbT=orbT,ratRO=ratRO,
+                                          incD=incD,oblD=oblD,solD=solD,longzeroD=longzeroD)
         k2d = self.Kernel2D(os_trigs)
         flux_ak = np.sum(here_albs[:,:-1]*k2d[:,:,:-1]*self.sin_clats[:,:-1],axis=(1,2))*self.delta_clat*self.delta_long
         marg_k = np.sum(k2d[:,:,:-1]*self.sin_clats[:,:-1],axis=(1,2))*self.delta_clat*self.delta_long
@@ -2079,11 +2090,12 @@ class DirectImaging_Planet:
     
     def _orth_project(self,phaseD,orbT,which,incD,oblD,solD,_active,ratRO,longzeroD):
         """Sets up an orthographic projection."""
-        time = orbT*(phaseD/360.0)
+        time = orbT*(phaseD/360.0)  # Note you're calling it 'time' here, *not* 'times'
         if _active:
-            os_trigs = self.SubOS_TimeDeg(which,time,orbT,ratRO,incD,oblD,solD,longzeroD)
+            os_trigs = self.SubOS_TimeDeg(which=which,times=time,orbT=orbT,ratRO=ratRO,
+                                          incD=incD,oblD=oblD,solD=solD,longzeroD=longzeroD)
         else:
-            os_trigs = self.SubOS_TimeDeg(which,bypass_time=time)
+            os_trigs = self.SubOS_TimeDeg(which=which,bypass_time=time)
         k2d = self.Kernel2D(os_trigs)[0]
         
         St_o,Ct_o,Sp_o,Cp_o = os_trigs[:4]
@@ -2304,12 +2316,15 @@ class DirectImaging_Planet:
         levels_sigma[1:] += bad_lev_up*np.array([1.0e-12,1.1e-12,1.2e-12,1.3e-12])
         return levels_sigma
     
+    ## Is this function not being used anywhere??
     def _kchar_grider(self,kind,phase_rat,incD):
         """Calculates an array of kernel characteristics."""
         solobl_wgrid,solobl_dgrid = np.zeros((73,19)),np.zeros((73,19))
         for s in np.arange(73):
             for o in np.arange(19):
-                solobl_wgrid[s,o],solobl_dgrid[s,o] = self.Kernel_WidthDomColat('_c',False,phase_rat,1,1,incD,o*5,s*5,0)
+                solobl_wgrid[s,o],solobl_dgrid[s,o] = self.Kernel_WidthDomColat(which='_c',times=phase_rat,
+                                                                                orbT=1,ratRO=1,
+                                                                                incD=incD,oblD=o*5,solD=s*5,longzeroD=0)
         return solobl_wgrid,solobl_dgrid
     
     def _spinax_style(self,w,h,s,m_c,kind,ax_combo,sols,obls,prob2d,levs,constraint,orig_sols,orig_obls,
