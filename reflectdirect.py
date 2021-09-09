@@ -606,7 +606,7 @@ class DirectImaging_Planet:
             return new_image
     
 
-    def Build_Amap(self,kind='ylm',mp_data=[[1,-1,1.0],[2,0,-1.0]],primeD=0,limit=True,alb_lims=[0.0,1.0],
+    def Build_Amap(self,kind='ylm',map_data=[[1,-1,1.0],[2,0,-1.0]],primeD=0,limit=True,alb_lims=[0.0,1.0],
                    into='pri',invert=False,flip='none',blend='none'):
         """Creates an albedo map from input data.
 
@@ -620,7 +620,7 @@ class DirectImaging_Planet:
                     - 'aryA' to average values from a 2D array,
                     - 'aryI' to interpolate values from a 2D array.
             
-            mp_data:
+            map_data:
                 Depends on ``kind``.
                 
                     - For either 'png' this is the file path to your
@@ -686,13 +686,13 @@ class DirectImaging_Planet:
             
         """
         if (kind == 'pngA') or (kind == 'pngI'):
-            img_values = self._import_image(mp_data)
+            img_values = self._import_image(map_data)
             pre_albedos = self._convert_image_pixels(kind,img_values)
             
         elif kind == 'ylm':
             pre_albedos = np.zeros(self.clats.shape)
-            for y in np.arange(len(mp_data)):
-                ell,m,c = mp_data[y]
+            for y in np.arange(len(map_data)):
+                ell,m,c = map_data[y]
                 if abs(m) <= ell:
                     pre_albedos += c*np.real(sph_harm(m,ell,self.longs,self.clats))
                 else:
@@ -700,7 +700,7 @@ class DirectImaging_Planet:
                           .format(y,ell,m))
                 
         elif (kind == 'aryA') or (kind == 'aryI'):
-            pre_albedos = self._convert_image_pixels(kind,mp_data)
+            pre_albedos = self._convert_image_pixels(kind,map_data)
             
         else:
             print('Build_Amap aborted because kind must be one of below.')
@@ -815,7 +815,7 @@ class DirectImaging_Planet:
     
     
     def __init__(self,name='This Exoplanet',n_clat=37,n_long=73,
-                 kind='ylm',mp_data=[[1,-1,1.0],[2,0,-1.0]],primeD=0,limit=True,alb_lims=[0.0,1.0],
+                 kind='ylm',map_data=[[1,-1,1.0],[2,0,-1.0]],primeD=0,limit=True,alb_lims=[0.0,1.0],
                  invert=False,flip='none',blend='none',
                  orbT=(24.0*360.0),ratRO=10.0,
                  incD=85,oblD=0,solD=0,longzeroD=0):
@@ -849,7 +849,7 @@ class DirectImaging_Planet:
                     - 'aryA' to average values from a 2D array,
                     - 'aryI' to interpolate values from a 2D array.
             
-            mp_data:
+            map_data:
                 Depends on ``kind``.
             
                     - For either 'png' this is the file path to your
@@ -923,7 +923,7 @@ class DirectImaging_Planet:
         self.name = name
         
         self._colat_long(n_clat,n_long)
-        self.Build_Amap(kind,mp_data,primeD,limit,alb_lims,'pri',invert,flip,blend)
+        self.Build_Amap(kind,map_data,primeD,limit,alb_lims,'pri',invert,flip,blend)
         
         self.orbT = orbT
         self.ratRO = ratRO
