@@ -1745,7 +1745,7 @@ class DirectImaging_Planet:
         plt.show()
     
     
-    def _kcevo_style(self,char,times,sig_long,dom_clat,i,imax,ax1,ax2,_active,phasesD_I,ph_colors):#$$#
+    def _kcevo_style(self,char,times,sig_long,dom_clat,i,imax,ax1,ax2,_active,phasesD_I,ph_colors):
         """Styles part of plots for kernel characteristics."""
         if char == 'wid':
             ax1.plot(times,np.degrees(sig_long),c=cm.Reds(0.85-0.7*i/(imax-1)),zorder=1)
@@ -1778,7 +1778,9 @@ class DirectImaging_Planet:
                 now_incD = i*gap
                 sig_long,dom_clat = self.Kernel_WidthDomColat(which='_c',times=times,orbT=1,ratRO=1,
                                                               incD=now_incD,oblD=oblD,solD=solD)
-                self._kcevo_style(char,times,sig_long,dom_clat,i,imax,ax1,ax2,_active,phasesD_I,ph_colors)
+                self._kcevo_style(char=char,times=times,sig_long=sig_long,dom_clat=dom_clat,
+                                  i=i,imax=imax,ax1=ax1,ax2=ax2,
+                                  _active=_active,phasesD_I=phasesD_I,ph_colors=ph_colors)
         elif explode == 'obl':
             imax = int(90//gap) + 1
             ex_lab = r' - Obliquity: $0^{\circ}$ dark to $%.1f^{\circ}$ light in $%.1f^{\circ}$ gaps' % ((imax-1)*gap,
@@ -1787,7 +1789,9 @@ class DirectImaging_Planet:
                 now_oblD = i*gap
                 sig_long,dom_clat = self.Kernel_WidthDomColat(which='_c',times=times,orbT=1,ratRO=1,
                                                               incD=incD,oblD=now_oblD,solD=solD)
-                self._kcevo_style(char,times,sig_long,dom_clat,i,imax,ax1,ax2,_active,phasesD_I,ph_colors)
+                self._kcevo_style(char=char,times=times,sig_long=sig_long,dom_clat=dom_clat,
+                                  i=i,imax=imax,ax1=ax1,ax2=ax2,
+                                  _active=_active,phasesD_I=phasesD_I,ph_colors=ph_colors)
         elif explode == 'sol':
             imax = int(360//gap)
             ex_lab = r' - Solstice: $0^{\circ}$ dark to $%.1f^{\circ}$ light in $%.1f^{\circ}$ gaps' % ((imax-1)*gap,
@@ -1796,12 +1800,16 @@ class DirectImaging_Planet:
                 now_solD = i*gap
                 sig_long,dom_clat = self.Kernel_WidthDomColat(which='_c',times=times,orbT=1,ratRO=1,
                                                               incD=incD,oblD=oblD,solD=now_solD)
-                self._kcevo_style(char,times,sig_long,dom_clat,i,imax,ax1,ax2,_active,phasesD_I,ph_colors)
+                self._kcevo_style(char=char,times=times,sig_long=sig_long,dom_clat=dom_clat,
+                                  i=i,imax=imax,ax1=ax1,ax2=ax2,
+                                  _active=_active,phasesD_I=phasesD_I,ph_colors=ph_colors)
         elif explode == 'none':
             ex_lab = ''
             sig_long,dom_clat = self.Kernel_WidthDomColat(which='_c',times=times,orbT=1,ratRO=1,
                                                           incD=incD,oblD=oblD,solD=solD)
-            self._kcevo_style(char,times,sig_long,dom_clat,1,3,ax1,ax2,_active,phasesD_I,ph_colors)
+            self._kcevo_style(char=char,times=times,sig_long=sig_long,dom_clat=dom_clat,
+                              i=1,imax=3,ax1=ax1,ax2=ax2,
+                              _active=_active,phasesD_I=phasesD_I,ph_colors=ph_colors)
         return 'Kernel Characteristics of {}'.format(self.name)+ex_lab
     
     def _kcevo_stylewid(self,ax,s_tick,s_lab,_active):
@@ -1898,10 +1906,11 @@ class DirectImaging_Planet:
         if _active:
             ax1 = plt.subplot(236)
             ax2 = ax1.twinx()
-            self._kcevo_stylewid(ax1,'medium','medium',_active)
-            self._kcevo_styledom(ax2,'medium','medium',_active)
-            tit = self._kcevo_loop(char,explode,gap,times,here_incD,here_oblD,here_solD,ax1,ax2,
-                                   _active,phasesD_I,ph_colors)
+            self._kcevo_stylewid(ax1,s_tick='medium',s_lab='medium',_active=_active)
+            self._kcevo_styledom(ax2,s_tick='medium',s_lab='medium',_active=_active)
+            tit = self._kcevo_loop(char=char,explode=explode,gap=gap,times=times,
+                                   incD=here_incD,oblD=here_oblD,solD=here_solD,ax1=ax1,ax2=ax2,
+                                   _active=_active,phasesD_I=phasesD_I,ph_colors=ph_colors)
             # 'datalim' continues to be the best option, others mess up the interactive module.
             ax1.set(adjustable='datalim',aspect=1.0/ax1.get_data_ratio())
             ax2.set(adjustable='datalim',aspect=1.0/ax2.get_data_ratio())
@@ -1912,17 +1921,19 @@ class DirectImaging_Planet:
 
             if char in ['wid','dom']:
                 if char == 'wid':
-                    self._kcevo_stylewid(ax1,'large','x-large',_active)
+                    self._kcevo_stylewid(ax1,s_tick='large',s_lab='x-large',_active=_active)
                 else:
-                    self._kcevo_styledom(ax1,'large','x-large',_active)
-                tit = self._kcevo_loop(char,explode,gap,times,here_incD,here_oblD,here_solD,ax1,0,
-                                       _active,phasesD_I,ph_colors)
+                    self._kcevo_styledom(ax1,s_tick='large',s_lab='x-large',_active=_active)
+                tit = self._kcevo_loop(char=char,explode=explode,gap=gap,times=times,
+                                       incD=here_incD,oblD=here_oblD,solD=here_solD,ax1=ax1,ax2=0,
+                                       _active=_active,phasesD_I=phasesD_I,ph_colors=ph_colors)
             elif char == 'both':
                 ax2 = ax1.twinx()
-                self._kcevo_stylewid(ax1,'large','x-large',_active)
-                self._kcevo_styledom(ax2,'large','x-large',_active)
-                tit = self._kcevo_loop(char,explode,gap,times,here_incD,here_oblD,here_solD,ax1,ax2,
-                                       _active,phasesD_I,ph_colors)
+                self._kcevo_stylewid(ax1,s_tick='large',s_lab='x-large',_active=_active)
+                self._kcevo_styledom(ax2,s_tick='large',s_lab='x-large',_active=_active)
+                tit = self._kcevo_loop(char=char,explode=explode,gap=gap,times=times,
+                                       incD=here_incD,oblD=here_oblD,solD=here_solD,ax1=ax1,ax2=ax2,
+                                       _active=_active,phasesD_I=phasesD_I,ph_colors=ph_colors)
 
             plt.title(tit,size='large')
             plt.tight_layout()
@@ -2053,8 +2064,9 @@ class DirectImaging_Planet:
             ph_color = kwargs.get('ph_color','k')
             now_I = kwargs.get('now_I',0)
             
-            flux_ak,appar_a = self.Light_Curves('_c',self.albedos,times_I,orbT_I,ratRO_I,
-                                                incD_I,oblD_I,solD_I,longzeroD_I)
+            flux_ak,appar_a = self.Light_Curves(which='_c',albs=self.albedos,
+                                                times=times_I,orbT=orbT_I,ratRO=ratRO_I,
+                                                incD=incD_I,oblD=oblD_I,solD=solD_I,longzeroD=longzeroD_I)
             Ph = np.linspace(-2.5,2.5,times_I.size)
             zo = 0
             thick = lambda n: 2 if n == 0 else 1
@@ -2066,10 +2078,10 @@ class DirectImaging_Planet:
         else:
             plt.figure(figsize=(10,5))
             
-            flux_ak,appar_a = self.Light_Curves('pri')
+            flux_ak,appar_a = self.Light_Curves(which='pri')
             self._lc_style('pri',flux_ak,appar_a,show,diff,diff_only)
             if alt:
-                flux_ak_b,appar_a_b = self.Light_Curves('alt')
+                flux_ak_b,appar_a_b = self.Light_Curves(which='alt')
                 self._lc_style('alt',flux_ak_b,appar_a_b,show,diff,diff_only)
                 if diff or diff_only:
                     if self.orbT == self.orbT_b:
@@ -2088,7 +2100,7 @@ class DirectImaging_Planet:
             plt.show()
     
     
-    def _orth_project(self,phaseD,orbT,which,incD,oblD,solD,_active,ratRO,longzeroD):
+    def _orth_project(self,phaseD,orbT,which,incD,oblD,solD,_active,ratRO,longzeroD):#$$#
         """Sets up an orthographic projection."""
         time = orbT*(phaseD/360.0)  # Note you're calling it 'time' here, *not* 'times'
         if _active:
