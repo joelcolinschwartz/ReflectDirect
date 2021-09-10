@@ -2100,7 +2100,7 @@ class DirectImaging_Planet:
             plt.show()
     
     
-    def _orth_project(self,phaseD,orbT,which,incD,oblD,solD,_active,ratRO,longzeroD):#$$#
+    def _orth_project(self,phaseD,orbT,which,incD,oblD,solD,_active,ratRO,longzeroD):
         """Sets up an orthographic projection."""
         time = orbT*(phaseD/360.0)  # Note you're calling it 'time' here, *not* 'times'
         if _active:
@@ -2219,16 +2219,21 @@ class DirectImaging_Planet:
             
             vm_l,vm_h,va_l,va_h = self._double_amap_colorbounds(alt,same_scale)
             (k2d,orth_Viz,orth_X,orth_Y,
-             poleN_viz,poleN_x,poleN_y) = self._orth_project(phaseD,orbT_I,'_c',incD_I,oblD_I,solD_I,
-                                                             True,ratRO_I,longzeroD_I)
+             poleN_viz,poleN_x,poleN_y) = self._orth_project(phaseD=phaseD,orbT=orbT_I,which='_c',
+                                                             incD=incD_I,oblD=oblD_I,solD=solD_I,
+                                                             _active=True,ratRO=ratRO_I,longzeroD=longzeroD_I)
             
-            s = self._orth_style(row,col,s,'amap',self.albedos,vm_l,vm_h,
-                                 orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,'NONE')
+            s = self._orth_style(row=row,sub=col,s=s,which='amap',
+                                 image=self.albedos,v_l=vm_l,v_h=vm_h,
+                                 orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                 poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
             plt.text(-0.7,1.04,'Visible Map',color='k',size='medium',ha='center',va='center')
             s += 1  # Now on subplot(233)
             up = lambda fb: k2d.max() if fb else 1.0/pi
-            s = self._orth_style(row,col,s,'kern',k2d,0,up(force_bright),
-                                 orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,'NONE')
+            s = self._orth_style(row=row,sub=col,s=s,which='kern',
+                                 image=k2d,v_l=0,v_h=up(force_bright),
+                                 orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                 poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
             plt.text(-0.7,1.04,'Kernel',color='k',size='medium',ha='center',va='center')
         
         else:
@@ -2248,34 +2253,52 @@ class DirectImaging_Planet:
             
             orbT,incD,oblD,solD = self.orbT,self.incD,self.oblD,self.solD
             (k2d,orth_Viz,orth_X,orth_Y,
-             poleN_viz,poleN_x,poleN_y) = self._orth_project(phaseD,orbT,'pri',incD,oblD,solD,False,0,0)
+             poleN_viz,poleN_x,poleN_y) = self._orth_project(phaseD=phaseD,orbT=orbT,which='pri',
+                                                             incD=incD,oblD=oblD,solD=solD,
+                                                             _active=False,ratRO=0,longzeroD=0)
             if show in ['kern','both']:
                 up = lambda fb: k2d.max() if fb else 1.0/pi
-                s = self._orth_style(row,sub,s,'kern',k2d,0,up(force_bright),
-                                     orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,'Kernel')
+                s = self._orth_style(row=row,sub=sub,s=s,which='kern',
+                                     image=k2d,v_l=0,v_h=up(force_bright),
+                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Kernel')
             if show in ['amap','both','sphere']:
-                s = self._orth_style(row,sub,s,'amap',self.albedos,vm_l,vm_h,
-                                     orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,'Visible Map')
+                s = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                                     image=self.albedos,v_l=vm_l,v_h=vm_h,
+                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Map')
             if show == 'real':
                 normk = lambda fb: 1.0/k2d.max() if fb else pi
-                s = self._orth_style(row,sub,s,'real',normk(force_bright)*k2d*self.albedos,vm_l,vm_h,
-                                     orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,r'Kernel $\times$ Map')
+                s = self._orth_style(row=row,sub=sub,s=s,which='real',
+                                     image=normk(force_bright)*k2d*self.albedos,v_l=vm_l,v_h=vm_h,
+                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Map')
             if show == 'sphere':
-                s = self._orth_style(row,sub,s,'amap',self.albedos,vm_l,vm_h,
-                                     -orth_Viz,-orth_X,orth_Y,-poleN_viz,-poleN_x,poleN_y,'Far Side of Map')
+                s = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                                     image=self.albedos,v_l=vm_l,v_h=vm_h,
+                                     orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
+                                     poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Map')
             if alt:
                 orbT,incD,oblD,solD = self.orbT_b,self.incD_b,self.oblD_b,self.solD_b
                 (k2d,orth_Viz,orth_X,orth_Y,
-                 poleN_viz,poleN_x,poleN_y) = self._orth_project(phaseD,orbT,'alt',incD,oblD,solD,False,0,0)
+                 poleN_viz,poleN_x,poleN_y) = self._orth_project(phaseD=phaseD,orbT=orbT,which='alt',
+                                                                 incD=incD,oblD=oblD,solD=solD,
+                                                                 _active=False,ratRO=0,longzeroD=0)
                 if show in ['amap','both','sphere']:
-                    s = self._orth_style(row,sub,s,'amap',self.albedos_b,vm_l,vm_h,
-                                         orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,'Visible Alt. Map')
+                    s = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                                         image=self.albedos_b,v_l=vm_l,v_h=vm_h,
+                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Alt. Map')
                 if show == 'real':
-                    s = self._orth_style(row,sub,s,'real',normk(force_bright)*k2d*self.albedos_b,vm_l,vm_h,
-                                         orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,r'Kernel $\times$ Alt. Map')
+                    s = self._orth_style(row=row,sub=sub,s=s,which='real',
+                                         image=normk(force_bright)*k2d*self.albedos_b,v_l=vm_l,v_h=vm_h,
+                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Alt. Map')
                 if show == 'sphere':
-                    s = self._orth_style(row,sub,s,'amap',self.albedos_b,vm_l,vm_h,
-                                         -orth_Viz,-orth_X,orth_Y,-poleN_viz,-poleN_x,poleN_y,'Far Side of Alt. Map')
+                    s = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                                         image=self.albedos_b,v_l=vm_l,v_h=vm_h,
+                                         orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
+                                         poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Alt. Map')
                 
             plt.gcf().suptitle(r'%s at $%.2f^{\circ}$ phase' % (self.name,phaseD),y=0,fontsize='x-large',
                                verticalalignment='bottom')
@@ -2284,8 +2307,8 @@ class DirectImaging_Planet:
             plt.show()
     
     
-    def _spinax_prob_orignal(self,kchar,k_mu,k_sig,incs,i_mu,i_sig,phases,p_mu,p_sig,obls,
-                             yes_p2,phases2,p2_mu,p2_sig):
+    def _spinax_prob_original(self,kchar,k_mu,k_sig,incs,i_mu,i_sig,phases,p_mu,p_sig,obls,
+                              yes_p2,phases2,p2_mu,p2_sig):
         """Calculates a 2D PDF of spin axis constraints."""
         full_chi = ((kchar-k_mu)/k_sig)**2.0 + ((incs-i_mu)/i_sig)**2.0 + ((phases-p_mu)/p_sig)**2.0
         if yes_p2:
@@ -2328,7 +2351,7 @@ class DirectImaging_Planet:
         levels_sigma[1:] += bad_lev_up*np.array([1.0e-12,1.1e-12,1.2e-12,1.3e-12])
         return levels_sigma
     
-    ## Is this function not being used anywhere??
+    ## Keep, in case you ever need to test the kernel characteristic values.
     def _kchar_grider(self,kind,phase_rat,incD):
         """Calculates an array of kernel characteristics."""
         solobl_wgrid,solobl_dgrid = np.zeros((73,19)),np.zeros((73,19))
@@ -2587,8 +2610,13 @@ class DirectImaging_Planet:
         if not _active:
             plt.figure(figsize=(5*w,5*h))
             if info and not combine_only:
-                s = self._spinax_style(w,h,s,cm.gray,'info','0',new_sols,new_obls,0,0,constraint,
-                                       sol_2mesh_,obl_2mesh_,0,0,0,solR,oblR,0,_active,0,entries)
+                s = self._spinax_style(w=w,h=h,s=s,m_c=cm.gray,kind='info',ax_combo='0',
+                                       sols=new_sols,obls=new_obls,
+                                       prob2d=0,levs=0,constraint=constraint,
+                                       orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
+                                       kchar=0,k_mu=0,now_phaseD=0,
+                                       solR=solR,oblR=oblR,mark=0,
+                                       _active=_active,j=0,entries=entries)
         
         for j in np.arange(entries):
             now_phaseD = phaseD_list[j]
@@ -2604,9 +2632,10 @@ class DirectImaging_Planet:
                 kchar,k_mu = kernel_widths_[i_p,i_i,:,:],wid_mu
                 wid_sig = np.radians(kwid_sig)
                 if constraint in ['real','both']:
-                    prob2d = self._spinax_prob_orignal(kernel_widths_,wid_mu,wid_sig,inc_4mesh_,incR,incR_sig,
-                                                       phase_4mesh_,phaseR,phaseR_sig,obl_2mesh_,
-                                                       False,'no','no','no')
+                    prob2d = self._spinax_prob_original(kchar=kernel_widths_,k_mu=wid_mu,k_sig=wid_sig,
+                                                        incs=inc_4mesh_,i_mu=incR,i_sig=incR_sig,
+                                                        phases=phase_4mesh_,p_mu=phaseR,p_sig=phaseR_sig,obls=obl_2mesh_,
+                                                        yes_p2=False,phases2='no',p2_mu='no',p2_sig='no')
                 else:
                     prob2d = 1
             else:
@@ -2621,9 +2650,11 @@ class DirectImaging_Planet:
                 kchar,k_mu = np.absolute(kernel_domcolats_[i_p,i_i,:,:]-kernel_domcolats_[i_p2,i_i,:,:]),ddc_mu
                 ddc_sig = np.radians(kddc_sig)
                 if constraint in ['real','both']:
-                    prob2d = self._spinax_prob_orignal(kernel_delta_domcolats_,ddc_mu,ddc_sig,inc_4mesh_,incR,incR_sig,
-                                                       phase_4mesh_,phaseR,phaseR_sig,obl_2mesh_,
-                                                       True,shifted_phase_4mesh_,phaseR2,phaseR_sig)
+                    prob2d = self._spinax_prob_original(kchar=kernel_delta_domcolats_,k_mu=ddc_mu,k_sig=ddc_sig,
+                                                        incs=inc_4mesh_,i_mu=incR,i_sig=incR_sig,
+                                                        phases=phase_4mesh_,p_mu=phaseR,p_sig=phaseR_sig,obls=obl_2mesh_,
+                                                        yes_p2=True,phases2=shifted_phase_4mesh_,
+                                                        p2_mu=phaseR2,p2_sig=phaseR_sig)
                 else:
                     prob2d = 1
             
@@ -2641,30 +2672,46 @@ class DirectImaging_Planet:
                         axC.contour(sol_2mesh_,obl_2mesh_,kchar,levels=[k_mu],colors=[(0,0.3,0)],alpha=0.2,
                                     linewidths=3,linestyles='dashed')
             if constraint in ['real','both']:
-                new_prob2d = self._spinax_prob_redo(prob2d,sol_2mesh_,obl_2mesh_,new_sols,new_obls)
+                new_prob2d = self._spinax_prob_redo(prob2d=prob2d,
+                                                    orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
+                                                    new_sols=new_sols,new_obls=new_obls)
             else:
                 new_prob2d = 1
             if not combine_only:
                 if constraint in ['real','both']:
-                    levels_sigma = self._spinax_leveling(new_prob2d,sigma_probs,res,new_obls)
+                    levels_sigma = self._spinax_leveling(prob2d=new_prob2d,sigma_probs=sigma_probs,
+                                                         res=res,obls=new_obls)
                     if keep_probdata:
                         user_file.append([sav_phaseD,np.copy(new_prob2d),np.copy(levels_sigma)])
                 else:
                     levels_sigma = 1
-                s = self._spinax_style(w,h,s,m_c,'single','0',new_sols,new_obls,new_prob2d,levels_sigma,constraint,
-                                       sol_2mesh_,obl_2mesh_,kchar,k_mu,sav_phaseD,solR,oblR,mark,_active,j,entries)
+                s = self._spinax_style(w=w,h=h,s=s,m_c=m_c,kind='single',ax_combo='0',
+                                       sols=new_sols,obls=new_obls,
+                                       prob2d=new_prob2d,levs=levels_sigma,constraint=constraint,
+                                       orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
+                                       kchar=kchar,k_mu=k_mu,now_phaseD=sav_phaseD,
+                                       solR=solR,oblR=oblR,mark=mark,
+                                       _active=_active,j=j,entries=entries)
         
         if combine or combine_only:
             if constraint in ['real','both']:
-                new_combo_prob2d = self._spinax_prob_redo(combo_prob2d,sol_2mesh_,obl_2mesh_,new_sols,new_obls)
-                levels_sigma = self._spinax_leveling(new_combo_prob2d,sigma_probs.T,res,new_obls)
+                new_combo_prob2d = self._spinax_prob_redo(prob2d=combo_prob2d,
+                                                          orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
+                                                          new_sols=new_sols,new_obls=new_obls)
+                levels_sigma = self._spinax_leveling(prob2d=new_combo_prob2d,sigma_probs=sigma_probs.T,
+                                                     res=res,obls=new_obls)  #$$# TEST THIS TRANSPOSE
                 if keep_probdata:
                     user_file.append(['Combined',np.copy(new_combo_prob2d),np.copy(levels_sigma)])
             else:
                 new_combo_prob2d,levels_sigma = 1,1
             m_c_here = lambda x: cm.Reds if x == entries else (cm.Blues if x == 2*entries else cm.Purples)
-            s = self._spinax_style(w,h,s,m_c_here(p),'combo',axC,new_sols,new_obls,new_combo_prob2d,levels_sigma,
-                                   constraint,sol_2mesh_,obl_2mesh_,kchar,k_mu,0,solR,oblR,mark,_active,0,entries)
+            s = self._spinax_style(w=w,h=h,s=s,m_c=m_c_here(p),kind='combo',ax_combo=axC,
+                                   sols=new_sols,obls=new_obls,
+                                   prob2d=new_combo_prob2d,levs=levels_sigma,constraint=constraint,
+                                   orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
+                                   kchar=kchar,k_mu=k_mu,now_phaseD=0,
+                                   solR=solR,oblR=oblR,mark=mark,
+                                   _active=_active,j=0,entries=entries)
         
         if not _active:
             plt.tight_layout()
