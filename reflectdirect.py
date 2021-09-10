@@ -836,7 +836,7 @@ class DirectImaging_Planet:
                  kind='ylm',map_data=[[1,-1,1.0],[2,0,-1.0]],primeD=0,
                  limit=True,alb_lims=[0.0,1.0],
                  invert=False,flip='none',blend='none',
-                 orbT=(24.0*360.0),ratRO=10.0,
+                 orbT=(24.0*365.0),ratRO=10.0,
                  incD=85,oblD=0,solD=0,longzeroD=0):
         """*Constructor for the class DirectImaging_Planet*
 
@@ -919,7 +919,7 @@ class DirectImaging_Planet:
             
             orbT (int or float):
                 Orbital period of the planet, in any unit.
-                Default is 8640.0 (number of hours in one year).
+                Default is 8760.0 (approx. hours in one Earth year).
             
             ratRO (int or float):
                 Ratio of the planet's rotational and orbital angular
@@ -1334,7 +1334,7 @@ class DirectImaging_Planet:
         return worb,wrot,inc,obl,sol,longzero
     
     
-    def SubOS_TimeDeg(self,which='pri',times=0,orbT=(24.0*360.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0,
+    def SubOS_TimeDeg(self,which='pri',times=0,orbT=(24.0*365.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0,
                       bypass_time='no'):
         """Calculates an planet's sub-observer and -stellar locations over time.
 
@@ -1456,7 +1456,7 @@ class DirectImaging_Planet:
         return np.sum(k2d,axis=2)*self.delta_long
     
     
-    def Kernel_WidthDomColat(self,which='pri',keep_kernels=False,times=0,orbT=(24.0*360.0),ratRO=10.0,
+    def Kernel_WidthDomColat(self,which='pri',keep_kernels=False,times=0,orbT=(24.0*365.0),ratRO=10.0,
                              incD=85,oblD=0,solD=0,longzeroD=0,bypass_time='no'):
         """Calculates characteristics of the kernel over time.
 
@@ -1551,7 +1551,7 @@ class DirectImaging_Planet:
     
     def Kernels_Plot(self,phaseD,which='pri',grat=True,fixed_lims=True,force_bright=True,
                      over_amap=False,albs=np.array([[1.0]]),
-                     orbT=(24.0*360.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0,bypass_time='no'):
+                     orbT=(24.0*365.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0,bypass_time='no'):
         """Diagrams your planet's kernel at a given orbital phase.
 
         .. image:: _static/kernplot_example.png
@@ -1942,7 +1942,7 @@ class DirectImaging_Planet:
         
     
     def Light_Curves(self,which='pri',albs=np.array([[1.0]]),
-                     times=0,orbT=(24.0*360.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0):
+                     times=0,orbT=(24.0*365.0),ratRO=10.0,incD=85,oblD=0,solD=0,longzeroD=0):
         """Calculates light curves of your planet.
 
         Gives you both the exoplanet's flux (the sum of [*AK*], where *A* is
@@ -2055,7 +2055,7 @@ class DirectImaging_Planet:
         if kwargs.get('_active',False):
             ## Default keywords
             times_I = kwargs.get('times_I',0)
-            orbT_I = kwargs.get('orbT_I',(24.0*360.0))
+            orbT_I = kwargs.get('orbT_I',(24.0*365.0))
             ratRO_I = kwargs.get('ratRO_I',10.0)
             incD_I = kwargs.get('incD_I',90)
             oblD_I = kwargs.get('oblD_I',0)
@@ -2208,7 +2208,7 @@ class DirectImaging_Planet:
         """
         if kwargs.get('_active',False):
             ## Default keywords
-            orbT_I = kwargs.get('orbT_I',(24.0*360.0))
+            orbT_I = kwargs.get('orbT_I',(24.0*365.0))
             ratRO_I = kwargs.get('ratRO_I',10.0)
             incD_I = kwargs.get('incD_I',90)
             oblD_I = kwargs.get('oblD_I',0)
@@ -2790,7 +2790,7 @@ class DirectImaging_Planet:
         phasesD_single = [phaseD_I,self._xph_lig,self._xph_med,self._xph_drk]
         phasesD_forspin = self._check_for_actspin(phasesD_single,spinax_swit)
         ph_colors = [(1,0,1),cm.gray(0.6),cm.gray(0.3),cm.gray(0)]
-        orbT_I = 24.0*360.0
+        orbT_I = 24.0*365.0
 
         see_spins = abs(ratRO_I)/72.0
         num_rel = max(res_I*round(see_spins),self.n_long)
