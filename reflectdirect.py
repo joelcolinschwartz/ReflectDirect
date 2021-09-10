@@ -2351,15 +2351,17 @@ class DirectImaging_Planet:
         levels_sigma[1:] += bad_lev_up*np.array([1.0e-12,1.1e-12,1.2e-12,1.3e-12])
         return levels_sigma
     
-    ## Keep, in case you ever need to test the kernel characteristic values.
-    def _kchar_grider(self,kind,phase_rat,incD):
+    ## Keep, in case you ever need to make/test kernel characteristic values.
+    def _kchar_grider(self,phaseD,incD=60,n_s=73,n_o=19):
         """Calculates an array of kernel characteristics."""
-        solobl_wgrid,solobl_dgrid = np.zeros((73,19)),np.zeros((73,19))
-        for s in np.arange(73):
-            for o in np.arange(19):
-                solobl_wgrid[s,o],solobl_dgrid[s,o] = self.Kernel_WidthDomColat(which='_c',times=phase_rat,
-                                                                                orbT=1,ratRO=1,
-                                                                                incD=incD,oblD=o*5,solD=s*5,longzeroD=0)
+        time = phaseD/360.0  # Because orbT = 1.0 below
+        gap_s,gap_o = 360.0/(n_s-1),90.0/(n_o-1)  # Degrees between grid points
+        solobl_wgrid,solobl_dgrid = np.zeros((n_s,n_o)),np.zeros((n_s,n_o))
+        for s in np.arange(n_s):
+            for o in np.arange(n_o):
+                solobl_wgrid[s,o],solobl_dgrid[s,o] = self.Kernel_WidthDomColat(which='_c',times=time,orbT=1.0,ratRO=1.0,
+                                                                                incD=incD,oblD=o*gap_o,solD=s*gap_s,
+                                                                                longzeroD=0)
         return solobl_wgrid,solobl_dgrid
     
     def _spinax_style(self,w,h,s,m_c,kind,ax_combo,sols,obls,prob2d,levs,constraint,orig_sols,orig_obls,
