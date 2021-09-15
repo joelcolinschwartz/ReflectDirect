@@ -1219,7 +1219,7 @@ class DirectImaging_Planet:
             plt.show()
     
     
-    def _flat_style(self,albs,v_l,v_h,grat):
+    def _flat_style(self,fig,ax,albs,v_l,v_h,grat):
         """Styles plots for equirectangular maps."""
         if albs.min() < 0:
             m_c,lab,d_c = darkmid_BrBG_,'value',(1,0,0)
@@ -1228,21 +1228,23 @@ class DirectImaging_Planet:
         else:
             m_c,lab,d_c = cm.bone,'albedo',(0,1,0)
         
-        cart = plt.imshow(albs,cmap=m_c,extent=[-180,180,180,0],vmin=v_l,vmax=v_h)
-        cbar = plt.colorbar(cart)
+        cart = ax.imshow(albs,cmap=m_c,extent=[-180,180,180,0],vmin=v_l,vmax=v_h)
+        cbar = fig.colorbar(cart)
         cbar.set_label(label=lab,size='large')
         if grat:
-            plt.axvline(-90,c=d_c,ls=':',lw=1)
-            plt.axvline(0,c=d_c,ls='--',lw=1)
-            plt.axvline(90,c=d_c,ls=':',lw=1)
-            plt.axhline(45,c=d_c,ls=':',lw=1)
-            plt.axhline(90,c=d_c,ls='--',lw=1)
-            plt.axhline(135,c=d_c,ls=':',lw=1)
+            ax.axvline(-90,c=d_c,ls=':',lw=1)
+            ax.axvline(0,c=d_c,ls='--',lw=1)
+            ax.axvline(90,c=d_c,ls=':',lw=1)
+            ax.axhline(45,c=d_c,ls=':',lw=1)
+            ax.axhline(90,c=d_c,ls='--',lw=1)
+            ax.axhline(135,c=d_c,ls=':',lw=1)
         
-        plt.ylabel('Colatitude',size='x-large')
-        plt.yticks(np.linspace(0,180,5),colat_ticks_,size='large')
-        plt.xlabel('Longitude',size='x-large')
-        plt.xticks(np.linspace(-180,180,5),long_ticks_,size='large')
+        ax.set_ylabel('Colatitude',size='x-large')
+        ax.set_yticks(np.linspace(0,180,5))
+        ax.set_yticklabels(colat_ticks_,size='large')
+        ax.set_xlabel('Longitude',size='x-large')
+        ax.set_xticks(np.linspace(-180,180,5))
+        ax.set_xticklabels(long_ticks_,size='large')
     
     def _single_amap_colorbounds(self,low,high):
         """Gives limits for a brightness map's colorbar."""
@@ -1308,21 +1310,21 @@ class DirectImaging_Planet:
         """
         vm_l,vm_h,va_l,va_h = self._double_amap_colorbounds(alt,same_scale)
         if alt:
-            plt.figure(figsize=(16,4))
-            plt.subplot(121)
+            fig = plt.figure(figsize=(16,4))
+            ax = plt.subplot(121)
         else:
-            plt.figure(figsize=(9,4))
+            fig,ax = plt.subplots(figsize=(9,4))
         
-        self._flat_style(self.albedos,vm_l,vm_h,grat)
-        plt.title('Map of {}'.format(self.name),size='x-large')
+        self._flat_style(fig,ax,self.albedos,vm_l,vm_h,grat)
+        ax.set_title('Map of {}'.format(self.name),size='x-large')
         
         if alt:
-            plt.subplot(122)
-            self._flat_style(self.albedos_b,va_l,va_h,grat)
-            plt.title('Alternate Map of {}'.format(self.name),size='x-large')
+            ax2 = plt.subplot(122)
+            self._flat_style(fig,ax2,self.albedos_b,va_l,va_h,grat)
+            ax2.set_title('Alternate Map of {}'.format(self.name),size='x-large')
         
-        plt.tight_layout()
-        self.fig_equi = plt.gcf()
+        fig.tight_layout()
+        self.fig_equi = fig
         plt.show()
         
     
