@@ -1681,13 +1681,13 @@ class DirectImaging_Planet:
         klong_rel = kern_frac*klong/klong.max()
         axl.plot(np.degrees(self.mono_long_vec),klong_rel,c=cm.Reds(0.5),lw=4)
         if fixed_lims:
-            plt.yticks(np.linspace(0,1.0,5),size='medium')  # Easier to use plt when not passing labels(?)
+            axl.set_yticks(np.linspace(0,1.0,5))
             axl.set_ylim([-0.05,1.15])
             y_mu = 1.075
         else:
-            plt.yticks(size='medium')
             axl.set_ylim([-0.05*klong_rel.max(),1.15*klong_rel.max()])
             y_mu = 1.075*klong_rel.max()
+        axl.tick_params(axis='y',labelsize='medium')
         if actual_mu > pi:
             actual_mu -= 2.0*pi
         axl.scatter(np.degrees(actual_mu),y_mu,s=100,color=cm.Reds(0.33),edgecolor='k',marker='o',zorder=3)
@@ -1715,13 +1715,13 @@ class DirectImaging_Planet:
         axc.set_yticklabels(colat_ticks_,size='medium')
         axc.set_ylim([180,0])
         if fixed_lims:
-            plt.xticks(np.linspace(0,1.0,5),size='medium')
+            axc.set_xticks(np.linspace(0,1.0,5))
             axc.set_xlim([-0.05,1.15])
             y_dom = 1.075
         else:
-            plt.xticks(size='large')
             axc.set_xlim([-0.05*kclat_rel.max(),1.15*kclat_rel.max()])
             y_dom = 1.075*kclat_rel.max()
+        axc.tick_params(axis='x',labelsize='medium')
         axc.scatter(y_dom,np.degrees(dom_clat),s=100,color=cm.Blues(0.75),edgecolor='k',marker='o',zorder=3)
         if grat:
             d_c = '0.33'
