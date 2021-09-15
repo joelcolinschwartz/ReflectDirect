@@ -12,9 +12,9 @@ some conventions.
 
 Depends on:
 
-    - scipy & numpy
+    - numpy and scipy
     - matplotlib
-    - Jupyter(Lab), ipywidgets & IPython
+    - Jupyter(Lab), ipywidgets and IPython
 
 Uses the function :func:`sub_observerstellar()
 <exoplanetsubspots.sub_observerstellar>` and the binary files
