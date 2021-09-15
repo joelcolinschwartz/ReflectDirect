@@ -1642,9 +1642,10 @@ class DirectImaging_Planet:
         kern_frac = tot_k2d/(2.0/3.0)
         
         r,c = 2,3
-        plt.figure(figsize=(12,8))
+        fig = plt.figure(figsize=(12,8))
         
-        plt.subplot2grid((r,c),(1,0),colspan=2)
+        ## 2D kernel
+        axk = plt.subplot2grid((r,c),(1,0),colspan=2,fig=fig)
         
         if over_amap:
             if force_bright:
@@ -1655,95 +1656,102 @@ class DirectImaging_Planet:
             to_view = k2d/k2d.max()
             if not force_bright:
                 to_view *= kern_frac
-        plt.contourf(np.degrees(self.mono_longs),np.degrees(self.clats),to_view,65,
+        axk.contourf(np.degrees(self.mono_longs),np.degrees(self.clats),to_view,65,
                      cmap=cm.gray,vmin=0,vmax=1.0)
         if grat:
             d_c = (0,1,0)
-            plt.axvline(-90,c=d_c,ls=':',lw=1)
-            plt.axvline(0,c=d_c,ls='--',lw=1)
-            plt.axvline(90,c=d_c,ls=':',lw=1)
-            plt.axhline(45,c=d_c,ls=':',lw=1)
-            plt.axhline(90,c=d_c,ls='--',lw=1)
-            plt.axhline(135,c=d_c,ls=':',lw=1)
-        plt.ylabel('Colatitude',size='large')
-        plt.yticks(np.linspace(0,180,5),colat_ticks_,size='medium')
-        plt.ylim([180,0])
-        plt.xlabel('Longitude',size='large')
-        plt.xticks(np.linspace(-180,180,5),long_ticks_,size='medium')
-        plt.xlim([-180,180])
+            axk.axvline(-90,c=d_c,ls=':',lw=1)
+            axk.axvline(0,c=d_c,ls='--',lw=1)
+            axk.axvline(90,c=d_c,ls=':',lw=1)
+            axk.axhline(45,c=d_c,ls=':',lw=1)
+            axk.axhline(90,c=d_c,ls='--',lw=1)
+            axk.axhline(135,c=d_c,ls=':',lw=1)
+        axk.set_ylabel('Colatitude',size='large')
+        axk.set_yticks(np.linspace(0,180,5))
+        axk.set_yticklabels(colat_ticks_,size='medium')
+        axk.set_ylim([180,0])
+        axk.set_xlabel('Longitude',size='large')
+        axk.set_xticks(np.linspace(-180,180,5))
+        axk.set_xticklabels(long_ticks_,size='medium')
+        axk.set_xlim([-180,180])
         
-        plt.subplot2grid((r,c),(0,0),colspan=2)
+        ## Long. kernel
+        axl = plt.subplot2grid((r,c),(0,0),colspan=2,fig=fig)
         
         klong_rel = kern_frac*klong/klong.max()
-        plt.plot(np.degrees(self.mono_long_vec),klong_rel,c=cm.Reds(0.5),lw=4)
+        axl.plot(np.degrees(self.mono_long_vec),klong_rel,c=cm.Reds(0.5),lw=4)
         if fixed_lims:
-            plt.yticks(np.linspace(0,1.0,5),size='medium')
-            plt.ylim([-0.05,1.15])
+            plt.yticks(np.linspace(0,1.0,5),size='medium')  # Easier to use plt when not passing labels(?)
+            axl.set_ylim([-0.05,1.15])
             y_mu = 1.075
         else:
             plt.yticks(size='medium')
-            plt.ylim([-0.05*klong_rel.max(),1.15*klong_rel.max()])
+            axl.set_ylim([-0.05*klong_rel.max(),1.15*klong_rel.max()])
             y_mu = 1.075*klong_rel.max()
         if actual_mu > pi:
             actual_mu -= 2.0*pi
-        plt.scatter(np.degrees(actual_mu),y_mu,s=100,color=cm.Reds(0.33),edgecolor='k',marker='o',zorder=3)
+        axl.scatter(np.degrees(actual_mu),y_mu,s=100,color=cm.Reds(0.33),edgecolor='k',marker='o',zorder=3)
         if (actual_mu + sig_long) > pi:
-            plt.plot([-180,-180+np.degrees(actual_mu+sig_long-pi)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
+            axl.plot([-180,-180+np.degrees(actual_mu+sig_long-pi)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
         if (actual_mu - sig_long) < -pi:
-            plt.plot([180,180-np.degrees(-pi-actual_mu+sig_long)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
-        plt.plot([np.degrees(actual_mu-sig_long),np.degrees(actual_mu+sig_long)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
+            axl.plot([180,180-np.degrees(-pi-actual_mu+sig_long)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
+        axl.plot([np.degrees(actual_mu-sig_long),np.degrees(actual_mu+sig_long)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
         if grat:
             d_c = '0.33'
-            plt.axvline(-90,c=d_c,ls=':',lw=1)
-            plt.axvline(0,c=d_c,ls='--',lw=1)
-            plt.axvline(90,c=d_c,ls=':',lw=1)
-        plt.ylabel('Relative Longitudinal Kernel',size='large')
-        plt.xticks(np.linspace(-180,180,5),long_ticks_,size='medium')
-        plt.xlim([-180,180])
+            axl.axvline(-90,c=d_c,ls=':',lw=1)
+            axl.axvline(0,c=d_c,ls='--',lw=1)
+            axl.axvline(90,c=d_c,ls=':',lw=1)
+        axl.set_ylabel('Relative Longitudinal Kernel',size='large')
+        axl.set_xticks(np.linspace(-180,180,5))
+        axl.set_xticklabels(long_ticks_,size='medium')
+        axl.set_xlim([-180,180])
         
-        plt.subplot2grid((r,c),(1,2))
+        ## Colat. kernel
+        axc = plt.subplot2grid((r,c),(1,2),fig=fig)
         
         kclat_rel = kern_frac*kclat/kclat.max()
-        plt.plot(kclat_rel,np.degrees(self.clat_vec),c=cm.Blues(0.5),lw=4)
-        plt.yticks(np.linspace(0,180,5),colat_ticks_,size='medium')
-        plt.ylim([180,0])
+        axc.plot(kclat_rel,np.degrees(self.clat_vec),c=cm.Blues(0.5),lw=4)
+        axc.set_yticks(np.linspace(0,180,5))
+        axc.set_yticklabels(colat_ticks_,size='medium')
+        axc.set_ylim([180,0])
         if fixed_lims:
             plt.xticks(np.linspace(0,1.0,5),size='medium')
-            plt.xlim([-0.05,1.15])
+            axc.set_xlim([-0.05,1.15])
             y_dom = 1.075
         else:
             plt.xticks(size='large')
-            plt.xlim([-0.05*kclat_rel.max(),1.15*kclat_rel.max()])
+            axc.set_xlim([-0.05*kclat_rel.max(),1.15*kclat_rel.max()])
             y_dom = 1.075*kclat_rel.max()
-        plt.scatter(y_dom,np.degrees(dom_clat),s=100,color=cm.Blues(0.75),edgecolor='k',marker='o',zorder=3)
+        axc.scatter(y_dom,np.degrees(dom_clat),s=100,color=cm.Blues(0.75),edgecolor='k',marker='o',zorder=3)
         if grat:
             d_c = '0.33'
-            plt.axhline(45,c=d_c,ls=':',lw=1)
-            plt.axhline(90,c=d_c,ls='--',lw=1)
-            plt.axhline(135,c=d_c,ls=':',lw=1)
-        plt.xlabel('Relative Colatitudinal Kernel',size='large')
+            axc.axhline(45,c=d_c,ls=':',lw=1)
+            axc.axhline(90,c=d_c,ls='--',lw=1)
+            axc.axhline(135,c=d_c,ls=':',lw=1)
+        axc.set_xlabel('Relative Colatitudinal Kernel',size='large')
         
-        plt.subplot2grid((r,c),(0,2))
+        ## Text info
+        axt = plt.subplot2grid((r,c),(0,2),fig=fig)
         
-        plt.text(0,0.9,r'%s' '\n' 'at $%.2f^{\circ}$ phase' % (self.name,phaseD),color='k',size='x-large',
+        axt.text(0,0.9,r'%s' '\n' 'at $%.2f^{\circ}$ phase' % (self.name,phaseD),color='k',size='x-large',
                  ha='center',va='center',weight='bold')
-        plt.text(0,0.7,r'Inclination: $%.2f^{\circ}$' % here_incD,color='k',size='x-large',ha='center',va='center')
-        plt.text(0,0.6,'Obliquity: $%.2f^{\circ}$' % here_oblD,color='k',size='x-large',ha='center',va='center')
-        plt.text(0,0.5,'Solstice: $%.2f^{\circ}$' % here_solD,color='k',size='x-large',ha='center',va='center')
-        plt.text(0,0.325,'Mean Longitude: $%.2f^{\circ}$' % (np.degrees(actual_mu)),
+        axt.text(0,0.7,r'Inclination: $%.2f^{\circ}$' % here_incD,color='k',size='x-large',ha='center',va='center')
+        axt.text(0,0.6,'Obliquity: $%.2f^{\circ}$' % here_oblD,color='k',size='x-large',ha='center',va='center')
+        axt.text(0,0.5,'Solstice: $%.2f^{\circ}$' % here_solD,color='k',size='x-large',ha='center',va='center')
+        axt.text(0,0.325,'Mean Longitude: $%.2f^{\circ}$' % (np.degrees(actual_mu)),
                  color=cm.Reds(0.33),size='x-large',ha='center',va='center')
-        plt.text(0,0.225,'Longitudinal Width: $%.2f^{\circ}$' % (np.degrees(sig_long)),
+        axt.text(0,0.225,'Longitudinal Width: $%.2f^{\circ}$' % (np.degrees(sig_long)),
                  color=cm.Reds(0.75),size='x-large',ha='center',va='center')
-        plt.text(0,0.05,'Dominant Colatitude: $%.2f^{\circ}$' % (np.degrees(dom_clat)),
+        axt.text(0,0.05,'Dominant Colatitude: $%.2f^{\circ}$' % (np.degrees(dom_clat)),
                  color=cm.Blues(0.75),size='x-large',ha='center',va='center')
-        plt.xlim([-0.5,0.5])
-        plt.ylim([0,1.0])
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-        plt.gca().axis('off')
+        axt.set_xlim([-0.5,0.5])
+        axt.set_ylim([0,1.0])
+        axt.axes.get_xaxis().set_visible(False)
+        axt.axes.get_yaxis().set_visible(False)
+        axt.axis('off')
         
-        plt.tight_layout()
-        self.fig_kern = plt.gcf()
+        fig.tight_layout()
+        self.fig_kern = fig
         plt.show()
     
     
