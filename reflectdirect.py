@@ -1824,25 +1824,25 @@ class DirectImaging_Planet:
     
     def _kcevo_stylewid(self,ax,s_tick,s_lab,_active):
         """Styles part of plots for kernel widths."""
-        ax.set_ylim(0,110)
+        ax.set_ylim([0,110])
         ax.set_yticks(np.linspace(0,100,5))
         ax.set_yticklabels(wlong_ticks_,size=s_tick)
         if not _active:
             ax.set_ylabel('Longitudinal Width',color=cm.Reds(0.75),size=s_lab)
-        ax.tick_params('y',colors=cm.Reds(0.75))
-        ax.set_xlim(0,1)
+        ax.tick_params(axis='y',colors=cm.Reds(0.75))
+        ax.set_xlim([0,1])
         ax.set_xticks(np.linspace(0,1,5))
         ax.set_xlabel('Time (orbits)',size=s_lab)
         
     def _kcevo_styledom(self,ax,s_tick,s_lab,_active):
         """Styles part of plots for dominant colatitudes."""
-        ax.set_ylim(180,0)
+        ax.set_ylim([180,0])
         ax.set_yticks(np.linspace(0,180,5))
         ax.set_yticklabels(colat_ticks_,size=s_tick)
         if not _active:
             ax.set_ylabel('Dominant Colatitude',color=cm.Blues(0.75),size=s_lab)
-        ax.tick_params('y',colors=cm.Blues(0.75))
-        ax.set_xlim(0,1)
+        ax.tick_params(axis='y',colors=cm.Blues(0.75))
+        ax.set_xlim([0,1])
         ax.set_xticks(np.linspace(0,1,5))
         ax.set_xlabel('Time (orbits)',size=s_lab)
     
@@ -1924,10 +1924,10 @@ class DirectImaging_Planet:
             # 'datalim' continues to be the best option, others mess up the interactive module.
             ax1.set(adjustable='datalim',aspect=1.0/ax1.get_data_ratio())
             ax2.set(adjustable='datalim',aspect=1.0/ax2.get_data_ratio())
+            return ax1
         
         else:
-            plt.figure(figsize=(10,5))
-            ax1 = plt.subplot(111)
+            fig,ax1 = plt.subplots(figsize=(10,5))
 
             if char in ['wid','dom']:
                 if char == 'wid':
@@ -1945,9 +1945,9 @@ class DirectImaging_Planet:
                                        incD=here_incD,oblD=here_oblD,solD=here_solD,ax1=ax1,ax2=ax2,
                                        _active=_active,phasesD_I=phasesD_I,ph_colors=ph_colors)
 
-            plt.title(tit,size='large')
-            plt.tight_layout()
-            self.fig_kcha = plt.gcf()
+            ax1.set_title(tit,size='large')
+            fig.tight_layout()
+            self.fig_kcha = fig
             plt.show()
         
     
@@ -2843,10 +2843,10 @@ class DirectImaging_Planet:
                  transform=plt.gca().transAxes)
         
         ### subplot(236)
-        self.KChar_Evolve_Plot('both',which='_c',incD=incD_I,oblD=oblD_I,solD=solD_I,
-                               _active=True,phasesD_I=phasesD_single,ph_colors=ph_colors)
-        plt.text(0.5,1.01,'Kernel Characteristics',color='k',size='medium',ha='center',va='bottom',
-                 transform=plt.gca().transAxes)
+        axk = self.KChar_Evolve_Plot('both',which='_c',incD=incD_I,oblD=oblD_I,solD=solD_I,
+                                     _active=True,phasesD_I=phasesD_single,ph_colors=ph_colors)
+        axk.text(0.5,1.01,'Kernel Characteristics',color='k',size='medium',ha='center',va='bottom',
+                 transform=axk.transAxes)
         
         ### subplot(235,'polar')
         if len(phasesD_forspin) == 0:
