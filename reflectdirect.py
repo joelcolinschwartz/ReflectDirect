@@ -2138,7 +2138,7 @@ class DirectImaging_Planet:
     def _orth_style(self,row,sub,s,which,image,v_l,v_h,
                     orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,name):
         """Styles plots for orthographic projections."""
-        plt.subplot(row,sub,s)
+        ax = plt.subplot(row,sub,s)
         if which == 'kern':
             m_c = cm.gray
         elif image.min() < 0:
@@ -2149,22 +2149,22 @@ class DirectImaging_Planet:
             m_c = cm.bone
         
         ma_image = np.ma.masked_array(image,mask=orth_Viz<0)
-        cnt_plot = plt.contourf(orth_X,orth_Y,ma_image,65,cmap=m_c,vmin=v_l,vmax=v_h)
+        cnt_plot = ax.contourf(orth_X,orth_Y,ma_image,65,cmap=m_c,vmin=v_l,vmax=v_h)
         for c in cnt_plot.collections:
             c.set_edgecolor('face')
         if round(poleN_viz,3) >= 0:
-            plt.scatter(poleN_x,poleN_y,s=100,color=(0,1,0),edgecolor='k',marker='o')
+            ax.scatter(poleN_x,poleN_y,s=100,color=(0,1,0),edgecolor='k',marker='o')
         if round(poleN_viz,3) <= 0:
-            plt.scatter(-poleN_x,-poleN_y,s=70,color=(0,1,0),edgecolor='k',marker='D')
-        plt.xlim([-1.05,1.05])
-        plt.ylim([-1.05,1.05])
+            ax.scatter(-poleN_x,-poleN_y,s=70,color=(0,1,0),edgecolor='k',marker='D')
+        ax.set_xlim([-1.05,1.05])
+        ax.set_ylim([-1.05,1.05])
         if name != 'NONE':
-            plt.title(name,size='large',x=0.1,y=1.0,va='top',ha='left')
-        plt.gca().set_aspect(1.0)
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-        plt.gca().axis('off')
-        return s+1
+            ax.set_title(name,size='large',x=0.1,y=1.0,va='top',ha='left')
+        ax.set_aspect(1.0)
+        ax.axes.get_xaxis().set_visible(False)
+        ax.axes.get_yaxis().set_visible(False)
+        ax.axis('off')
+        return s+1,ax
     
     
     def Orthographic_Viewer(self,phaseD,show='real',alt=False,same_scale=True,force_bright=True,**kwargs):
@@ -2234,18 +2234,18 @@ class DirectImaging_Planet:
                                                              incD=incD_I,oblD=oblD_I,solD=solD_I,
                                                              _active=True,ratRO=ratRO_I,longzeroD=longzeroD_I)
             
-            s = self._orth_style(row=row,sub=col,s=s,which='amap',
-                                 image=self.albedos,v_l=vm_l,v_h=vm_h,
-                                 orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                 poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
-            plt.text(-0.7,1.04,'Visible Map',color='k',size='medium',ha='center',va='center')
+            s,axv = self._orth_style(row=row,sub=col,s=s,which='amap',
+                                     image=self.albedos,v_l=vm_l,v_h=vm_h,
+                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
+            axv.text(-0.7,1.04,'Visible Map',color='k',size='medium',ha='center',va='center')
             s += 1  # Now on subplot(233)
             up = lambda fb: k2d.max() if fb else 1.0/pi
-            s = self._orth_style(row=row,sub=col,s=s,which='kern',
-                                 image=k2d,v_l=0,v_h=up(force_bright),
-                                 orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                 poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
-            plt.text(-0.7,1.04,'Kernel',color='k',size='medium',ha='center',va='center')
+            s,axk = self._orth_style(row=row,sub=col,s=s,which='kern',
+                                     image=k2d,v_l=0,v_h=up(force_bright),
+                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
+            axk.text(-0.7,1.04,'Kernel',color='k',size='medium',ha='center',va='center')
         
         else:
             row = 1
@@ -2258,7 +2258,7 @@ class DirectImaging_Planet:
                 if show == 'sphere':
                     wid += 10
             sub,s = wid//5,1
-            plt.figure(figsize=(wid,5))
+            fig = plt.figure(figsize=(wid,5))
             
             vm_l,vm_h,va_l,va_h = self._double_amap_colorbounds(alt,same_scale)
             
@@ -2269,26 +2269,26 @@ class DirectImaging_Planet:
                                                              _active=False,ratRO=0,longzeroD=0)
             if show in ['kern','both']:
                 up = lambda fb: k2d.max() if fb else 1.0/pi
-                s = self._orth_style(row=row,sub=sub,s=s,which='kern',
-                                     image=k2d,v_l=0,v_h=up(force_bright),
-                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Kernel')
+                s,_ax = self._orth_style(row=row,sub=sub,s=s,which='kern',
+                                         image=k2d,v_l=0,v_h=up(force_bright),
+                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Kernel')
             if show in ['amap','both','sphere']:
-                s = self._orth_style(row=row,sub=sub,s=s,which='amap',
-                                     image=self.albedos,v_l=vm_l,v_h=vm_h,
-                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Map')
+                s,_ax = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                                         image=self.albedos,v_l=vm_l,v_h=vm_h,
+                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Map')
             if show == 'real':
                 normk = lambda fb: 1.0/k2d.max() if fb else pi
-                s = self._orth_style(row=row,sub=sub,s=s,which='real',
-                                     image=normk(force_bright)*k2d*self.albedos,v_l=vm_l,v_h=vm_h,
-                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Map')
+                s,_ax = self._orth_style(row=row,sub=sub,s=s,which='real',
+                                         image=normk(force_bright)*k2d*self.albedos,v_l=vm_l,v_h=vm_h,
+                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Map')
             if show == 'sphere':
-                s = self._orth_style(row=row,sub=sub,s=s,which='amap',
-                                     image=self.albedos,v_l=vm_l,v_h=vm_h,
-                                     orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
-                                     poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Map')
+                s,_ax = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                                         image=self.albedos,v_l=vm_l,v_h=vm_h,
+                                         orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
+                                         poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Map')
             if alt:
                 orbT,incD,oblD,solD = self.orbT_b,self.incD_b,self.oblD_b,self.solD_b
                 (k2d,orth_Viz,orth_X,orth_Y,
@@ -2296,25 +2296,25 @@ class DirectImaging_Planet:
                                                                  incD=incD,oblD=oblD,solD=solD,
                                                                  _active=False,ratRO=0,longzeroD=0)
                 if show in ['amap','both','sphere']:
-                    s = self._orth_style(row=row,sub=sub,s=s,which='amap',
-                                         image=self.albedos_b,v_l=vm_l,v_h=vm_h,
-                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Alt. Map')
+                    s,_ax = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                                             image=self.albedos_b,v_l=vm_l,v_h=vm_h,
+                                             orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                             poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Alt. Map')
                 if show == 'real':
-                    s = self._orth_style(row=row,sub=sub,s=s,which='real',
-                                         image=normk(force_bright)*k2d*self.albedos_b,v_l=vm_l,v_h=vm_h,
-                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Alt. Map')
+                    s,_ax = self._orth_style(row=row,sub=sub,s=s,which='real',
+                                             image=normk(force_bright)*k2d*self.albedos_b,v_l=vm_l,v_h=vm_h,
+                                             orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                             poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Alt. Map')
                 if show == 'sphere':
-                    s = self._orth_style(row=row,sub=sub,s=s,which='amap',
-                                         image=self.albedos_b,v_l=vm_l,v_h=vm_h,
-                                         orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
-                                         poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Alt. Map')
+                    s,_ax = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                                             image=self.albedos_b,v_l=vm_l,v_h=vm_h,
+                                             orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
+                                             poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Alt. Map')
                 
-            plt.gcf().suptitle(r'%s at $%.2f^{\circ}$ phase' % (self.name,phaseD),y=0,fontsize='x-large',
-                               verticalalignment='bottom')
-            plt.tight_layout()
-            self.fig_orth = plt.gcf()
+            fig.suptitle(r'%s at $%.2f^{\circ}$ phase' % (self.name,phaseD),y=0,fontsize='x-large',
+                         verticalalignment='bottom')
+            fig.tight_layout()
+            self.fig_orth = fig
             plt.show()
     
     
