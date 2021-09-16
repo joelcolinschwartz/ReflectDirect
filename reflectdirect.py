@@ -2004,7 +2004,7 @@ class DirectImaging_Planet:
         return flux_ak,appar_a
     
     
-    def _lc_style(self,which,F_ak,A_app,show,diff,diff_only):
+    def _lc_style(self,which,F_ak,A_app,show,diff,diff_only,ax):
         """Styles plots of light curves."""
         alph = lambda d: 0.25 if d else 1.0
         if which == 'pri':
@@ -2017,9 +2017,9 @@ class DirectImaging_Planet:
         
         check = (not diff_only) or (diff_only and (which == 'diff'))
         if (show in ['both','flux']) and check:
-            plt.plot(T,F_ak,c=l_c,label=labf,zorder=zo)
+            ax.plot(T,F_ak,c=l_c,label=labf,zorder=zo)
         if (show in ['both','appar']) and check:
-            plt.plot(T,A_app,c=l_c,ls='--',label=laba,zorder=zo)
+            ax.plot(T,A_app,c=l_c,ls='--',label=laba,zorder=zo)
     
     
     def LightCurve_Plot(self,alt=True,diff=False,diff_only=False,show='flux',**kwargs):
@@ -2064,6 +2064,7 @@ class DirectImaging_Planet:
         """
         if kwargs.get('_active',False):
             ## Default keywords
+            ax_I = kwargs.get('ax_I','N/A')
             times_I = kwargs.get('times_I',0)
             orbT_I = kwargs.get('orbT_I',(24.0*365.0))
             ratRO_I = kwargs.get('ratRO_I',10.0)
@@ -2081,32 +2082,32 @@ class DirectImaging_Planet:
             zo = 0
             thick = lambda n: 2 if n == 0 else 1
             if show == 'flux':
-                plt.plot(Ph,flux_ak,c=ph_color,lw=thick(now_I),zorder=zo)
+                ax_I.plot(Ph,flux_ak,c=ph_color,lw=thick(now_I),zorder=zo)
             elif show == 'appar':
-                plt.plot(Ph,appar_a,c=ph_color,ls='--',lw=thick(now_I),zorder=zo)
+                ax_I.plot(Ph,appar_a,c=ph_color,ls='--',lw=thick(now_I),zorder=zo)
         
         else:
-            plt.figure(figsize=(10,5))
+            fig,ax = plt.subplots(figsize=(10,5))
             
             flux_ak,appar_a = self.Light_Curves(which='pri')
-            self._lc_style('pri',flux_ak,appar_a,show,diff,diff_only)
+            self._lc_style('pri',flux_ak,appar_a,show,diff,diff_only,ax)
             if alt:
                 flux_ak_b,appar_a_b = self.Light_Curves(which='alt')
-                self._lc_style('alt',flux_ak_b,appar_a_b,show,diff,diff_only)
+                self._lc_style('alt',flux_ak_b,appar_a_b,show,diff,diff_only,ax)
                 if diff or diff_only:
                     if self.orbT == self.orbT_b:
-                        self._lc_style('diff',flux_ak-flux_ak_b,appar_a-appar_a_b,show,diff,diff_only)
+                        self._lc_style('diff',flux_ak-flux_ak_b,appar_a-appar_a_b,show,diff,diff_only,ax)
                     else:
                         print('LightCurve_Plot warning: diffs plot only if primary and alternate orbital periods match.')
             
-            plt.axhline(0,c='0.67',ls=':',zorder=0)
-            plt.legend(loc='best',fontsize='large')
-            plt.ylabel('Value',size='x-large')
-            plt.xlabel('Time (orbits)',size='x-large')
-            plt.title('Light Curves of {}'.format(self.name),size='x-large')
+            ax.axhline(0,c='0.67',ls=':',zorder=0)
+            ax.legend(loc='best',fontsize='large')
+            ax.set_ylabel('Value',size='x-large')
+            ax.set_xlabel('Time (orbits)',size='x-large')
+            ax.set_title('Light Curves of {}'.format(self.name),size='x-large')
             
-            plt.tight_layout()
-            self.fig_ligh = plt.gcf()
+            fig.tight_layout()
+            self.fig_ligh = fig
             plt.show()
     
     
@@ -2819,28 +2820,29 @@ class DirectImaging_Planet:
                                  incD_I=incD_I,oblD_I=oblD_I,solD_I=solD_I,
                                  longzeroD_I=longzeroD_I)
         
-        plt.subplot(234)
+        axl = plt.subplot(234)
         n = 0
         for p in phasesD_single:
             if isinstance(p,(int,float)):
                 times_I = orbT_I*((p + rel_tphase)/360.0)
-                self.LightCurve_Plot(alt=False,show=lc_swit,_active=True,
+                self.LightCurve_Plot(alt=False,show=lc_swit,_active=True,ax_I=axl,
                                      times_I=times_I,orbT_I=orbT_I,ratRO_I=ratRO_I,
                                      incD_I=incD_I,oblD_I=oblD_I,solD_I=solD_I,
                                      longzeroD_I=longzeroD_I,ph_color=ph_colors[n],now_I=n)
             n += 1
         n = 0
-        plt.xlim([-2.5,2.5])
-        plt.xticks(np.linspace(-2,2,5),relph_ticks_,size='medium')
-        plt.xlabel('Relative Orbital Phase',size='medium')
-        plt.yticks(size='medium')
+        axl.set_xlim([-2.5,2.5])
+        axl.set_xticks(np.linspace(-2,2,5))
+        axl.set_xticklabels(relph_ticks_,size='medium')
+        axl.set_xlabel('Relative Orbital Phase',size='medium')
+        axl.set_yticks(size='medium')
         ylab = lambda lc: 'Flux' if lc == 'flux' else ('Apparent Brightness' if lc == 'appar' else '')
-        plt.ylabel(ylab(lc_swit),size='medium')
-        plt.gca().set_aspect(1.0/plt.gca().get_data_ratio())
-        plt.text(0.25,1.01,'Light Curve',color='k',size='medium',ha='center',va='bottom',
-                 transform=plt.gca().transAxes)
-        plt.text(0.75,1.01,'Rotations: {:.2f}'.format(see_spins),color='k',size='medium',ha='center',va='bottom',
-                 transform=plt.gca().transAxes)
+        axl.set_ylabel(ylab(lc_swit),size='medium')
+        axl.set_aspect(1.0/axl.get_data_ratio())
+        axl.text(0.25,1.01,'Light Curve',color='k',size='medium',ha='center',va='bottom',
+                 transform=axl.transAxes)
+        axl.text(0.75,1.01,'Rotations: {:.2f}'.format(see_spins),color='k',size='medium',ha='center',va='bottom',
+                 transform=axl.transAxes)
         
         ### subplot(236)
         axk = self.KChar_Evolve_Plot('both',which='_c',incD=incD_I,oblD=oblD_I,solD=solD_I,
