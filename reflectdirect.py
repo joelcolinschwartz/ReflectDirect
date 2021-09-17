@@ -146,146 +146,150 @@ def Geometry_Reference(ref_save=False,**kwargs):
     reference = kwargs.get('reference',True)  # Gets set to False by Geometry_Diagram
     
     if _active:
+        ax = kwargs.get('ax_I','N/A')  # Shouldn't need fig in this case, but may want to pass in.
         comp_tweak,comp_siz = 0.04,'medium'
     else:
-        plt.figure(figsize=(8,8))
+        fig,ax = plt.subplots(figsize=(8,8))
         comp_tweak,comp_siz = 0.03,'x-large'
-    plt.xlim([-1.5,1.5])
-    plt.ylim([-1.35,1.65])
-    plt.xticks([])
-    plt.yticks([])
-    plt.gca().set_aspect(1.0)
+    ax.set_xlim([-1.5,1.5])
+    ax.set_ylim([-1.35,1.65])
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_aspect(1.0)
     if reference:
         here_incD,here_oblD,here_solD,here_ratRO,here_phaseD = 45,45,70,'N/A',225
     else:
         here_incD,here_oblD,here_solD,here_ratRO,here_phaseD = incD,oblD,solD,ratRO,phaseD
 
     star_color = (1,0.75,0)
-    orbit = plt.Circle((0,0),radius=1,color='k',fill=False,zorder=0)
-    plt.gca().add_patch(orbit)
-    star = plt.Circle((0,0),radius=0.33,color=star_color,fill=True,zorder=1)
-    plt.gca().add_patch(star)
-    plt.plot([0,0],[-1.35,0],'k',lw=2,ls=':',zorder=-2)
+    orbit = pat.Circle((0,0),radius=1,color='k',fill=False,zorder=0)
+    ax.add_patch(orbit)
+    star = pat.Circle((0,0),radius=0.33,color=star_color,fill=True,zorder=1)
+    ax.add_patch(star)
+    ax.plot([0,0],[-1.35,0],'k',lw=2,ls=':',zorder=-2)
 
     compass = 1.15
-    plt.plot([0,0],[1.0,compass],'k',lw=1,ls='-',zorder=0)
-    plt.text(comp_tweak,compass,r'$0^{\circ}$',size=comp_siz,ha='left',va='bottom')
-    plt.plot([-1.0,-compass],[0,0],'k',lw=1,ls='-',zorder=0)
-    plt.text(-compass,comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='right',va='bottom')
-    plt.text(-comp_tweak-0.01,-compass,r'$180^{\circ}$',size=comp_siz,ha='right',va='top')
-    plt.plot([1.0,compass],[0,0],'k',lw=1,ls='-',zorder=0)
-    plt.text(compass,-comp_tweak-0.01,r'$270^{\circ}$',size=comp_siz,ha='left',va='top')
+    ax.plot([0,0],[1.0,compass],'k',lw=1,ls='-',zorder=0)
+    ax.text(comp_tweak,compass,r'$0^{\circ}$',size=comp_siz,ha='left',va='bottom')
+    ax.plot([-1.0,-compass],[0,0],'k',lw=1,ls='-',zorder=0)
+    ax.text(-compass,comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='right',va='bottom')
+    ax.text(-comp_tweak-0.01,-compass,r'$180^{\circ}$',size=comp_siz,ha='right',va='top')
+    ax.plot([1.0,compass],[0,0],'k',lw=1,ls='-',zorder=0)
+    ax.text(compass,-comp_tweak-0.01,r'$270^{\circ}$',size=comp_siz,ha='left',va='top')
 
     axis_color = (0,0.9,0)
     tri_x,tri_y = 0.2*np.array([0,0.5,-0.5]),0.2*np.array([1,-0.5,-0.5])
     tsol_x,tsol_y = _rotate_ccw_angle(tri_x,tri_y,np.radians(here_solD+180))
     sol_x,sol_y = _rotate_ccw_angle(0.67,0,np.radians(here_solD+90))
     triang = pat.Polygon(np.array([sol_x+tsol_x,sol_y+tsol_y]).T,color=axis_color,fill=True,zorder=1)
-    plt.gca().add_patch(triang)
-    plt.plot([sol_x/0.67,sol_x],[sol_y/0.67,sol_y],color=axis_color,lw=2,ls='-',zorder=-1)
-    plt.plot([0,0],[1.0,0.8],'k',lw=1,ls='--',zorder=-2)
+    ax.add_patch(triang)
+    ax.plot([sol_x/0.67,sol_x],[sol_y/0.67,sol_y],color=axis_color,lw=2,ls='-',zorder=-1)
+    ax.plot([0,0],[1.0,0.8],'k',lw=1,ls='--',zorder=-2)
     sang = pat.Arc((0,0),1.7,1.7,angle=90,theta1=0,theta2=here_solD,lw=1,color=(0.67,0.67,0),zorder=-3)
-    plt.gca().add_patch(sang)
+    ax.add_patch(sang)
 
     cupx,cupy,to_ell = 1.12,1.16,0.49
-    plt.plot([-cupx,-cupx+to_ell],[cupy,cupy],'k',lw=2,ls=':',zorder=-1)
-    starup = plt.Circle((-cupx,cupy),radius=0.1,color=star_color,fill=True,zorder=0)
-    plt.gca().add_patch(starup)
+    ax.plot([-cupx,-cupx+to_ell],[cupy,cupy],'k',lw=2,ls=':',zorder=-1)
+    starup = pat.Circle((-cupx,cupy),radius=0.1,color=star_color,fill=True,zorder=0)
+    ax.add_patch(starup)
     ix,iy = np.array([0,0]),np.array([0,0.3])
-    plt.plot(-cupx+ix,cupy+iy,'k',lw=1,ls='--',zorder=-2)
+    ax.plot(-cupx+ix,cupy+iy,'k',lw=1,ls='--',zorder=-2)
     if reference and not _active:
-        plt.plot(-cupx-iy,cupy+ix,'k',lw=1,ls='--',zorder=-2)
-        plt.text(-cupx+comp_tweak,cupy+iy[1],r'$0^{\circ}$',size=comp_siz,ha='left',va='top')
-        plt.text(-cupx-iy[1],cupy-comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='left',va='top')
-        plt.text(-cupx+0.7*to_ell,cupy+0.02,'To\nobserver',size='medium',ha='center',va='bottom')
+        ax.plot(-cupx-iy,cupy+ix,'k',lw=1,ls='--',zorder=-2)
+        ax.text(-cupx+comp_tweak,cupy+iy[1],r'$0^{\circ}$',size=comp_siz,ha='left',va='top')
+        ax.text(-cupx-iy[1],cupy-comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='left',va='top')
+        ax.text(-cupx+0.7*to_ell,cupy+0.02,'To\nobserver',size='medium',ha='center',va='bottom')
     iy += [-0.3,0]
     nix,niy = _rotate_ccw_angle(ix,iy,np.radians(here_incD))
-    plt.plot(-cupx+nix,cupy+niy,'k',zorder=0)
+    ax.plot(-cupx+nix,cupy+niy,'k',zorder=0)
     iang = pat.Arc((-cupx,cupy),0.4,0.4,angle=90,theta1=0,theta2=here_incD,lw=1,color=(0.67,0,0.67),zorder=-3)
-    plt.gca().add_patch(iang)
+    ax.add_patch(iang)
 
     planet_color = '0.5'
-    plt.plot([cupx-to_ell,1.5],[cupy,cupy],'k',zorder=-1)
-    planet = plt.Circle((cupx,cupy),radius=0.15,color=planet_color,fill=True,zorder=1)
-    plt.gca().add_patch(planet)
+    ax.plot([cupx-to_ell,1.5],[cupy,cupy],'k',zorder=-1)
+    planet = pat.Circle((cupx,cupy),radius=0.15,color=planet_color,fill=True,zorder=1)
+    ax.add_patch(planet)
     ox,oy = np.array([0,0]),np.array([0,0.3])
-    plt.plot(cupx+ox,cupy+oy,'k',lw=1,ls='--',zorder=-2)
+    ax.plot(cupx+ox,cupy+oy,'k',lw=1,ls='--',zorder=-2)
     if reference and not _active:
-        plt.plot(cupx+ox,cupy-oy,'k',lw=1,ls='--',zorder=-2)
-        plt.text(cupx+comp_tweak,cupy+oy[1],r'$0^{\circ}$',size=comp_siz,ha='left',va='top')
-        plt.text(cupx-oy[1]-0.02,cupy-comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='left',va='top')
-        plt.text(cupx+comp_tweak,cupy-oy[1],r'$180^{\circ}$',size=comp_siz,ha='left',va='bottom')
-        plt.text(cupx-0.5*to_ell,cupy+0.7*oy[1],'North',size='medium',ha='right',va='center')
+        ax.plot(cupx+ox,cupy-oy,'k',lw=1,ls='--',zorder=-2)
+        ax.text(cupx+comp_tweak,cupy+oy[1],r'$0^{\circ}$',size=comp_siz,ha='left',va='top')
+        ax.text(cupx-oy[1]-0.02,cupy-comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='left',va='top')
+        ax.text(cupx+comp_tweak,cupy-oy[1],r'$180^{\circ}$',size=comp_siz,ha='left',va='bottom')
+        ax.text(cupx-0.5*to_ell,cupy+0.7*oy[1],'North',size='medium',ha='right',va='center')
     oy += [-0.2,0]
     nox,noy = _rotate_ccw_angle(ox,oy,np.radians(here_oblD))
-    plt.plot(cupx+nox,cupy+noy,c=axis_color,lw=2,zorder=0)
+    ax.plot(cupx+nox,cupy+noy,c=axis_color,lw=2,zorder=0)
     oang = pat.Arc((cupx,cupy),0.45,0.45,angle=90,theta1=0,theta2=here_oblD,lw=1,color=(0,0.67,0.67),zorder=-3)
-    plt.gca().add_patch(oang)
+    ax.add_patch(oang)
 
     cex,cey = 1.5,1.65
     iarc = pat.Ellipse((-cex,cey),2.0,2.0,lw=2,ec='0.75',fc=(1,0,1,0.05),zorder=-4)
-    plt.gca().add_patch(iarc)
+    ax.add_patch(iarc)
     oarc = pat.Ellipse((cex,cey),2.0,2.0,lw=2,ec='0.75',fc=(0,1,1,0.05),zorder=-4)
-    plt.gca().add_patch(oarc)
+    ax.add_patch(oarc)
 
     if _active:
         n = 0
         for p in here_phaseD:
             if isinstance(p,(int,float)):
                 phx,phy = _rotate_ccw_angle(0,1,np.radians(p))
-                planet_loc = plt.Circle((phx,phy),radius=0.1,color=ph_colors[n],fill=True,zorder=1)
-                plt.gca().add_patch(planet_loc)
+                planet_loc = pat.Circle((phx,phy),radius=0.1,color=ph_colors[n],fill=True,zorder=1)
+                ax.add_patch(planet_loc)
             n += 1
     else:
         phx,phy = _rotate_ccw_angle(0,1,np.radians(here_phaseD))
-        planet_loc = plt.Circle((phx,phy),radius=0.1,color=planet_color,fill=True,zorder=1)
-        plt.gca().add_patch(planet_loc)
+        planet_loc = pat.Circle((phx,phy),radius=0.1,color=planet_color,fill=True,zorder=1)
+        ax.add_patch(planet_loc)
 
     tex_y = 1.6
     if _active:
         tex_x,lab_siz = 0.65,'medium'
-        plt.text(-tex_x,tex_y,r'$%.1f^{\circ}$' % here_incD,color='k',size=lab_siz,ha='right',va='top')
-        plt.text(tex_x,tex_y,r'$%.1f^{\circ}$' % here_oblD,color='k',size=lab_siz,ha='left',va='top')
-        plt.text(0,0,'$%.1f^{\circ}$' % here_solD,color='k',size=lab_siz,ha='center',va='center')
-        plt.text(-0.95,-1.25,'Spins per orbit:' '\n' '$%.2f$' % here_ratRO,
-                 color='k',size=lab_siz,ha='center',va='bottom')
-        plt.text(0,tex_y,'Geometry',color='k',size=lab_siz,ha='center',va='top')
+        ax.text(-tex_x,tex_y,r'$%.1f^{\circ}$' % here_incD,color='k',size=lab_siz,ha='right',va='top')
+        ax.text(tex_x,tex_y,r'$%.1f^{\circ}$' % here_oblD,color='k',size=lab_siz,ha='left',va='top')
+        ax.text(0,0,'$%.1f^{\circ}$' % here_solD,color='k',size=lab_siz,ha='center',va='center')
+        ax.text(-0.95,-1.25,'Spins per orbit:' '\n' '$%.2f$' % here_ratRO,
+                color='k',size=lab_siz,ha='center',va='bottom')
+        ax.text(0,tex_y,'Geometry',color='k',size=lab_siz,ha='center',va='top')
     elif reference:
         tex_x,lab_siz = 1.02,'x-large'
-        plt.text(-0.5,0.32,'North',size='medium',ha='center',va='center')
-        plt.text(-tex_x,tex_y,'Inclination angle',color='k',size=lab_siz,ha='center',va='top')
-        plt.text(tex_x,tex_y,'Obliquity angle',color='k',size=lab_siz,ha='center',va='top')
-        plt.text(-0.67,0.08,'Solstice\nangle',color='k',size=lab_siz,ha='center',va='top')
-        plt.text(0,0,'Star',color='k',size=lab_siz,ha='center',va='center')
-        plt.text(-0.45,-0.55,'Orbital\nphase',color='k',size=lab_siz,ha='center',va='bottom')
-        plt.plot([-0.707,-0.45],[-0.707,-0.575],'k',lw=1,ls='--',zorder=-2)
+        ax.text(-0.5,0.32,'North',size='medium',ha='center',va='center')
+        ax.text(-tex_x,tex_y,'Inclination angle',color='k',size=lab_siz,ha='center',va='top')
+        ax.text(tex_x,tex_y,'Obliquity angle',color='k',size=lab_siz,ha='center',va='top')
+        ax.text(-0.67,0.08,'Solstice\nangle',color='k',size=lab_siz,ha='center',va='top')
+        ax.text(0,0,'Star',color='k',size=lab_siz,ha='center',va='center')
+        ax.text(-0.45,-0.55,'Orbital\nphase',color='k',size=lab_siz,ha='center',va='bottom')
+        ax.plot([-0.707,-0.45],[-0.707,-0.575],'k',lw=1,ls='--',zorder=-2)
         rat_tex = r'$\omega_{\mathrm{rot}} \ / \ \omega_{\mathrm{orb}}$'
-        plt.text(-0.95,-1.25,'Spins per orbit:\n'+rat_tex+' is\n+ for prograde spins\n— for retrograde spins',
-                 color='k',size=lab_siz,ha='center',va='bottom')
+        ax.text(-0.95,-1.25,'Spins per orbit:\n'+rat_tex+' is\n+ for prograde spins\n— for retrograde spins',
+                color='k',size=lab_siz,ha='center',va='bottom')
         tim_tex = r'At $0^{\circ}$ phase:' '\n' '$t = nT_{\mathrm{orb}}$,' '\n' r'$n=0,\pm1,\pm2,...$'
-        plt.text(0.21,0.775,tim_tex,color='k',size=lab_siz,ha='center',va='top')
-        plt.text(0.6,-0.6,'Planet',color='k',size=lab_siz,ha='right',va='bottom')
+        ax.text(0.21,0.775,tim_tex,color='k',size=lab_siz,ha='center',va='top')
+        ax.text(0.6,-0.6,'Planet',color='k',size=lab_siz,ha='right',va='bottom')
         connect = pat.Arc((0.5,0),0.5,1.3,angle=0,theta1=-70,theta2=85,lw=1,ls='--',color='0.75',zorder=-3)
-        plt.gca().add_patch(connect)
-        plt.text(1.3,-1.3,'Not to\nscale',color='k',size=lab_siz,ha='center',va='bottom',fontstyle='italic')
-        plt.text(0,tex_y,'Geometry\nReference',color='k',size=lab_siz,ha='center',va='top',weight='bold')
+        ax.add_patch(connect)
+        ax.text(1.3,-1.3,'Not to\nscale',color='k',size=lab_siz,ha='center',va='bottom',fontstyle='italic')
+        ax.text(0,tex_y,'Geometry\nReference',color='k',size=lab_siz,ha='center',va='top',weight='bold')
     else:
         tex_x,lab_siz = 1.02,'x-large'
-        plt.text(-tex_x,tex_y,r'Inclination: $%.1f^{\circ}$' % here_incD,color='k',size=lab_siz,ha='center',va='top')
-        plt.text(tex_x,tex_y,r'Obliquity: $%.1f^{\circ}$' % here_oblD,color='k',size=lab_siz,ha='center',va='top')
-        plt.text(0,0,'Solstice:' '\n' '$%.1f^{\circ}$' % here_solD,color='k',size=lab_siz,ha='center',va='center')
+        ax.text(-tex_x,tex_y,r'Inclination: $%.1f^{\circ}$' % here_incD,color='k',size=lab_siz,ha='center',va='top')
+        ax.text(tex_x,tex_y,r'Obliquity: $%.1f^{\circ}$' % here_oblD,color='k',size=lab_siz,ha='center',va='top')
+        ax.text(0,0,'Solstice:' '\n' '$%.1f^{\circ}$' % here_solD,color='k',size=lab_siz,ha='center',va='center')
         rat_tex = r'$\omega_{\mathrm{rot}} \ / \ \omega_{\mathrm{orb}} \ = \ %.2f$' % here_ratRO
-        plt.text(-0.95,-1.25,'Spins per orbit:\n'+rat_tex,color='k',size=lab_siz,ha='center',va='bottom')
-        plt.text(1.3,-1.3,'Not to\nscale',color='k',size=lab_siz,ha='center',va='bottom',fontstyle='italic')
-        plt.text(0,tex_y,'Geometry of\n{}'.format(name),color='k',size=lab_siz,ha='center',va='top')
-    plt.text(0.25,-1.25,'To observer',color='k',size=lab_siz,ha='left',va='bottom')
-    plt.plot([0,0.25],[-1.3,-1.25],'k',lw=1,ls='--',zorder=-2)
-
-    if reference and not _active:
-        plt.tight_layout()
-        if ref_save:
-            plt.savefig('geometry_reference.pdf')
-        plt.show()
+        ax.text(-0.95,-1.25,'Spins per orbit:\n'+rat_tex,color='k',size=lab_siz,ha='center',va='bottom')
+        ax.text(1.3,-1.3,'Not to\nscale',color='k',size=lab_siz,ha='center',va='bottom',fontstyle='italic')
+        ax.text(0,tex_y,'Geometry of\n{}'.format(name),color='k',size=lab_siz,ha='center',va='top')
+    ax.text(0.25,-1.25,'To observer',color='k',size=lab_siz,ha='left',va='bottom')
+    ax.plot([0,0.25],[-1.3,-1.25],'k',lw=1,ls='--',zorder=-2)
+    
+    if not _active:
+        if reference:
+            fig.tight_layout()
+            if ref_save:
+                fig.savefig('geometry_reference.pdf')
+            plt.show()
+        else:
+            return fig  # Pass back to Geometry_Diagram
 
 
 class DirectImaging_Planet:
@@ -1208,14 +1212,14 @@ class DirectImaging_Planet:
             Geometry_Reference(reference=reference,**kwargs)
         else:
             if which == 'pri':
-                Geometry_Reference(incD=self.incD,oblD=self.oblD,solD=self.solD,ratRO=self.ratRO,
-                                   phaseD=self.solD,name=self.name,reference=reference)
+                fig = Geometry_Reference(incD=self.incD,oblD=self.oblD,solD=self.solD,ratRO=self.ratRO,
+                                         phaseD=self.solD,name=self.name,reference=reference)
             elif which == 'alt':
-                Geometry_Reference(incD=self.incD_b,oblD=self.oblD_b,solD=self.solD_b,ratRO=self.ratRO_b,
-                                   phaseD=self.solD_b,name='Alt. '+self.name,reference=reference)
+                fig = Geometry_Reference(incD=self.incD_b,oblD=self.oblD_b,solD=self.solD_b,ratRO=self.ratRO_b,
+                                         phaseD=self.solD_b,name='Alt. '+self.name,reference=reference)
 
-            plt.tight_layout()
-            self.fig_geom = plt.gcf()
+            fig.tight_layout()
+            self.fig_geom = fig
             plt.show()
     
     
@@ -2809,8 +2813,8 @@ class DirectImaging_Planet:
         
         plt.figure(figsize=(14,9.3))
         
-        plt.subplot(232)
-        self.Geometry_Diagram(which='N/A',_active=True,
+        axg = plt.subplot(232)
+        self.Geometry_Diagram(which='N/A',_active=True,ax_I=axg,
                               incD=incD_I,oblD=oblD_I,solD=solD_I,ratRO=ratRO_I,
                               phaseD=phasesD_single,ph_colors=ph_colors)
         
