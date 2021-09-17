@@ -2419,8 +2419,8 @@ class DirectImaging_Planet:
                      size='x-large',ha='center',va='center')
             axs.axes.spines['polar'].set_alpha(0.1)
             axs.grid(alpha=0.1)
-            plt.xticks(alpha=0.1)  ## Easy and seems to work
-            plt.yticks(alpha=0.1)  ##
+            axs.tick_params(axis='x',colors=(0,0,0,0.1))  # Sets alpha level of tick labels
+            axs.tick_params(axis='y',colors=(0,0,0,0.1))  #
         else:
             if constraint in ['real','both']:
                 axs.contourf(sols,obls,prob2d,levels=levs,colors=c_regs)
@@ -2625,7 +2625,7 @@ class DirectImaging_Planet:
         new_sols,new_obls = np.meshgrid(np.linspace(0,2.0*pi,n_sol),np.linspace(0,pi/2.0,n_obl),indexing='ij')
         
         if not _active:
-            plt.figure(figsize=(5*w,5*h))
+            fig = plt.figure(figsize=(5*w,5*h))
             if info and not combine_only:
                 s = self._spinax_style(w=w,h=h,s=s,m_c=cm.gray,kind='info',ax_combo='0',
                                        sols=new_sols,obls=new_obls,
@@ -2730,9 +2730,11 @@ class DirectImaging_Planet:
                                    solR=solR,oblR=oblR,mark=mark,
                                    _active=_active,j=0,entries=entries)
         
-        if not _active:
-            plt.tight_layout()
-            self.fig_spin = plt.gcf()
+        if _active:
+            return axC  # Pass combo axis back to _actmodule_heart
+        else:
+            fig.tight_layout()
+            self.fig_spin = fig
             plt.show()
             
             if keep_probdata:
@@ -2811,7 +2813,7 @@ class DirectImaging_Planet:
         num_rel = max(res_I*round(see_spins),self.n_long)
         rel_tphase = np.linspace(-2.5,2.5,num_rel)
         
-        plt.figure(figsize=(14,9.3))
+        fig = plt.figure(figsize=(14,9.3))
         
         axg = plt.subplot(232)
         self.Geometry_Diagram(which='N/A',_active=True,ax_I=axg,
@@ -2839,7 +2841,7 @@ class DirectImaging_Planet:
         axl.set_xticks(np.linspace(-2,2,5))
         axl.set_xticklabels(relph_ticks_,size='medium')
         axl.set_xlabel('Relative Orbital Phase',size='medium')
-        axl.set_yticks(size='medium')
+        axl.tick_params(axis='y',labelsize='medium')
         ylab = lambda lc: 'Flux' if lc == 'flux' else ('Apparent Brightness' if lc == 'appar' else '')
         axl.set_ylabel(ylab(lc_swit),size='medium')
         axl.set_aspect(1.0/axl.get_data_ratio())
@@ -2856,26 +2858,28 @@ class DirectImaging_Planet:
         
         ### subplot(235,'polar')
         if len(phasesD_forspin) == 0:
-            plt.subplot(235,projection='polar')
-            plt.gca().set_theta_zero_location('S')
-            plt.gca().set_rlabel_position(45)
-            plt.xticks(np.linspace(0,1.75*pi,8),sol_ticks_,size='medium',alpha=0.1)  # Match numbers to sol_ticks to avoid error.
-            plt.yticks(np.linspace(0,pi/2.0,4),obl_ticks_,size='medium',alpha=0.1)
-            plt.gca().axes.spines['polar'].set_alpha(0.1)
-            plt.gca().grid(alpha=0.1)
+            axs = plt.subplot(235,projection='polar')
+            axs.set_theta_zero_location('S')
+            axs.set_rlabel_position(45)
+            axs.set_xticks(np.linspace(0,1.75*pi,8))  # Match numbers to sol_ticks to avoid error.
+            axs.set_xticklabels(sol_ticks_,size='medium',alpha=0.1)
+            axs.set_yticks(np.linspace(0,pi/2.0,4))
+            axs.set_yticklabels(obl_ticks_,size='medium',alpha=0.1)
+            axs.axes.spines['polar'].set_alpha(0.1)
+            axs.grid(alpha=0.1)
             bads = ('SPIN AXIS\nCONSTRAINT WARNING:\n\nYOU NEED\nAT LEAST 2 PHASES TO'
                     '\nCALCULATE CHANGES IN\nDOMINANT COLATITUDE')
-            plt.text(np.radians(0),np.radians(0),bads,color=(1.0,0.5,0),size='x-large',
+            axs.text(np.radians(0),np.radians(0),bads,color=(1.0,0.5,0),size='x-large',
                      ha='center',va='center',weight='bold')
         else:
-            self.SpinAxis_Constraints(phasesD_forspin,which='_c',constraint='perf',
-                                      info=False,combine=False,combine_only=True,_active=True,
-                                      incD_I=incD_I,solD_I=solD_I,oblD_I=oblD_I)
-            plt.text(np.radians(225),np.radians(112),'Spin Axis\nConstraints',color='k',size='medium',
+            axs = self.SpinAxis_Constraints(phasesD_forspin,which='_c',constraint='perf',
+                                            info=False,combine=False,combine_only=True,_active=True,
+                                            incD_I=incD_I,solD_I=solD_I,oblD_I=oblD_I)
+            axs.text(np.radians(225),np.radians(112),'Spin Axis\nConstraints',color='k',size='medium',
                      ha='center',va='center')
         
-        plt.tight_layout()
-        self.fig_sand = plt.gcf()
+        fig.tight_layout()
+        self.fig_sand = fig
         plt.show()
     
     def _reset_actmodule(self):
