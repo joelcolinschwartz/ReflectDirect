@@ -2379,7 +2379,7 @@ class DirectImaging_Planet:
                                                                                 longzeroD=0)
         return solobl_wgrid,solobl_dgrid
     
-    def _spinax_style(self,w,h,s,m_c,kind,ax_combo,sols,obls,prob2d,levs,constraint,orig_sols,orig_obls,
+    def _spinax_style(self,h,w,s,m_c,kind,ax_combo,sols,obls,prob2d,levs,constraint,orig_sols,orig_obls,
                       kchar,k_mu,now_phaseD,solR,oblR,mark,_active,j,entries):
         """Styles plots for spin axis constraints."""
         if kind == 'combo':
@@ -2594,13 +2594,13 @@ class DirectImaging_Planet:
         
         entries = len(phaseD_list)
         if _active:
-            w,h,sub,s = 3,2,5,5
+            h,w,sub,s = 2,3,5,5
         elif combine_only:
-            w,h,sub,s = 1,1,1,1
+            h,w,sub,s = 1,1,1,1
         else:
             ex = lambda x: 1 if x else 0
             sub = entries + ex(info) + ex(combine)
-            w,h,s = min(sub,3),1+((sub-1)//3),1
+            h,w,s = 1+((sub-1)//3),min(sub,3),1
         p = 0
         
         if which == 'pri':
@@ -2627,7 +2627,7 @@ class DirectImaging_Planet:
         if not _active:
             fig = plt.figure(figsize=(5*w,5*h))
             if info and not combine_only:
-                s = self._spinax_style(w=w,h=h,s=s,m_c=cm.gray,kind='info',ax_combo='0',
+                s = self._spinax_style(h=h,w=w,s=s,m_c=cm.gray,kind='info',ax_combo='0',
                                        sols=new_sols,obls=new_obls,
                                        prob2d=0,levs=0,constraint=constraint,
                                        orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
@@ -2702,7 +2702,7 @@ class DirectImaging_Planet:
                         user_file.append([sav_phaseD,np.copy(new_prob2d),np.copy(levels_sigma)])
                 else:
                     levels_sigma = 1
-                s = self._spinax_style(w=w,h=h,s=s,m_c=m_c,kind='single',ax_combo='0',
+                s = self._spinax_style(h=h,w=w,s=s,m_c=m_c,kind='single',ax_combo='0',
                                        sols=new_sols,obls=new_obls,
                                        prob2d=new_prob2d,levs=levels_sigma,constraint=constraint,
                                        orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
@@ -2722,7 +2722,7 @@ class DirectImaging_Planet:
             else:
                 new_combo_prob2d,levels_sigma = 1,1
             m_c_here = lambda x: cm.Reds if x == entries else (cm.Blues if x == 2*entries else cm.Purples)
-            s = self._spinax_style(w=w,h=h,s=s,m_c=m_c_here(p),kind='combo',ax_combo=axC,
+            s = self._spinax_style(h=h,w=w,s=s,m_c=m_c_here(p),kind='combo',ax_combo=axC,
                                    sols=new_sols,obls=new_obls,
                                    prob2d=new_combo_prob2d,levs=levels_sigma,constraint=constraint,
                                    orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
