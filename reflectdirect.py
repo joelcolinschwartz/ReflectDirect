@@ -1315,7 +1315,7 @@ class DirectImaging_Planet:
         vm_l,vm_h,va_l,va_h = self._double_amap_colorbounds(alt,same_scale)
         if alt:
             fig = plt.figure(figsize=(16,4))
-            ax = plt.subplot(121)
+            ax = fig.add_subplot(121)
         else:
             fig,ax = plt.subplots(figsize=(9,4))
         
@@ -1323,7 +1323,7 @@ class DirectImaging_Planet:
         ax.set_title('Map of {}'.format(self.name),size='x-large')
         
         if alt:
-            ax2 = plt.subplot(122)
+            ax2 = fig.add_subplot(122)
             self._flat_style(fig,ax2,self.albedos_b,va_l,va_h,grat)
             ax2.set_title('Alternate Map of {}'.format(self.name),size='x-large')
         
@@ -1918,7 +1918,8 @@ class DirectImaging_Planet:
             here_incD,here_oblD,here_solD = incD,oblD,solD
         
         if _active:
-            ax1 = plt.subplot(236)
+            fig = kwargs.get('fig_I','N/A')
+            ax1 = fig.add_subplot(236)
             ax2 = ax1.twinx()
             self._kcevo_stylewid(ax1,s_tick='medium',s_lab='medium',_active=_active)
             self._kcevo_styledom(ax2,s_tick='medium',s_lab='medium',_active=_active)
@@ -2139,10 +2140,10 @@ class DirectImaging_Planet:
         
         return k2d,orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y
     
-    def _orth_style(self,row,sub,s,which,image,v_l,v_h,
+    def _orth_style(self,fig,row,sub,s,which,image,v_l,v_h,
                     orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,name):
         """Styles plots for orthographic projections."""
-        ax = plt.subplot(row,sub,s)
+        ax = fig.add_subplot(row,sub,s)
         if which == 'kern':
             m_c = cm.gray
         elif image.min() < 0:
@@ -2223,6 +2224,7 @@ class DirectImaging_Planet:
         """
         if kwargs.get('_active',False):
             ## Default keywords
+            fig = kwargs.get('fig_I','N/A')
             orbT_I = kwargs.get('orbT_I',(24.0*365.0))
             ratRO_I = kwargs.get('ratRO_I',10.0)
             incD_I = kwargs.get('incD_I',90)
@@ -2238,14 +2240,14 @@ class DirectImaging_Planet:
                                                              incD=incD_I,oblD=oblD_I,solD=solD_I,
                                                              _active=True,ratRO=ratRO_I,longzeroD=longzeroD_I)
             
-            s,axv = self._orth_style(row=row,sub=col,s=s,which='amap',
+            s,axv = self._orth_style(fig=fig,row=row,sub=col,s=s,which='amap',
                                      image=self.albedos,v_l=vm_l,v_h=vm_h,
                                      orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
                                      poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
             axv.text(-0.7,1.04,'Visible Map',color='k',size='medium',ha='center',va='center')
             s += 1  # Now on subplot(233)
             up = lambda fb: k2d.max() if fb else 1.0/pi
-            s,axk = self._orth_style(row=row,sub=col,s=s,which='kern',
+            s,axk = self._orth_style(fig=fig,row=row,sub=col,s=s,which='kern',
                                      image=k2d,v_l=0,v_h=up(force_bright),
                                      orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
                                      poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
@@ -2273,23 +2275,23 @@ class DirectImaging_Planet:
                                                              _active=False,ratRO=0,longzeroD=0)
             if show in ['kern','both']:
                 up = lambda fb: k2d.max() if fb else 1.0/pi
-                s,_ax = self._orth_style(row=row,sub=sub,s=s,which='kern',
+                s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='kern',
                                          image=k2d,v_l=0,v_h=up(force_bright),
                                          orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
                                          poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Kernel')
             if show in ['amap','both','sphere']:
-                s,_ax = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='amap',
                                          image=self.albedos,v_l=vm_l,v_h=vm_h,
                                          orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
                                          poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Map')
             if show == 'real':
                 normk = lambda fb: 1.0/k2d.max() if fb else pi
-                s,_ax = self._orth_style(row=row,sub=sub,s=s,which='real',
+                s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='real',
                                          image=normk(force_bright)*k2d*self.albedos,v_l=vm_l,v_h=vm_h,
                                          orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
                                          poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Map')
             if show == 'sphere':
-                s,_ax = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='amap',
                                          image=self.albedos,v_l=vm_l,v_h=vm_h,
                                          orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
                                          poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Map')
@@ -2300,17 +2302,17 @@ class DirectImaging_Planet:
                                                                  incD=incD,oblD=oblD,solD=solD,
                                                                  _active=False,ratRO=0,longzeroD=0)
                 if show in ['amap','both','sphere']:
-                    s,_ax = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                    s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='amap',
                                              image=self.albedos_b,v_l=vm_l,v_h=vm_h,
                                              orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
                                              poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Alt. Map')
                 if show == 'real':
-                    s,_ax = self._orth_style(row=row,sub=sub,s=s,which='real',
+                    s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='real',
                                              image=normk(force_bright)*k2d*self.albedos_b,v_l=vm_l,v_h=vm_h,
                                              orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
                                              poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Alt. Map')
                 if show == 'sphere':
-                    s,_ax = self._orth_style(row=row,sub=sub,s=s,which='amap',
+                    s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='amap',
                                              image=self.albedos_b,v_l=vm_l,v_h=vm_h,
                                              orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
                                              poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Alt. Map')
@@ -2379,13 +2381,13 @@ class DirectImaging_Planet:
                                                                                 longzeroD=0)
         return solobl_wgrid,solobl_dgrid
     
-    def _spinax_style(self,h,w,s,m_c,kind,ax_combo,sols,obls,prob2d,levs,constraint,orig_sols,orig_obls,
+    def _spinax_style(self,fig,h,w,s,m_c,kind,ax_combo,sols,obls,prob2d,levs,constraint,orig_sols,orig_obls,
                       kchar,k_mu,now_phaseD,solR,oblR,mark,_active,j,entries):
         """Styles plots for spin axis constraints."""
         if kind == 'combo':
             axs = ax_combo
         else:
-            axs = plt.subplot(h,w,s,projection='polar')
+            axs = fig.add_subplot(h,w,s,projection='polar')
         axs.set_theta_zero_location('S')
         axs.set_rlabel_position(45)
         c_regs = ('1.0',m_c(0.25),m_c(0.5),m_c(0.75))
@@ -2624,10 +2626,12 @@ class DirectImaging_Planet:
         sigma_probs = np.array([1,0.9973,0.9545,0.6827,0])
         new_sols,new_obls = np.meshgrid(np.linspace(0,2.0*pi,n_sol),np.linspace(0,pi/2.0,n_obl),indexing='ij')
         
-        if not _active:
+        if _active:
+            fig = kwargs.get('fig_I','N/A')
+        else:
             fig = plt.figure(figsize=(5*w,5*h))
             if info and not combine_only:
-                s = self._spinax_style(h=h,w=w,s=s,m_c=cm.gray,kind='info',ax_combo='0',
+                s = self._spinax_style(fig=fig,h=h,w=w,s=s,m_c=cm.gray,kind='info',ax_combo='0',
                                        sols=new_sols,obls=new_obls,
                                        prob2d=0,levs=0,constraint=constraint,
                                        orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
@@ -2678,7 +2682,7 @@ class DirectImaging_Planet:
             if combine or combine_only:
                 combo_prob2d *= prob2d
                 if made_combo_flag == False:
-                    axC = plt.subplot(h,w,sub,projection='polar')
+                    axC = fig.add_subplot(h,w,sub,projection='polar')
                     made_combo_flag = True
                 if constraint in ['perf','both']:
                     if constraint == 'perf':
@@ -2702,7 +2706,7 @@ class DirectImaging_Planet:
                         user_file.append([sav_phaseD,np.copy(new_prob2d),np.copy(levels_sigma)])
                 else:
                     levels_sigma = 1
-                s = self._spinax_style(h=h,w=w,s=s,m_c=m_c,kind='single',ax_combo='0',
+                s = self._spinax_style(fig=fig,h=h,w=w,s=s,m_c=m_c,kind='single',ax_combo='0',
                                        sols=new_sols,obls=new_obls,
                                        prob2d=new_prob2d,levs=levels_sigma,constraint=constraint,
                                        orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
@@ -2715,14 +2719,14 @@ class DirectImaging_Planet:
                 new_combo_prob2d = self._spinax_prob_redo(prob2d=combo_prob2d,
                                                           orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
                                                           new_sols=new_sols,new_obls=new_obls)
-                levels_sigma = self._spinax_leveling(prob2d=new_combo_prob2d,sigma_probs=sigma_probs.T,
-                                                     res=res,obls=new_obls)  #$$# TEST THIS TRANSPOSE
+                levels_sigma = self._spinax_leveling(prob2d=new_combo_prob2d,sigma_probs=sigma_probs,
+                                                     res=res,obls=new_obls)
                 if keep_probdata:
                     user_file.append(['Combined',np.copy(new_combo_prob2d),np.copy(levels_sigma)])
             else:
                 new_combo_prob2d,levels_sigma = 1,1
             m_c_here = lambda x: cm.Reds if x == entries else (cm.Blues if x == 2*entries else cm.Purples)
-            s = self._spinax_style(h=h,w=w,s=s,m_c=m_c_here(p),kind='combo',ax_combo=axC,
+            s = self._spinax_style(fig=fig,h=h,w=w,s=s,m_c=m_c_here(p),kind='combo',ax_combo=axC,
                                    sols=new_sols,obls=new_obls,
                                    prob2d=new_combo_prob2d,levs=levels_sigma,constraint=constraint,
                                    orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
@@ -2813,20 +2817,22 @@ class DirectImaging_Planet:
         num_rel = max(res_I*round(see_spins),self.n_long)
         rel_tphase = np.linspace(-2.5,2.5,num_rel)
         
-        fig = plt.figure(figsize=(14,9.3))
+        fig_I = plt.figure(figsize=(14,9.3))
         
-        axg = plt.subplot(232)
+        ### Geometry
+        axg = fig_I.add_subplot(232)
         self.Geometry_Diagram(which='N/A',_active=True,ax_I=axg,
                               incD=incD_I,oblD=oblD_I,solD=solD_I,ratRO=ratRO_I,
                               phaseD=phasesD_single,ph_colors=ph_colors)
         
-        ### subplot(231) and subplot(233)
-        self.Orthographic_Viewer(phaseD_I,show='both',_active=True,
+        ### Ortho, sub 231 and 233
+        self.Orthographic_Viewer(phaseD_I,show='both',_active=True,fig_I=fig_I,
                                  orbT_I=orbT_I,ratRO_I=ratRO_I,
                                  incD_I=incD_I,oblD_I=oblD_I,solD_I=solD_I,
                                  longzeroD_I=longzeroD_I)
         
-        axl = plt.subplot(234)
+        ### Light
+        axl = fig_I.add_subplot(234)
         n = 0
         for p in phasesD_single:
             if isinstance(p,(int,float)):
@@ -2850,15 +2856,15 @@ class DirectImaging_Planet:
         axl.text(0.75,1.01,'Rotations: {:.2f}'.format(see_spins),color='k',size='medium',ha='center',va='bottom',
                  transform=axl.transAxes)
         
-        ### subplot(236)
+        ### Kernel, sub 236
         axk = self.KChar_Evolve_Plot('both',which='_c',incD=incD_I,oblD=oblD_I,solD=solD_I,
-                                     _active=True,phasesD_I=phasesD_single,ph_colors=ph_colors)
+                                     _active=True,fig_I=fig_I,phasesD_I=phasesD_single,ph_colors=ph_colors)
         axk.text(0.5,1.01,'Kernel Characteristics',color='k',size='medium',ha='center',va='bottom',
                  transform=axk.transAxes)
         
-        ### subplot(235,'polar')
+        ### SpinAx, polar sub 235
         if len(phasesD_forspin) == 0:
-            axs = plt.subplot(235,projection='polar')
+            axs = fig_I.add_subplot(235,projection='polar')
             axs.set_theta_zero_location('S')
             axs.set_rlabel_position(45)
             axs.set_xticks(np.linspace(0,1.75*pi,8))  # Match numbers to sol_ticks to avoid error.
@@ -2874,12 +2880,12 @@ class DirectImaging_Planet:
         else:
             axs = self.SpinAxis_Constraints(phasesD_forspin,which='_c',constraint='perf',
                                             info=False,combine=False,combine_only=True,_active=True,
-                                            incD_I=incD_I,solD_I=solD_I,oblD_I=oblD_I)
+                                            fig_I=fig_I,incD_I=incD_I,solD_I=solD_I,oblD_I=oblD_I)
             axs.text(np.radians(225),np.radians(112),'Spin Axis\nConstraints',color='k',size='medium',
                      ha='center',va='center')
         
-        fig.tight_layout()
-        self.fig_sand = fig
+        fig_I.tight_layout()
+        self.fig_sand = fig_I
         plt.show()
     
     def _reset_actmodule(self):
@@ -3017,3 +3023,4 @@ class DirectImaging_Planet:
         inter_out = widgets.interactive_output(self._actmodule_heart,the_connections)
         
         IPy_display(widgets.Box([top_row,bot_row,inter_out],layout=Layout(flex_flow='column')))
+        
