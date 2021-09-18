@@ -146,146 +146,151 @@ def Geometry_Reference(ref_save=False,**kwargs):
     reference = kwargs.get('reference',True)  # Gets set to False by Geometry_Diagram
     
     if _active:
+        ax = kwargs.get('ax_I','N/A')  # Shouldn't need fig in this case, but may want to pass in.
         comp_tweak,comp_siz = 0.04,'medium'
     else:
-        plt.figure(figsize=(8,8))
+        fig,ax = plt.subplots(figsize=(8,8))
+        fig.set_facecolor('w')  # Avoids transparent stored fig_****; ditto throughout
         comp_tweak,comp_siz = 0.03,'x-large'
-    plt.xlim([-1.5,1.5])
-    plt.ylim([-1.35,1.65])
-    plt.xticks([])
-    plt.yticks([])
-    plt.gca().set_aspect(1.0)
+    ax.set_xlim([-1.5,1.5])
+    ax.set_ylim([-1.35,1.65])
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_aspect(1.0)
     if reference:
         here_incD,here_oblD,here_solD,here_ratRO,here_phaseD = 45,45,70,'N/A',225
     else:
         here_incD,here_oblD,here_solD,here_ratRO,here_phaseD = incD,oblD,solD,ratRO,phaseD
 
     star_color = (1,0.75,0)
-    orbit = plt.Circle((0,0),radius=1,color='k',fill=False,zorder=0)
-    plt.gca().add_patch(orbit)
-    star = plt.Circle((0,0),radius=0.33,color=star_color,fill=True,zorder=1)
-    plt.gca().add_patch(star)
-    plt.plot([0,0],[-1.35,0],'k',lw=2,ls=':',zorder=-2)
+    orbit = pat.Circle((0,0),radius=1,color='k',fill=False,zorder=0)
+    ax.add_patch(orbit)
+    star = pat.Circle((0,0),radius=0.33,color=star_color,fill=True,zorder=1)
+    ax.add_patch(star)
+    ax.plot([0,0],[-1.35,0],'k',lw=2,ls=':',zorder=-2)
 
     compass = 1.15
-    plt.plot([0,0],[1.0,compass],'k',lw=1,ls='-',zorder=0)
-    plt.text(comp_tweak,compass,r'$0^{\circ}$',size=comp_siz,ha='left',va='bottom')
-    plt.plot([-1.0,-compass],[0,0],'k',lw=1,ls='-',zorder=0)
-    plt.text(-compass,comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='right',va='bottom')
-    plt.text(-comp_tweak-0.01,-compass,r'$180^{\circ}$',size=comp_siz,ha='right',va='top')
-    plt.plot([1.0,compass],[0,0],'k',lw=1,ls='-',zorder=0)
-    plt.text(compass,-comp_tweak-0.01,r'$270^{\circ}$',size=comp_siz,ha='left',va='top')
+    ax.plot([0,0],[1.0,compass],'k',lw=1,ls='-',zorder=0)
+    ax.text(comp_tweak,compass,r'$0^{\circ}$',size=comp_siz,ha='left',va='bottom')
+    ax.plot([-1.0,-compass],[0,0],'k',lw=1,ls='-',zorder=0)
+    ax.text(-compass,comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='right',va='bottom')
+    ax.text(-comp_tweak-0.01,-compass,r'$180^{\circ}$',size=comp_siz,ha='right',va='top')
+    ax.plot([1.0,compass],[0,0],'k',lw=1,ls='-',zorder=0)
+    ax.text(compass,-comp_tweak-0.01,r'$270^{\circ}$',size=comp_siz,ha='left',va='top')
 
     axis_color = (0,0.9,0)
     tri_x,tri_y = 0.2*np.array([0,0.5,-0.5]),0.2*np.array([1,-0.5,-0.5])
     tsol_x,tsol_y = _rotate_ccw_angle(tri_x,tri_y,np.radians(here_solD+180))
     sol_x,sol_y = _rotate_ccw_angle(0.67,0,np.radians(here_solD+90))
     triang = pat.Polygon(np.array([sol_x+tsol_x,sol_y+tsol_y]).T,color=axis_color,fill=True,zorder=1)
-    plt.gca().add_patch(triang)
-    plt.plot([sol_x/0.67,sol_x],[sol_y/0.67,sol_y],color=axis_color,lw=2,ls='-',zorder=-1)
-    plt.plot([0,0],[1.0,0.8],'k',lw=1,ls='--',zorder=-2)
+    ax.add_patch(triang)
+    ax.plot([sol_x/0.67,sol_x],[sol_y/0.67,sol_y],color=axis_color,lw=2,ls='-',zorder=-1)
+    ax.plot([0,0],[1.0,0.8],'k',lw=1,ls='--',zorder=-2)
     sang = pat.Arc((0,0),1.7,1.7,angle=90,theta1=0,theta2=here_solD,lw=1,color=(0.67,0.67,0),zorder=-3)
-    plt.gca().add_patch(sang)
+    ax.add_patch(sang)
 
     cupx,cupy,to_ell = 1.12,1.16,0.49
-    plt.plot([-cupx,-cupx+to_ell],[cupy,cupy],'k',lw=2,ls=':',zorder=-1)
-    starup = plt.Circle((-cupx,cupy),radius=0.1,color=star_color,fill=True,zorder=0)
-    plt.gca().add_patch(starup)
+    ax.plot([-cupx,-cupx+to_ell],[cupy,cupy],'k',lw=2,ls=':',zorder=-1)
+    starup = pat.Circle((-cupx,cupy),radius=0.1,color=star_color,fill=True,zorder=0)
+    ax.add_patch(starup)
     ix,iy = np.array([0,0]),np.array([0,0.3])
-    plt.plot(-cupx+ix,cupy+iy,'k',lw=1,ls='--',zorder=-2)
+    ax.plot(-cupx+ix,cupy+iy,'k',lw=1,ls='--',zorder=-2)
     if reference and not _active:
-        plt.plot(-cupx-iy,cupy+ix,'k',lw=1,ls='--',zorder=-2)
-        plt.text(-cupx+comp_tweak,cupy+iy[1],r'$0^{\circ}$',size=comp_siz,ha='left',va='top')
-        plt.text(-cupx-iy[1],cupy-comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='left',va='top')
-        plt.text(-cupx+0.7*to_ell,cupy+0.02,'To\nobserver',size='medium',ha='center',va='bottom')
+        ax.plot(-cupx-iy,cupy+ix,'k',lw=1,ls='--',zorder=-2)
+        ax.text(-cupx+comp_tweak,cupy+iy[1],r'$0^{\circ}$',size=comp_siz,ha='left',va='top')
+        ax.text(-cupx-iy[1],cupy-comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='left',va='top')
+        ax.text(-cupx+0.7*to_ell,cupy+0.02,'To\nobserver',size='medium',ha='center',va='bottom')
     iy += [-0.3,0]
     nix,niy = _rotate_ccw_angle(ix,iy,np.radians(here_incD))
-    plt.plot(-cupx+nix,cupy+niy,'k',zorder=0)
+    ax.plot(-cupx+nix,cupy+niy,'k',zorder=0)
     iang = pat.Arc((-cupx,cupy),0.4,0.4,angle=90,theta1=0,theta2=here_incD,lw=1,color=(0.67,0,0.67),zorder=-3)
-    plt.gca().add_patch(iang)
+    ax.add_patch(iang)
 
     planet_color = '0.5'
-    plt.plot([cupx-to_ell,1.5],[cupy,cupy],'k',zorder=-1)
-    planet = plt.Circle((cupx,cupy),radius=0.15,color=planet_color,fill=True,zorder=1)
-    plt.gca().add_patch(planet)
+    ax.plot([cupx-to_ell,1.5],[cupy,cupy],'k',zorder=-1)
+    planet = pat.Circle((cupx,cupy),radius=0.15,color=planet_color,fill=True,zorder=1)
+    ax.add_patch(planet)
     ox,oy = np.array([0,0]),np.array([0,0.3])
-    plt.plot(cupx+ox,cupy+oy,'k',lw=1,ls='--',zorder=-2)
+    ax.plot(cupx+ox,cupy+oy,'k',lw=1,ls='--',zorder=-2)
     if reference and not _active:
-        plt.plot(cupx+ox,cupy-oy,'k',lw=1,ls='--',zorder=-2)
-        plt.text(cupx+comp_tweak,cupy+oy[1],r'$0^{\circ}$',size=comp_siz,ha='left',va='top')
-        plt.text(cupx-oy[1]-0.02,cupy-comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='left',va='top')
-        plt.text(cupx+comp_tweak,cupy-oy[1],r'$180^{\circ}$',size=comp_siz,ha='left',va='bottom')
-        plt.text(cupx-0.5*to_ell,cupy+0.7*oy[1],'North',size='medium',ha='right',va='center')
+        ax.plot(cupx+ox,cupy-oy,'k',lw=1,ls='--',zorder=-2)
+        ax.text(cupx+comp_tweak,cupy+oy[1],r'$0^{\circ}$',size=comp_siz,ha='left',va='top')
+        ax.text(cupx-oy[1]-0.02,cupy-comp_tweak,r'$90^{\circ}$',size=comp_siz,ha='left',va='top')
+        ax.text(cupx+comp_tweak,cupy-oy[1],r'$180^{\circ}$',size=comp_siz,ha='left',va='bottom')
+        ax.text(cupx-0.5*to_ell,cupy+0.7*oy[1],'North',size='medium',ha='right',va='center')
     oy += [-0.2,0]
     nox,noy = _rotate_ccw_angle(ox,oy,np.radians(here_oblD))
-    plt.plot(cupx+nox,cupy+noy,c=axis_color,lw=2,zorder=0)
+    ax.plot(cupx+nox,cupy+noy,c=axis_color,lw=2,zorder=0)
     oang = pat.Arc((cupx,cupy),0.45,0.45,angle=90,theta1=0,theta2=here_oblD,lw=1,color=(0,0.67,0.67),zorder=-3)
-    plt.gca().add_patch(oang)
+    ax.add_patch(oang)
 
     cex,cey = 1.5,1.65
     iarc = pat.Ellipse((-cex,cey),2.0,2.0,lw=2,ec='0.75',fc=(1,0,1,0.05),zorder=-4)
-    plt.gca().add_patch(iarc)
+    ax.add_patch(iarc)
     oarc = pat.Ellipse((cex,cey),2.0,2.0,lw=2,ec='0.75',fc=(0,1,1,0.05),zorder=-4)
-    plt.gca().add_patch(oarc)
+    ax.add_patch(oarc)
 
     if _active:
         n = 0
         for p in here_phaseD:
             if isinstance(p,(int,float)):
                 phx,phy = _rotate_ccw_angle(0,1,np.radians(p))
-                planet_loc = plt.Circle((phx,phy),radius=0.1,color=ph_colors[n],fill=True,zorder=1)
-                plt.gca().add_patch(planet_loc)
+                planet_loc = pat.Circle((phx,phy),radius=0.1,color=ph_colors[n],fill=True,zorder=1)
+                ax.add_patch(planet_loc)
             n += 1
     else:
         phx,phy = _rotate_ccw_angle(0,1,np.radians(here_phaseD))
-        planet_loc = plt.Circle((phx,phy),radius=0.1,color=planet_color,fill=True,zorder=1)
-        plt.gca().add_patch(planet_loc)
+        planet_loc = pat.Circle((phx,phy),radius=0.1,color=planet_color,fill=True,zorder=1)
+        ax.add_patch(planet_loc)
 
     tex_y = 1.6
     if _active:
         tex_x,lab_siz = 0.65,'medium'
-        plt.text(-tex_x,tex_y,r'$%.1f^{\circ}$' % here_incD,color='k',size=lab_siz,ha='right',va='top')
-        plt.text(tex_x,tex_y,r'$%.1f^{\circ}$' % here_oblD,color='k',size=lab_siz,ha='left',va='top')
-        plt.text(0,0,'$%.1f^{\circ}$' % here_solD,color='k',size=lab_siz,ha='center',va='center')
-        plt.text(-0.95,-1.25,'Spins per orbit:' '\n' '$%.2f$' % here_ratRO,
-                 color='k',size=lab_siz,ha='center',va='bottom')
-        plt.text(0,tex_y,'Geometry',color='k',size=lab_siz,ha='center',va='top')
+        ax.text(-tex_x,tex_y,r'$%.1f^{\circ}$' % here_incD,color='k',size=lab_siz,ha='right',va='top')
+        ax.text(tex_x,tex_y,r'$%.1f^{\circ}$' % here_oblD,color='k',size=lab_siz,ha='left',va='top')
+        ax.text(0,0,'$%.1f^{\circ}$' % here_solD,color='k',size=lab_siz,ha='center',va='center')
+        ax.text(-0.95,-1.25,'Spins per orbit:' '\n' '$%.2f$' % here_ratRO,
+                color='k',size=lab_siz,ha='center',va='bottom')
+        ax.text(0,tex_y,'Geometry',color='k',size=lab_siz,ha='center',va='top')
     elif reference:
         tex_x,lab_siz = 1.02,'x-large'
-        plt.text(-0.5,0.32,'North',size='medium',ha='center',va='center')
-        plt.text(-tex_x,tex_y,'Inclination angle',color='k',size=lab_siz,ha='center',va='top')
-        plt.text(tex_x,tex_y,'Obliquity angle',color='k',size=lab_siz,ha='center',va='top')
-        plt.text(-0.67,0.08,'Solstice\nangle',color='k',size=lab_siz,ha='center',va='top')
-        plt.text(0,0,'Star',color='k',size=lab_siz,ha='center',va='center')
-        plt.text(-0.45,-0.55,'Orbital\nphase',color='k',size=lab_siz,ha='center',va='bottom')
-        plt.plot([-0.707,-0.45],[-0.707,-0.575],'k',lw=1,ls='--',zorder=-2)
+        ax.text(-0.5,0.32,'North',size='medium',ha='center',va='center')
+        ax.text(-tex_x,tex_y,'Inclination angle',color='k',size=lab_siz,ha='center',va='top')
+        ax.text(tex_x,tex_y,'Obliquity angle',color='k',size=lab_siz,ha='center',va='top')
+        ax.text(-0.67,0.08,'Solstice\nangle',color='k',size=lab_siz,ha='center',va='top')
+        ax.text(0,0,'Star',color='k',size=lab_siz,ha='center',va='center')
+        ax.text(-0.45,-0.55,'Orbital\nphase',color='k',size=lab_siz,ha='center',va='bottom')
+        ax.plot([-0.707,-0.45],[-0.707,-0.575],'k',lw=1,ls='--',zorder=-2)
         rat_tex = r'$\omega_{\mathrm{rot}} \ / \ \omega_{\mathrm{orb}}$'
-        plt.text(-0.95,-1.25,'Spins per orbit:\n'+rat_tex+' is\n+ for prograde spins\n— for retrograde spins',
-                 color='k',size=lab_siz,ha='center',va='bottom')
+        ax.text(-0.95,-1.25,'Spins per orbit:\n'+rat_tex+' is\n+ for prograde spins\n— for retrograde spins',
+                color='k',size=lab_siz,ha='center',va='bottom')
         tim_tex = r'At $0^{\circ}$ phase:' '\n' '$t = nT_{\mathrm{orb}}$,' '\n' r'$n=0,\pm1,\pm2,...$'
-        plt.text(0.21,0.775,tim_tex,color='k',size=lab_siz,ha='center',va='top')
-        plt.text(0.6,-0.6,'Planet',color='k',size=lab_siz,ha='right',va='bottom')
+        ax.text(0.21,0.775,tim_tex,color='k',size=lab_siz,ha='center',va='top')
+        ax.text(0.6,-0.6,'Planet',color='k',size=lab_siz,ha='right',va='bottom')
         connect = pat.Arc((0.5,0),0.5,1.3,angle=0,theta1=-70,theta2=85,lw=1,ls='--',color='0.75',zorder=-3)
-        plt.gca().add_patch(connect)
-        plt.text(1.3,-1.3,'Not to\nscale',color='k',size=lab_siz,ha='center',va='bottom',fontstyle='italic')
-        plt.text(0,tex_y,'Geometry\nReference',color='k',size=lab_siz,ha='center',va='top',weight='bold')
+        ax.add_patch(connect)
+        ax.text(1.3,-1.3,'Not to\nscale',color='k',size=lab_siz,ha='center',va='bottom',fontstyle='italic')
+        ax.text(0,tex_y,'Geometry\nReference',color='k',size=lab_siz,ha='center',va='top',weight='bold')
     else:
         tex_x,lab_siz = 1.02,'x-large'
-        plt.text(-tex_x,tex_y,r'Inclination: $%.1f^{\circ}$' % here_incD,color='k',size=lab_siz,ha='center',va='top')
-        plt.text(tex_x,tex_y,r'Obliquity: $%.1f^{\circ}$' % here_oblD,color='k',size=lab_siz,ha='center',va='top')
-        plt.text(0,0,'Solstice:' '\n' '$%.1f^{\circ}$' % here_solD,color='k',size=lab_siz,ha='center',va='center')
+        ax.text(-tex_x,tex_y,r'Inclination: $%.1f^{\circ}$' % here_incD,color='k',size=lab_siz,ha='center',va='top')
+        ax.text(tex_x,tex_y,r'Obliquity: $%.1f^{\circ}$' % here_oblD,color='k',size=lab_siz,ha='center',va='top')
+        ax.text(0,0,'Solstice:' '\n' '$%.1f^{\circ}$' % here_solD,color='k',size=lab_siz,ha='center',va='center')
         rat_tex = r'$\omega_{\mathrm{rot}} \ / \ \omega_{\mathrm{orb}} \ = \ %.2f$' % here_ratRO
-        plt.text(-0.95,-1.25,'Spins per orbit:\n'+rat_tex,color='k',size=lab_siz,ha='center',va='bottom')
-        plt.text(1.3,-1.3,'Not to\nscale',color='k',size=lab_siz,ha='center',va='bottom',fontstyle='italic')
-        plt.text(0,tex_y,'Geometry of\n{}'.format(name),color='k',size=lab_siz,ha='center',va='top')
-    plt.text(0.25,-1.25,'To observer',color='k',size=lab_siz,ha='left',va='bottom')
-    plt.plot([0,0.25],[-1.3,-1.25],'k',lw=1,ls='--',zorder=-2)
-
-    if reference and not _active:
-        plt.tight_layout()
-        if ref_save:
-            plt.savefig('geometry_reference.pdf')
-        plt.show()
+        ax.text(-0.95,-1.25,'Spins per orbit:\n'+rat_tex,color='k',size=lab_siz,ha='center',va='bottom')
+        ax.text(1.3,-1.3,'Not to\nscale',color='k',size=lab_siz,ha='center',va='bottom',fontstyle='italic')
+        ax.text(0,tex_y,'Geometry of\n{}'.format(name),color='k',size=lab_siz,ha='center',va='top')
+    ax.text(0.25,-1.25,'To observer',color='k',size=lab_siz,ha='left',va='bottom')
+    ax.plot([0,0.25],[-1.3,-1.25],'k',lw=1,ls='--',zorder=-2)
+    
+    if not _active:
+        if reference:
+            fig.tight_layout()
+            if ref_save:
+                fig.savefig('geometry_reference.pdf')
+            plt.show()
+        else:
+            return fig  # Pass back to Geometry_Diagram
 
 
 class DirectImaging_Planet:
@@ -1208,18 +1213,18 @@ class DirectImaging_Planet:
             Geometry_Reference(reference=reference,**kwargs)
         else:
             if which == 'pri':
-                Geometry_Reference(incD=self.incD,oblD=self.oblD,solD=self.solD,ratRO=self.ratRO,
-                                   phaseD=self.solD,name=self.name,reference=reference)
+                fig = Geometry_Reference(incD=self.incD,oblD=self.oblD,solD=self.solD,ratRO=self.ratRO,
+                                         phaseD=self.solD,name=self.name,reference=reference)
             elif which == 'alt':
-                Geometry_Reference(incD=self.incD_b,oblD=self.oblD_b,solD=self.solD_b,ratRO=self.ratRO_b,
-                                   phaseD=self.solD_b,name='Alt. '+self.name,reference=reference)
+                fig = Geometry_Reference(incD=self.incD_b,oblD=self.oblD_b,solD=self.solD_b,ratRO=self.ratRO_b,
+                                         phaseD=self.solD_b,name='Alt. '+self.name,reference=reference)
 
-            plt.tight_layout()
-            self.fig_geom = plt.gcf()
+            fig.tight_layout()
+            self.fig_geom = fig
             plt.show()
     
     
-    def _flat_style(self,albs,v_l,v_h,grat):
+    def _flat_style(self,fig,ax,albs,v_l,v_h,grat):
         """Styles plots for equirectangular maps."""
         if albs.min() < 0:
             m_c,lab,d_c = darkmid_BrBG_,'value',(1,0,0)
@@ -1228,21 +1233,23 @@ class DirectImaging_Planet:
         else:
             m_c,lab,d_c = cm.bone,'albedo',(0,1,0)
         
-        cart = plt.imshow(albs,cmap=m_c,extent=[-180,180,180,0],vmin=v_l,vmax=v_h)
-        cbar = plt.colorbar(cart)
+        cart = ax.imshow(albs,cmap=m_c,extent=[-180,180,180,0],vmin=v_l,vmax=v_h)
+        cbar = fig.colorbar(cart)
         cbar.set_label(label=lab,size='large')
         if grat:
-            plt.axvline(-90,c=d_c,ls=':',lw=1)
-            plt.axvline(0,c=d_c,ls='--',lw=1)
-            plt.axvline(90,c=d_c,ls=':',lw=1)
-            plt.axhline(45,c=d_c,ls=':',lw=1)
-            plt.axhline(90,c=d_c,ls='--',lw=1)
-            plt.axhline(135,c=d_c,ls=':',lw=1)
+            ax.axvline(-90,c=d_c,ls=':',lw=1)
+            ax.axvline(0,c=d_c,ls='--',lw=1)
+            ax.axvline(90,c=d_c,ls=':',lw=1)
+            ax.axhline(45,c=d_c,ls=':',lw=1)
+            ax.axhline(90,c=d_c,ls='--',lw=1)
+            ax.axhline(135,c=d_c,ls=':',lw=1)
         
-        plt.ylabel('Colatitude',size='x-large')
-        plt.yticks(np.linspace(0,180,5),colat_ticks_,size='large')
-        plt.xlabel('Longitude',size='x-large')
-        plt.xticks(np.linspace(-180,180,5),long_ticks_,size='large')
+        ax.set_ylabel('Colatitude',size='x-large')
+        ax.set_yticks(np.linspace(0,180,5))
+        ax.set_yticklabels(colat_ticks_,size='large')
+        ax.set_xlabel('Longitude',size='x-large')
+        ax.set_xticks(np.linspace(-180,180,5))
+        ax.set_xticklabels(long_ticks_,size='large')
     
     def _single_amap_colorbounds(self,low,high):
         """Gives limits for a brightness map's colorbar."""
@@ -1308,21 +1315,22 @@ class DirectImaging_Planet:
         """
         vm_l,vm_h,va_l,va_h = self._double_amap_colorbounds(alt,same_scale)
         if alt:
-            plt.figure(figsize=(16,4))
-            plt.subplot(121)
+            fig = plt.figure(figsize=(16,4))
+            ax = fig.add_subplot(121)
         else:
-            plt.figure(figsize=(9,4))
+            fig,ax = plt.subplots(figsize=(9,4))
+        fig.set_facecolor('w')
         
-        self._flat_style(self.albedos,vm_l,vm_h,grat)
-        plt.title('Map of {}'.format(self.name),size='x-large')
+        self._flat_style(fig,ax,self.albedos,vm_l,vm_h,grat)
+        ax.set_title('Map of {}'.format(self.name),size='x-large')
         
         if alt:
-            plt.subplot(122)
-            self._flat_style(self.albedos_b,va_l,va_h,grat)
-            plt.title('Alternate Map of {}'.format(self.name),size='x-large')
+            ax2 = fig.add_subplot(122)
+            self._flat_style(fig,ax2,self.albedos_b,va_l,va_h,grat)
+            ax2.set_title('Alternate Map of {}'.format(self.name),size='x-large')
         
-        plt.tight_layout()
-        self.fig_equi = plt.gcf()
+        fig.tight_layout()
+        self.fig_equi = fig
         plt.show()
         
     
@@ -1640,9 +1648,11 @@ class DirectImaging_Planet:
         kern_frac = tot_k2d/(2.0/3.0)
         
         r,c = 2,3
-        plt.figure(figsize=(12,8))
+        fig = plt.figure(figsize=(12,8))
+        fig.set_facecolor('w')
         
-        plt.subplot2grid((r,c),(1,0),colspan=2)
+        ## 2D kernel
+        axk = plt.subplot2grid((r,c),(1,0),colspan=2,fig=fig)
         
         if over_amap:
             if force_bright:
@@ -1653,95 +1663,102 @@ class DirectImaging_Planet:
             to_view = k2d/k2d.max()
             if not force_bright:
                 to_view *= kern_frac
-        plt.contourf(np.degrees(self.mono_longs),np.degrees(self.clats),to_view,65,
+        axk.contourf(np.degrees(self.mono_longs),np.degrees(self.clats),to_view,65,
                      cmap=cm.gray,vmin=0,vmax=1.0)
         if grat:
             d_c = (0,1,0)
-            plt.axvline(-90,c=d_c,ls=':',lw=1)
-            plt.axvline(0,c=d_c,ls='--',lw=1)
-            plt.axvline(90,c=d_c,ls=':',lw=1)
-            plt.axhline(45,c=d_c,ls=':',lw=1)
-            plt.axhline(90,c=d_c,ls='--',lw=1)
-            plt.axhline(135,c=d_c,ls=':',lw=1)
-        plt.ylabel('Colatitude',size='large')
-        plt.yticks(np.linspace(0,180,5),colat_ticks_,size='medium')
-        plt.ylim([180,0])
-        plt.xlabel('Longitude',size='large')
-        plt.xticks(np.linspace(-180,180,5),long_ticks_,size='medium')
-        plt.xlim([-180,180])
+            axk.axvline(-90,c=d_c,ls=':',lw=1)
+            axk.axvline(0,c=d_c,ls='--',lw=1)
+            axk.axvline(90,c=d_c,ls=':',lw=1)
+            axk.axhline(45,c=d_c,ls=':',lw=1)
+            axk.axhline(90,c=d_c,ls='--',lw=1)
+            axk.axhline(135,c=d_c,ls=':',lw=1)
+        axk.set_ylabel('Colatitude',size='large')
+        axk.set_yticks(np.linspace(0,180,5))
+        axk.set_yticklabels(colat_ticks_,size='medium')
+        axk.set_ylim([180,0])
+        axk.set_xlabel('Longitude',size='large')
+        axk.set_xticks(np.linspace(-180,180,5))
+        axk.set_xticklabels(long_ticks_,size='medium')
+        axk.set_xlim([-180,180])
         
-        plt.subplot2grid((r,c),(0,0),colspan=2)
+        ## Long. kernel
+        axl = plt.subplot2grid((r,c),(0,0),colspan=2,fig=fig)
         
         klong_rel = kern_frac*klong/klong.max()
-        plt.plot(np.degrees(self.mono_long_vec),klong_rel,c=cm.Reds(0.5),lw=4)
+        axl.plot(np.degrees(self.mono_long_vec),klong_rel,c=cm.Reds(0.5),lw=4)
         if fixed_lims:
-            plt.yticks(np.linspace(0,1.0,5),size='medium')
-            plt.ylim([-0.05,1.15])
+            axl.set_yticks(np.linspace(0,1.0,5))
+            axl.set_ylim([-0.05,1.15])
             y_mu = 1.075
         else:
-            plt.yticks(size='medium')
-            plt.ylim([-0.05*klong_rel.max(),1.15*klong_rel.max()])
+            axl.set_ylim([-0.05*klong_rel.max(),1.15*klong_rel.max()])
             y_mu = 1.075*klong_rel.max()
+        axl.tick_params(axis='y',labelsize='medium')
         if actual_mu > pi:
             actual_mu -= 2.0*pi
-        plt.scatter(np.degrees(actual_mu),y_mu,s=100,color=cm.Reds(0.33),edgecolor='k',marker='o',zorder=3)
+        axl.scatter(np.degrees(actual_mu),y_mu,s=100,color=cm.Reds(0.33),edgecolor='k',marker='o',zorder=3)
         if (actual_mu + sig_long) > pi:
-            plt.plot([-180,-180+np.degrees(actual_mu+sig_long-pi)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
+            axl.plot([-180,-180+np.degrees(actual_mu+sig_long-pi)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
         if (actual_mu - sig_long) < -pi:
-            plt.plot([180,180-np.degrees(-pi-actual_mu+sig_long)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
-        plt.plot([np.degrees(actual_mu-sig_long),np.degrees(actual_mu+sig_long)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
+            axl.plot([180,180-np.degrees(-pi-actual_mu+sig_long)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
+        axl.plot([np.degrees(actual_mu-sig_long),np.degrees(actual_mu+sig_long)],[y_mu,y_mu],c=cm.Reds(0.75),lw=3)
         if grat:
             d_c = '0.33'
-            plt.axvline(-90,c=d_c,ls=':',lw=1)
-            plt.axvline(0,c=d_c,ls='--',lw=1)
-            plt.axvline(90,c=d_c,ls=':',lw=1)
-        plt.ylabel('Relative Longitudinal Kernel',size='large')
-        plt.xticks(np.linspace(-180,180,5),long_ticks_,size='medium')
-        plt.xlim([-180,180])
+            axl.axvline(-90,c=d_c,ls=':',lw=1)
+            axl.axvline(0,c=d_c,ls='--',lw=1)
+            axl.axvline(90,c=d_c,ls=':',lw=1)
+        axl.set_ylabel('Relative Longitudinal Kernel',size='large')
+        axl.set_xticks(np.linspace(-180,180,5))
+        axl.set_xticklabels(long_ticks_,size='medium')
+        axl.set_xlim([-180,180])
         
-        plt.subplot2grid((r,c),(1,2))
+        ## Colat. kernel
+        axc = plt.subplot2grid((r,c),(1,2),fig=fig)
         
         kclat_rel = kern_frac*kclat/kclat.max()
-        plt.plot(kclat_rel,np.degrees(self.clat_vec),c=cm.Blues(0.5),lw=4)
-        plt.yticks(np.linspace(0,180,5),colat_ticks_,size='medium')
-        plt.ylim([180,0])
+        axc.plot(kclat_rel,np.degrees(self.clat_vec),c=cm.Blues(0.5),lw=4)
+        axc.set_yticks(np.linspace(0,180,5))
+        axc.set_yticklabels(colat_ticks_,size='medium')
+        axc.set_ylim([180,0])
         if fixed_lims:
-            plt.xticks(np.linspace(0,1.0,5),size='medium')
-            plt.xlim([-0.05,1.15])
+            axc.set_xticks(np.linspace(0,1.0,5))
+            axc.set_xlim([-0.05,1.15])
             y_dom = 1.075
         else:
-            plt.xticks(size='large')
-            plt.xlim([-0.05*kclat_rel.max(),1.15*kclat_rel.max()])
+            axc.set_xlim([-0.05*kclat_rel.max(),1.15*kclat_rel.max()])
             y_dom = 1.075*kclat_rel.max()
-        plt.scatter(y_dom,np.degrees(dom_clat),s=100,color=cm.Blues(0.75),edgecolor='k',marker='o',zorder=3)
+        axc.tick_params(axis='x',labelsize='medium')
+        axc.scatter(y_dom,np.degrees(dom_clat),s=100,color=cm.Blues(0.75),edgecolor='k',marker='o',zorder=3)
         if grat:
             d_c = '0.33'
-            plt.axhline(45,c=d_c,ls=':',lw=1)
-            plt.axhline(90,c=d_c,ls='--',lw=1)
-            plt.axhline(135,c=d_c,ls=':',lw=1)
-        plt.xlabel('Relative Colatitudinal Kernel',size='large')
+            axc.axhline(45,c=d_c,ls=':',lw=1)
+            axc.axhline(90,c=d_c,ls='--',lw=1)
+            axc.axhline(135,c=d_c,ls=':',lw=1)
+        axc.set_xlabel('Relative Colatitudinal Kernel',size='large')
         
-        plt.subplot2grid((r,c),(0,2))
+        ## Text info
+        axt = plt.subplot2grid((r,c),(0,2),fig=fig)
         
-        plt.text(0,0.9,r'%s' '\n' 'at $%.2f^{\circ}$ phase' % (self.name,phaseD),color='k',size='x-large',
+        axt.text(0,0.9,r'%s' '\n' 'at $%.2f^{\circ}$ phase' % (self.name,phaseD),color='k',size='x-large',
                  ha='center',va='center',weight='bold')
-        plt.text(0,0.7,r'Inclination: $%.2f^{\circ}$' % here_incD,color='k',size='x-large',ha='center',va='center')
-        plt.text(0,0.6,'Obliquity: $%.2f^{\circ}$' % here_oblD,color='k',size='x-large',ha='center',va='center')
-        plt.text(0,0.5,'Solstice: $%.2f^{\circ}$' % here_solD,color='k',size='x-large',ha='center',va='center')
-        plt.text(0,0.325,'Mean Longitude: $%.2f^{\circ}$' % (np.degrees(actual_mu)),
+        axt.text(0,0.7,r'Inclination: $%.2f^{\circ}$' % here_incD,color='k',size='x-large',ha='center',va='center')
+        axt.text(0,0.6,'Obliquity: $%.2f^{\circ}$' % here_oblD,color='k',size='x-large',ha='center',va='center')
+        axt.text(0,0.5,'Solstice: $%.2f^{\circ}$' % here_solD,color='k',size='x-large',ha='center',va='center')
+        axt.text(0,0.325,'Mean Longitude: $%.2f^{\circ}$' % (np.degrees(actual_mu)),
                  color=cm.Reds(0.33),size='x-large',ha='center',va='center')
-        plt.text(0,0.225,'Longitudinal Width: $%.2f^{\circ}$' % (np.degrees(sig_long)),
+        axt.text(0,0.225,'Longitudinal Width: $%.2f^{\circ}$' % (np.degrees(sig_long)),
                  color=cm.Reds(0.75),size='x-large',ha='center',va='center')
-        plt.text(0,0.05,'Dominant Colatitude: $%.2f^{\circ}$' % (np.degrees(dom_clat)),
+        axt.text(0,0.05,'Dominant Colatitude: $%.2f^{\circ}$' % (np.degrees(dom_clat)),
                  color=cm.Blues(0.75),size='x-large',ha='center',va='center')
-        plt.xlim([-0.5,0.5])
-        plt.ylim([0,1.0])
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-        plt.gca().axis('off')
+        axt.set_xlim([-0.5,0.5])
+        axt.set_ylim([0,1.0])
+        axt.axes.get_xaxis().set_visible(False)
+        axt.axes.get_yaxis().set_visible(False)
+        axt.axis('off')
         
-        plt.tight_layout()
-        self.fig_kern = plt.gcf()
+        fig.tight_layout()
+        self.fig_kern = fig
         plt.show()
     
     
@@ -1814,25 +1831,25 @@ class DirectImaging_Planet:
     
     def _kcevo_stylewid(self,ax,s_tick,s_lab,_active):
         """Styles part of plots for kernel widths."""
-        ax.set_ylim(0,110)
+        ax.set_ylim([0,110])
         ax.set_yticks(np.linspace(0,100,5))
         ax.set_yticklabels(wlong_ticks_,size=s_tick)
         if not _active:
             ax.set_ylabel('Longitudinal Width',color=cm.Reds(0.75),size=s_lab)
-        ax.tick_params('y',colors=cm.Reds(0.75))
-        ax.set_xlim(0,1)
+        ax.tick_params(axis='y',colors=cm.Reds(0.75))
+        ax.set_xlim([0,1])
         ax.set_xticks(np.linspace(0,1,5))
         ax.set_xlabel('Time (orbits)',size=s_lab)
         
     def _kcevo_styledom(self,ax,s_tick,s_lab,_active):
         """Styles part of plots for dominant colatitudes."""
-        ax.set_ylim(180,0)
+        ax.set_ylim([180,0])
         ax.set_yticks(np.linspace(0,180,5))
         ax.set_yticklabels(colat_ticks_,size=s_tick)
         if not _active:
             ax.set_ylabel('Dominant Colatitude',color=cm.Blues(0.75),size=s_lab)
-        ax.tick_params('y',colors=cm.Blues(0.75))
-        ax.set_xlim(0,1)
+        ax.tick_params(axis='y',colors=cm.Blues(0.75))
+        ax.set_xlim([0,1])
         ax.set_xticks(np.linspace(0,1,5))
         ax.set_xlabel('Time (orbits)',size=s_lab)
     
@@ -1904,7 +1921,8 @@ class DirectImaging_Planet:
             here_incD,here_oblD,here_solD = incD,oblD,solD
         
         if _active:
-            ax1 = plt.subplot(236)
+            fig = kwargs.get('fig_I','N/A')
+            ax1 = fig.add_subplot(236)
             ax2 = ax1.twinx()
             self._kcevo_stylewid(ax1,s_tick='medium',s_lab='medium',_active=_active)
             self._kcevo_styledom(ax2,s_tick='medium',s_lab='medium',_active=_active)
@@ -1914,10 +1932,11 @@ class DirectImaging_Planet:
             # 'datalim' continues to be the best option, others mess up the interactive module.
             ax1.set(adjustable='datalim',aspect=1.0/ax1.get_data_ratio())
             ax2.set(adjustable='datalim',aspect=1.0/ax2.get_data_ratio())
+            return ax1
         
         else:
-            plt.figure(figsize=(10,5))
-            ax1 = plt.subplot(111)
+            fig,ax1 = plt.subplots(figsize=(10,5))
+            fig.set_facecolor('w')
 
             if char in ['wid','dom']:
                 if char == 'wid':
@@ -1935,9 +1954,9 @@ class DirectImaging_Planet:
                                        incD=here_incD,oblD=here_oblD,solD=here_solD,ax1=ax1,ax2=ax2,
                                        _active=_active,phasesD_I=phasesD_I,ph_colors=ph_colors)
 
-            plt.title(tit,size='large')
-            plt.tight_layout()
-            self.fig_kcha = plt.gcf()
+            ax1.set_title(tit,size='large')
+            fig.tight_layout()
+            self.fig_kcha = fig
             plt.show()
         
     
@@ -1994,7 +2013,7 @@ class DirectImaging_Planet:
         return flux_ak,appar_a
     
     
-    def _lc_style(self,which,F_ak,A_app,show,diff,diff_only):
+    def _lc_style(self,which,F_ak,A_app,show,diff,diff_only,ax):
         """Styles plots of light curves."""
         alph = lambda d: 0.25 if d else 1.0
         if which == 'pri':
@@ -2007,9 +2026,9 @@ class DirectImaging_Planet:
         
         check = (not diff_only) or (diff_only and (which == 'diff'))
         if (show in ['both','flux']) and check:
-            plt.plot(T,F_ak,c=l_c,label=labf,zorder=zo)
+            ax.plot(T,F_ak,c=l_c,label=labf,zorder=zo)
         if (show in ['both','appar']) and check:
-            plt.plot(T,A_app,c=l_c,ls='--',label=laba,zorder=zo)
+            ax.plot(T,A_app,c=l_c,ls='--',label=laba,zorder=zo)
     
     
     def LightCurve_Plot(self,alt=True,diff=False,diff_only=False,show='flux',**kwargs):
@@ -2054,6 +2073,7 @@ class DirectImaging_Planet:
         """
         if kwargs.get('_active',False):
             ## Default keywords
+            ax_I = kwargs.get('ax_I','N/A')
             times_I = kwargs.get('times_I',0)
             orbT_I = kwargs.get('orbT_I',(24.0*365.0))
             ratRO_I = kwargs.get('ratRO_I',10.0)
@@ -2071,32 +2091,33 @@ class DirectImaging_Planet:
             zo = 0
             thick = lambda n: 2 if n == 0 else 1
             if show == 'flux':
-                plt.plot(Ph,flux_ak,c=ph_color,lw=thick(now_I),zorder=zo)
+                ax_I.plot(Ph,flux_ak,c=ph_color,lw=thick(now_I),zorder=zo)
             elif show == 'appar':
-                plt.plot(Ph,appar_a,c=ph_color,ls='--',lw=thick(now_I),zorder=zo)
+                ax_I.plot(Ph,appar_a,c=ph_color,ls='--',lw=thick(now_I),zorder=zo)
         
         else:
-            plt.figure(figsize=(10,5))
+            fig,ax = plt.subplots(figsize=(10,5))
+            fig.set_facecolor('w')
             
             flux_ak,appar_a = self.Light_Curves(which='pri')
-            self._lc_style('pri',flux_ak,appar_a,show,diff,diff_only)
+            self._lc_style('pri',flux_ak,appar_a,show,diff,diff_only,ax)
             if alt:
                 flux_ak_b,appar_a_b = self.Light_Curves(which='alt')
-                self._lc_style('alt',flux_ak_b,appar_a_b,show,diff,diff_only)
+                self._lc_style('alt',flux_ak_b,appar_a_b,show,diff,diff_only,ax)
                 if diff or diff_only:
                     if self.orbT == self.orbT_b:
-                        self._lc_style('diff',flux_ak-flux_ak_b,appar_a-appar_a_b,show,diff,diff_only)
+                        self._lc_style('diff',flux_ak-flux_ak_b,appar_a-appar_a_b,show,diff,diff_only,ax)
                     else:
                         print('LightCurve_Plot warning: diffs plot only if primary and alternate orbital periods match.')
             
-            plt.axhline(0,c='0.67',ls=':',zorder=0)
-            plt.legend(loc='best',fontsize='large')
-            plt.ylabel('Value',size='x-large')
-            plt.xlabel('Time (orbits)',size='x-large')
-            plt.title('Light Curves of {}'.format(self.name),size='x-large')
+            ax.axhline(0,c='0.67',ls=':',zorder=0)
+            ax.legend(loc='best',fontsize='large')
+            ax.set_ylabel('Value',size='x-large')
+            ax.set_xlabel('Time (orbits)',size='x-large')
+            ax.set_title('Light Curves of {}'.format(self.name),size='x-large')
             
-            plt.tight_layout()
-            self.fig_ligh = plt.gcf()
+            fig.tight_layout()
+            self.fig_ligh = fig
             plt.show()
     
     
@@ -2124,10 +2145,10 @@ class DirectImaging_Planet:
         
         return k2d,orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y
     
-    def _orth_style(self,row,sub,s,which,image,v_l,v_h,
+    def _orth_style(self,fig,row,sub,s,which,image,v_l,v_h,
                     orth_Viz,orth_X,orth_Y,poleN_viz,poleN_x,poleN_y,name):
         """Styles plots for orthographic projections."""
-        plt.subplot(row,sub,s)
+        ax = fig.add_subplot(row,sub,s)
         if which == 'kern':
             m_c = cm.gray
         elif image.min() < 0:
@@ -2138,22 +2159,22 @@ class DirectImaging_Planet:
             m_c = cm.bone
         
         ma_image = np.ma.masked_array(image,mask=orth_Viz<0)
-        cnt_plot = plt.contourf(orth_X,orth_Y,ma_image,65,cmap=m_c,vmin=v_l,vmax=v_h)
+        cnt_plot = ax.contourf(orth_X,orth_Y,ma_image,65,cmap=m_c,vmin=v_l,vmax=v_h)
         for c in cnt_plot.collections:
             c.set_edgecolor('face')
         if round(poleN_viz,3) >= 0:
-            plt.scatter(poleN_x,poleN_y,s=100,color=(0,1,0),edgecolor='k',marker='o')
+            ax.scatter(poleN_x,poleN_y,s=100,color=(0,1,0),edgecolor='k',marker='o')
         if round(poleN_viz,3) <= 0:
-            plt.scatter(-poleN_x,-poleN_y,s=70,color=(0,1,0),edgecolor='k',marker='D')
-        plt.xlim([-1.05,1.05])
-        plt.ylim([-1.05,1.05])
+            ax.scatter(-poleN_x,-poleN_y,s=70,color=(0,1,0),edgecolor='k',marker='D')
+        ax.set_xlim([-1.05,1.05])
+        ax.set_ylim([-1.05,1.05])
         if name != 'NONE':
-            plt.title(name,size='large',x=0.1,y=1.0,va='top',ha='left')
-        plt.gca().set_aspect(1.0)
-        plt.gca().axes.get_xaxis().set_visible(False)
-        plt.gca().axes.get_yaxis().set_visible(False)
-        plt.gca().axis('off')
-        return s+1
+            ax.set_title(name,size='large',x=0.1,y=1.0,va='top',ha='left')
+        ax.set_aspect(1.0)
+        ax.axes.get_xaxis().set_visible(False)
+        ax.axes.get_yaxis().set_visible(False)
+        ax.axis('off')
+        return s+1,ax
     
     
     def Orthographic_Viewer(self,phaseD,show='real',alt=False,same_scale=True,force_bright=True,**kwargs):
@@ -2208,6 +2229,7 @@ class DirectImaging_Planet:
         """
         if kwargs.get('_active',False):
             ## Default keywords
+            fig = kwargs.get('fig_I','N/A')
             orbT_I = kwargs.get('orbT_I',(24.0*365.0))
             ratRO_I = kwargs.get('ratRO_I',10.0)
             incD_I = kwargs.get('incD_I',90)
@@ -2223,18 +2245,18 @@ class DirectImaging_Planet:
                                                              incD=incD_I,oblD=oblD_I,solD=solD_I,
                                                              _active=True,ratRO=ratRO_I,longzeroD=longzeroD_I)
             
-            s = self._orth_style(row=row,sub=col,s=s,which='amap',
-                                 image=self.albedos,v_l=vm_l,v_h=vm_h,
-                                 orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                 poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
-            plt.text(-0.7,1.04,'Visible Map',color='k',size='medium',ha='center',va='center')
+            s,axv = self._orth_style(fig=fig,row=row,sub=col,s=s,which='amap',
+                                     image=self.albedos,v_l=vm_l,v_h=vm_h,
+                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
+            axv.text(-0.7,1.04,'Visible Map',color='k',size='medium',ha='center',va='center')
             s += 1  # Now on subplot(233)
             up = lambda fb: k2d.max() if fb else 1.0/pi
-            s = self._orth_style(row=row,sub=col,s=s,which='kern',
-                                 image=k2d,v_l=0,v_h=up(force_bright),
-                                 orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                 poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
-            plt.text(-0.7,1.04,'Kernel',color='k',size='medium',ha='center',va='center')
+            s,axk = self._orth_style(fig=fig,row=row,sub=col,s=s,which='kern',
+                                     image=k2d,v_l=0,v_h=up(force_bright),
+                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='NONE')
+            axk.text(-0.7,1.04,'Kernel',color='k',size='medium',ha='center',va='center')
         
         else:
             row = 1
@@ -2247,7 +2269,8 @@ class DirectImaging_Planet:
                 if show == 'sphere':
                     wid += 10
             sub,s = wid//5,1
-            plt.figure(figsize=(wid,5))
+            fig = plt.figure(figsize=(wid,5))
+            fig.set_facecolor('w')
             
             vm_l,vm_h,va_l,va_h = self._double_amap_colorbounds(alt,same_scale)
             
@@ -2258,26 +2281,26 @@ class DirectImaging_Planet:
                                                              _active=False,ratRO=0,longzeroD=0)
             if show in ['kern','both']:
                 up = lambda fb: k2d.max() if fb else 1.0/pi
-                s = self._orth_style(row=row,sub=sub,s=s,which='kern',
-                                     image=k2d,v_l=0,v_h=up(force_bright),
-                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Kernel')
+                s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='kern',
+                                         image=k2d,v_l=0,v_h=up(force_bright),
+                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Kernel')
             if show in ['amap','both','sphere']:
-                s = self._orth_style(row=row,sub=sub,s=s,which='amap',
-                                     image=self.albedos,v_l=vm_l,v_h=vm_h,
-                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Map')
+                s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='amap',
+                                         image=self.albedos,v_l=vm_l,v_h=vm_h,
+                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Map')
             if show == 'real':
                 normk = lambda fb: 1.0/k2d.max() if fb else pi
-                s = self._orth_style(row=row,sub=sub,s=s,which='real',
-                                     image=normk(force_bright)*k2d*self.albedos,v_l=vm_l,v_h=vm_h,
-                                     orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                     poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Map')
+                s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='real',
+                                         image=normk(force_bright)*k2d*self.albedos,v_l=vm_l,v_h=vm_h,
+                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Map')
             if show == 'sphere':
-                s = self._orth_style(row=row,sub=sub,s=s,which='amap',
-                                     image=self.albedos,v_l=vm_l,v_h=vm_h,
-                                     orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
-                                     poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Map')
+                s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='amap',
+                                         image=self.albedos,v_l=vm_l,v_h=vm_h,
+                                         orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
+                                         poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Map')
             if alt:
                 orbT,incD,oblD,solD = self.orbT_b,self.incD_b,self.oblD_b,self.solD_b
                 (k2d,orth_Viz,orth_X,orth_Y,
@@ -2285,25 +2308,25 @@ class DirectImaging_Planet:
                                                                  incD=incD,oblD=oblD,solD=solD,
                                                                  _active=False,ratRO=0,longzeroD=0)
                 if show in ['amap','both','sphere']:
-                    s = self._orth_style(row=row,sub=sub,s=s,which='amap',
-                                         image=self.albedos_b,v_l=vm_l,v_h=vm_h,
-                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Alt. Map')
+                    s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='amap',
+                                             image=self.albedos_b,v_l=vm_l,v_h=vm_h,
+                                             orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                             poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name='Visible Alt. Map')
                 if show == 'real':
-                    s = self._orth_style(row=row,sub=sub,s=s,which='real',
-                                         image=normk(force_bright)*k2d*self.albedos_b,v_l=vm_l,v_h=vm_h,
-                                         orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
-                                         poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Alt. Map')
+                    s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='real',
+                                             image=normk(force_bright)*k2d*self.albedos_b,v_l=vm_l,v_h=vm_h,
+                                             orth_Viz=orth_Viz,orth_X=orth_X,orth_Y=orth_Y,
+                                             poleN_viz=poleN_viz,poleN_x=poleN_x,poleN_y=poleN_y,name=r'Kernel $\times$ Alt. Map')
                 if show == 'sphere':
-                    s = self._orth_style(row=row,sub=sub,s=s,which='amap',
-                                         image=self.albedos_b,v_l=vm_l,v_h=vm_h,
-                                         orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
-                                         poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Alt. Map')
+                    s,_ax = self._orth_style(fig=fig,row=row,sub=sub,s=s,which='amap',
+                                             image=self.albedos_b,v_l=vm_l,v_h=vm_h,
+                                             orth_Viz=-orth_Viz,orth_X=-orth_X,orth_Y=orth_Y,
+                                             poleN_viz=-poleN_viz,poleN_x=-poleN_x,poleN_y=poleN_y,name='Far Side of Alt. Map')
                 
-            plt.gcf().suptitle(r'%s at $%.2f^{\circ}$ phase' % (self.name,phaseD),y=0,fontsize='x-large',
-                               verticalalignment='bottom')
-            plt.tight_layout()
-            self.fig_orth = plt.gcf()
+            fig.suptitle(r'%s at $%.2f^{\circ}$ phase' % (self.name,phaseD),y=0,fontsize='x-large',
+                         verticalalignment='bottom')
+            fig.tight_layout()
+            self.fig_orth = fig
             plt.show()
     
     
@@ -2364,13 +2387,13 @@ class DirectImaging_Planet:
                                                                                 longzeroD=0)
         return solobl_wgrid,solobl_dgrid
     
-    def _spinax_style(self,w,h,s,m_c,kind,ax_combo,sols,obls,prob2d,levs,constraint,orig_sols,orig_obls,
+    def _spinax_style(self,fig,h,w,s,m_c,kind,ax_combo,sols,obls,prob2d,levs,constraint,orig_sols,orig_obls,
                       kchar,k_mu,now_phaseD,solR,oblR,mark,_active,j,entries):
         """Styles plots for spin axis constraints."""
         if kind == 'combo':
             axs = ax_combo
         else:
-            axs = plt.subplot(h,w,s,projection='polar')
+            axs = fig.add_subplot(h,w,s,projection='polar')
         axs.set_theta_zero_location('S')
         axs.set_rlabel_position(45)
         c_regs = ('1.0',m_c(0.25),m_c(0.5),m_c(0.75))
@@ -2404,8 +2427,8 @@ class DirectImaging_Planet:
                      size='x-large',ha='center',va='center')
             axs.axes.spines['polar'].set_alpha(0.1)
             axs.grid(alpha=0.1)
-            plt.xticks(alpha=0.1)  ## Easy and seems to work
-            plt.yticks(alpha=0.1)  ##
+            axs.tick_params(axis='x',colors=(0,0,0,0.1))  # Sets alpha level of tick labels
+            axs.tick_params(axis='y',colors=(0,0,0,0.1))  #
         else:
             if constraint in ['real','both']:
                 axs.contourf(sols,obls,prob2d,levels=levs,colors=c_regs)
@@ -2579,13 +2602,13 @@ class DirectImaging_Planet:
         
         entries = len(phaseD_list)
         if _active:
-            w,h,sub,s = 3,2,5,5
+            h,w,sub,s = 2,3,5,5
         elif combine_only:
-            w,h,sub,s = 1,1,1,1
+            h,w,sub,s = 1,1,1,1
         else:
             ex = lambda x: 1 if x else 0
             sub = entries + ex(info) + ex(combine)
-            w,h,s = min(sub,3),1+((sub-1)//3),1
+            h,w,s = 1+((sub-1)//3),min(sub,3),1
         p = 0
         
         if which == 'pri':
@@ -2609,10 +2632,13 @@ class DirectImaging_Planet:
         sigma_probs = np.array([1,0.9973,0.9545,0.6827,0])
         new_sols,new_obls = np.meshgrid(np.linspace(0,2.0*pi,n_sol),np.linspace(0,pi/2.0,n_obl),indexing='ij')
         
-        if not _active:
-            plt.figure(figsize=(5*w,5*h))
+        if _active:
+            fig = kwargs.get('fig_I','N/A')
+        else:
+            fig = plt.figure(figsize=(5*w,5*h))
+            fig.set_facecolor('w')
             if info and not combine_only:
-                s = self._spinax_style(w=w,h=h,s=s,m_c=cm.gray,kind='info',ax_combo='0',
+                s = self._spinax_style(fig=fig,h=h,w=w,s=s,m_c=cm.gray,kind='info',ax_combo='0',
                                        sols=new_sols,obls=new_obls,
                                        prob2d=0,levs=0,constraint=constraint,
                                        orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
@@ -2663,7 +2689,7 @@ class DirectImaging_Planet:
             if combine or combine_only:
                 combo_prob2d *= prob2d
                 if made_combo_flag == False:
-                    axC = plt.subplot(h,w,sub,projection='polar')
+                    axC = fig.add_subplot(h,w,sub,projection='polar')
                     made_combo_flag = True
                 if constraint in ['perf','both']:
                     if constraint == 'perf':
@@ -2687,7 +2713,7 @@ class DirectImaging_Planet:
                         user_file.append([sav_phaseD,np.copy(new_prob2d),np.copy(levels_sigma)])
                 else:
                     levels_sigma = 1
-                s = self._spinax_style(w=w,h=h,s=s,m_c=m_c,kind='single',ax_combo='0',
+                s = self._spinax_style(fig=fig,h=h,w=w,s=s,m_c=m_c,kind='single',ax_combo='0',
                                        sols=new_sols,obls=new_obls,
                                        prob2d=new_prob2d,levs=levels_sigma,constraint=constraint,
                                        orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
@@ -2700,14 +2726,14 @@ class DirectImaging_Planet:
                 new_combo_prob2d = self._spinax_prob_redo(prob2d=combo_prob2d,
                                                           orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
                                                           new_sols=new_sols,new_obls=new_obls)
-                levels_sigma = self._spinax_leveling(prob2d=new_combo_prob2d,sigma_probs=sigma_probs.T,
-                                                     res=res,obls=new_obls)  #$$# TEST THIS TRANSPOSE
+                levels_sigma = self._spinax_leveling(prob2d=new_combo_prob2d,sigma_probs=sigma_probs,
+                                                     res=res,obls=new_obls)
                 if keep_probdata:
                     user_file.append(['Combined',np.copy(new_combo_prob2d),np.copy(levels_sigma)])
             else:
                 new_combo_prob2d,levels_sigma = 1,1
             m_c_here = lambda x: cm.Reds if x == entries else (cm.Blues if x == 2*entries else cm.Purples)
-            s = self._spinax_style(w=w,h=h,s=s,m_c=m_c_here(p),kind='combo',ax_combo=axC,
+            s = self._spinax_style(fig=fig,h=h,w=w,s=s,m_c=m_c_here(p),kind='combo',ax_combo=axC,
                                    sols=new_sols,obls=new_obls,
                                    prob2d=new_combo_prob2d,levs=levels_sigma,constraint=constraint,
                                    orig_sols=sol_2mesh_,orig_obls=obl_2mesh_,
@@ -2715,9 +2741,11 @@ class DirectImaging_Planet:
                                    solR=solR,oblR=oblR,mark=mark,
                                    _active=_active,j=0,entries=entries)
         
-        if not _active:
-            plt.tight_layout()
-            self.fig_spin = plt.gcf()
+        if _active:
+            return axC  # Pass combo axis back to _actmodule_heart
+        else:
+            fig.tight_layout()
+            self.fig_spin = fig
             plt.show()
             
             if keep_probdata:
@@ -2796,70 +2824,76 @@ class DirectImaging_Planet:
         num_rel = max(res_I*round(see_spins),self.n_long)
         rel_tphase = np.linspace(-2.5,2.5,num_rel)
         
-        plt.figure(figsize=(14,9.3))
+        fig_I = plt.figure(figsize=(14,9.3))
+        fig_I.set_facecolor('w')
         
-        plt.subplot(232)
-        self.Geometry_Diagram(which='N/A',_active=True,
+        ### Geom
+        axg = fig_I.add_subplot(232)
+        self.Geometry_Diagram(which='N/A',_active=True,ax_I=axg,
                               incD=incD_I,oblD=oblD_I,solD=solD_I,ratRO=ratRO_I,
                               phaseD=phasesD_single,ph_colors=ph_colors)
         
-        ### subplot(231) and subplot(233)
-        self.Orthographic_Viewer(phaseD_I,show='both',_active=True,
+        ### Ortho, sub 231 and 233
+        self.Orthographic_Viewer(phaseD_I,show='both',_active=True,fig_I=fig_I,
                                  orbT_I=orbT_I,ratRO_I=ratRO_I,
                                  incD_I=incD_I,oblD_I=oblD_I,solD_I=solD_I,
                                  longzeroD_I=longzeroD_I)
         
-        plt.subplot(234)
+        ### Light
+        axl = fig_I.add_subplot(234)
         n = 0
         for p in phasesD_single:
             if isinstance(p,(int,float)):
                 times_I = orbT_I*((p + rel_tphase)/360.0)
-                self.LightCurve_Plot(alt=False,show=lc_swit,_active=True,
+                self.LightCurve_Plot(alt=False,show=lc_swit,_active=True,ax_I=axl,
                                      times_I=times_I,orbT_I=orbT_I,ratRO_I=ratRO_I,
                                      incD_I=incD_I,oblD_I=oblD_I,solD_I=solD_I,
                                      longzeroD_I=longzeroD_I,ph_color=ph_colors[n],now_I=n)
             n += 1
         n = 0
-        plt.xlim([-2.5,2.5])
-        plt.xticks(np.linspace(-2,2,5),relph_ticks_,size='medium')
-        plt.xlabel('Relative Orbital Phase',size='medium')
-        plt.yticks(size='medium')
+        axl.set_xlim([-2.5,2.5])
+        axl.set_xticks(np.linspace(-2,2,5))
+        axl.set_xticklabels(relph_ticks_,size='medium')
+        axl.set_xlabel('Relative Orbital Phase',size='medium')
+        axl.tick_params(axis='y',labelsize='medium')
         ylab = lambda lc: 'Flux' if lc == 'flux' else ('Apparent Brightness' if lc == 'appar' else '')
-        plt.ylabel(ylab(lc_swit),size='medium')
-        plt.gca().set_aspect(1.0/plt.gca().get_data_ratio())
-        plt.text(0.25,1.01,'Light Curve',color='k',size='medium',ha='center',va='bottom',
-                 transform=plt.gca().transAxes)
-        plt.text(0.75,1.01,'Rotations: {:.2f}'.format(see_spins),color='k',size='medium',ha='center',va='bottom',
-                 transform=plt.gca().transAxes)
+        axl.set_ylabel(ylab(lc_swit),size='medium')
+        axl.set_aspect(1.0/axl.get_data_ratio())
+        axl.text(0.25,1.01,'Light Curve',color='k',size='medium',ha='center',va='bottom',
+                 transform=axl.transAxes)
+        axl.text(0.75,1.01,'Rotations: {:.2f}'.format(see_spins),color='k',size='medium',ha='center',va='bottom',
+                 transform=axl.transAxes)
         
-        ### subplot(236)
-        self.KChar_Evolve_Plot('both',which='_c',incD=incD_I,oblD=oblD_I,solD=solD_I,
-                               _active=True,phasesD_I=phasesD_single,ph_colors=ph_colors)
-        plt.text(0.5,1.01,'Kernel Characteristics',color='k',size='medium',ha='center',va='bottom',
-                 transform=plt.gca().transAxes)
+        ### Kernel, sub 236
+        axk = self.KChar_Evolve_Plot('both',which='_c',incD=incD_I,oblD=oblD_I,solD=solD_I,
+                                     _active=True,fig_I=fig_I,phasesD_I=phasesD_single,ph_colors=ph_colors)
+        axk.text(0.5,1.01,'Kernel Characteristics',color='k',size='medium',ha='center',va='bottom',
+                 transform=axk.transAxes)
         
-        ### subplot(235,'polar')
+        ### SpinAx, polar sub 235
         if len(phasesD_forspin) == 0:
-            plt.subplot(235,projection='polar')
-            plt.gca().set_theta_zero_location('S')
-            plt.gca().set_rlabel_position(45)
-            plt.xticks(np.linspace(0,1.75*pi,8),sol_ticks_,size='medium',alpha=0.1)  # Match numbers to sol_ticks to avoid error.
-            plt.yticks(np.linspace(0,pi/2.0,4),obl_ticks_,size='medium',alpha=0.1)
-            plt.gca().axes.spines['polar'].set_alpha(0.1)
-            plt.gca().grid(alpha=0.1)
+            axs = fig_I.add_subplot(235,projection='polar')
+            axs.set_theta_zero_location('S')
+            axs.set_rlabel_position(45)
+            axs.set_xticks(np.linspace(0,1.75*pi,8))  # Match numbers to sol_ticks to avoid error.
+            axs.set_xticklabels(sol_ticks_,size='medium',alpha=0.1)
+            axs.set_yticks(np.linspace(0,pi/2.0,4))
+            axs.set_yticklabels(obl_ticks_,size='medium',alpha=0.1)
+            axs.axes.spines['polar'].set_alpha(0.1)
+            axs.grid(alpha=0.1)
             bads = ('SPIN AXIS\nCONSTRAINT WARNING:\n\nYOU NEED\nAT LEAST 2 PHASES TO'
                     '\nCALCULATE CHANGES IN\nDOMINANT COLATITUDE')
-            plt.text(np.radians(0),np.radians(0),bads,color=(1.0,0.5,0),size='x-large',
+            axs.text(np.radians(0),np.radians(0),bads,color=(1.0,0.5,0),size='x-large',
                      ha='center',va='center',weight='bold')
         else:
-            self.SpinAxis_Constraints(phasesD_forspin,which='_c',constraint='perf',
-                                      info=False,combine=False,combine_only=True,_active=True,
-                                      incD_I=incD_I,solD_I=solD_I,oblD_I=oblD_I)
-            plt.text(np.radians(225),np.radians(112),'Spin Axis\nConstraints',color='k',size='medium',
+            axs = self.SpinAxis_Constraints(phasesD_forspin,which='_c',constraint='perf',
+                                            info=False,combine=False,combine_only=True,_active=True,
+                                            fig_I=fig_I,incD_I=incD_I,solD_I=solD_I,oblD_I=oblD_I)
+            axs.text(np.radians(225),np.radians(112),'Spin Axis\nConstraints',color='k',size='medium',
                      ha='center',va='center')
         
-        plt.tight_layout()
-        self.fig_sand = plt.gcf()
+        fig_I.tight_layout()
+        self.fig_sand = fig_I
         plt.show()
     
     def _reset_actmodule(self):
@@ -2997,3 +3031,4 @@ class DirectImaging_Planet:
         inter_out = widgets.interactive_output(self._actmodule_heart,the_connections)
         
         IPy_display(widgets.Box([top_row,bot_row,inter_out],layout=Layout(flex_flow='column')))
+        
