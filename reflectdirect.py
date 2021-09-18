@@ -150,6 +150,7 @@ def Geometry_Reference(ref_save=False,**kwargs):
         comp_tweak,comp_siz = 0.04,'medium'
     else:
         fig,ax = plt.subplots(figsize=(8,8))
+        fig.set_facecolor('w')  # Avoids transparent stored fig_****; ditto throughout
         comp_tweak,comp_siz = 0.03,'x-large'
     ax.set_xlim([-1.5,1.5])
     ax.set_ylim([-1.35,1.65])
@@ -1318,6 +1319,7 @@ class DirectImaging_Planet:
             ax = fig.add_subplot(121)
         else:
             fig,ax = plt.subplots(figsize=(9,4))
+        fig.set_facecolor('w')
         
         self._flat_style(fig,ax,self.albedos,vm_l,vm_h,grat)
         ax.set_title('Map of {}'.format(self.name),size='x-large')
@@ -1647,6 +1649,7 @@ class DirectImaging_Planet:
         
         r,c = 2,3
         fig = plt.figure(figsize=(12,8))
+        fig.set_facecolor('w')
         
         ## 2D kernel
         axk = plt.subplot2grid((r,c),(1,0),colspan=2,fig=fig)
@@ -1933,6 +1936,7 @@ class DirectImaging_Planet:
         
         else:
             fig,ax1 = plt.subplots(figsize=(10,5))
+            fig.set_facecolor('w')
 
             if char in ['wid','dom']:
                 if char == 'wid':
@@ -2093,6 +2097,7 @@ class DirectImaging_Planet:
         
         else:
             fig,ax = plt.subplots(figsize=(10,5))
+            fig.set_facecolor('w')
             
             flux_ak,appar_a = self.Light_Curves(which='pri')
             self._lc_style('pri',flux_ak,appar_a,show,diff,diff_only,ax)
@@ -2265,6 +2270,7 @@ class DirectImaging_Planet:
                     wid += 10
             sub,s = wid//5,1
             fig = plt.figure(figsize=(wid,5))
+            fig.set_facecolor('w')
             
             vm_l,vm_h,va_l,va_h = self._double_amap_colorbounds(alt,same_scale)
             
@@ -2630,6 +2636,7 @@ class DirectImaging_Planet:
             fig = kwargs.get('fig_I','N/A')
         else:
             fig = plt.figure(figsize=(5*w,5*h))
+            fig.set_facecolor('w')
             if info and not combine_only:
                 s = self._spinax_style(fig=fig,h=h,w=w,s=s,m_c=cm.gray,kind='info',ax_combo='0',
                                        sols=new_sols,obls=new_obls,
@@ -2818,8 +2825,9 @@ class DirectImaging_Planet:
         rel_tphase = np.linspace(-2.5,2.5,num_rel)
         
         fig_I = plt.figure(figsize=(14,9.3))
+        fig_I.set_facecolor('w')
         
-        ### Geometry
+        ### Geom
         axg = fig_I.add_subplot(232)
         self.Geometry_Diagram(which='N/A',_active=True,ax_I=axg,
                               incD=incD_I,oblD=oblD_I,solD=solD_I,ratRO=ratRO_I,
