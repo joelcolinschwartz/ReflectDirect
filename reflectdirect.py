@@ -382,7 +382,7 @@ class DirectImaging_Planet:
         
         Primary Params (append ``_b`` for Alternates):
             albedos (2d array):
-                The planet's albedo values with shape (``n_clat``,``n_long``).
+                The planet's albedo values with shape (``n_clat``, ``n_long``).
                 
             incD (int or float):
                 Inclination of orbital plane to the observer, in degrees.
@@ -549,7 +549,7 @@ class DirectImaging_Planet:
             .. note::
                         
                 If you try to put an ``image`` ndarray ``into`` the primary
-                or alternate map, it should have shape (``n_clat``,``n_long``).
+                or alternate map, it should have shape (``n_clat``, ``n_long``).
                 
             invert (bool):
                 Linearly change lower albedo values to higher
