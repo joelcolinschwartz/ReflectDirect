@@ -17,10 +17,8 @@ Depends on:
     - Jupyter(Lab), ipywidgets and IPython
 
 Uses the function :func:`sub_observerstellar()
-<exoplanetsubspots.sub_observerstellar>` and the binary files
-kernel_width_values_all5deg.npy and
-kernel_domcolat_values_all5deg.npy for some backend
-calculations.
+<exoplanetsubspots.sub_observerstellar>` and two numpy
+binary files (.npy) for some backend calculations.
 
 See `Schwartz et al. (2016) <https://arxiv.org/abs/1511.05152>`_
 for background info.
