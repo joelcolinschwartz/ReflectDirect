@@ -36,7 +36,7 @@ from numpy.lib import stride_tricks
 from scipy.special import sph_harm
 from scipy.interpolate import RectBivariateSpline
 from matplotlib.colors import LinearSegmentedColormap
-from matplotlib.cbook import get_sample_data
+from PIL import Image
 from ipywidgets import Layout
 from IPython.display import display as IPy_display
 
